@@ -372,3 +372,159 @@ button {
         min-height: 90vh;
     }
 }
+/* =================================
+   MATCHA WORLD - PREMIUM DESIGN
+================================= */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
+.app-container {
+    position: relative;
+    transition: box-shadow .3s ease;
+}
+
+/* HEADER */
+
+.top-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(0,0,0,.12);
+}
+
+.brand-icon {
+    transition: transform .3s ease;
+}
+
+.brand-icon:hover {
+    transform: rotate(12deg);
+}
+
+/* HERO */
+
+.hero-image {
+    box-shadow: 0 12px 30px rgba(38,60,50,.15);
+    transition: transform .4s ease;
+}
+
+.hero-image:hover {
+    transform: scale(1.01);
+}
+
+.hero-overlay h1 {
+    letter-spacing: .3px;
+}
+
+/* BUTTONS */
+
+.primary-button,
+.secondary-button {
+    transition: all .25s ease;
+}
+
+.primary-button {
+    box-shadow: 0 6px 15px rgba(38,60,50,.15);
+}
+
+.primary-button:active,
+.secondary-button:active {
+    transform: scale(.97);
+}
+
+/* CARDS */
+
+.stat-card,
+.order-card,
+.restaurant-card {
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.stat-card:hover,
+.order-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(38,60,50,.09);
+}
+
+/* INPUTS */
+
+.form-section input,
+.form-section select {
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.form-section input:focus,
+.form-section select:focus {
+    border-color: var(--green-light);
+    box-shadow: 0 0 0 3px rgba(82,107,83,.12);
+}
+
+/* AVATARS */
+
+.avatar {
+    transition: all .25s ease;
+}
+
+.avatar:hover {
+    transform: translateY(-3px);
+}
+
+.avatar.selected {
+    box-shadow: 0 4px 12px rgba(38,60,50,.15);
+}
+
+/* INGREDIENTS */
+
+.ingredient-list button {
+    transition: all .2s ease;
+}
+
+.ingredient-list button:hover {
+    border-color: var(--green-light);
+    transform: translateY(-2px);
+}
+
+.ingredient-list button.selected {
+    box-shadow: 0 4px 12px rgba(38,60,50,.12);
+}
+
+/* ACCESSIBILITY */
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+}
+
+/* MOBILE */
+
+@media (max-width: 380px) {
+    .hero-image {
+        height: 260px;
+    }
+
+    .hero-overlay h1 {
+        font-size: 29px;
+    }
+
+    .welcome-content,
+    .form-section,
+    .dashboard {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .stats {
+        gap: 6px;
+    }
+
+    .stat-card h3 {
+        font-size: 16px;
+    }
+}
