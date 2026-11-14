@@ -523,6 +523,68 @@ select:focus-visible {
     .stats {
         gap: 6px;
     }
+/* PLAYER REGISTRATION SCREEN */
+
+.form-section {
+    position: relative;
+}
+
+.form-section h1 {
+    font-size: 34px;
+    margin-bottom: 14px;
+}
+
+.form-section label {
+    letter-spacing: .4px;
+}
+
+.form-section input,
+.form-section select {
+    border-radius: 9px;
+    background: #fffefa;
+    font-size: 14px;
+    transition: all .3s ease;
+}
+
+.form-section input::placeholder {
+    color: #a6aea5;
+}
+
+.avatar-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 15px;
+    background: #fffefa;
+    border: 1px solid #e8e5dc;
+    font-size: 30px;
+    transition: .25s ease;
+}
+
+.avatar:hover {
+    transform: translateY(-5px);
+    border-color: var(--gold);
+}
+
+.avatar.selected {
+    background: #e6eadf;
+    border: 2px solid var(--green);
+    box-shadow: 0 5px 15px rgba(38,60,50,.15);
+    transform: translateY(-3px);
+}
+
+.form-section .primary-button {
+    border-radius: 9px;
+    min-height: 58px;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
 
     .stat-card h3 {
         font-size: 16px;
