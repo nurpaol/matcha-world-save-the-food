@@ -1,17 +1,82 @@
-// MATCHA WORLD: SAVE THE FOOD
-// Main Game System - Version 1.0
+/* ==========================================
+   MATCHA WORLD: SAVE THE FOOD
+   PREMIUM GAME ENGINE 2.0
+========================================== */
 
+// PLAYER
 let selectedAvatar = "👩‍🍳";
 let selectedIngredients = [];
+let player = null;
+
+// GAME DATA
 let points = 0;
 let satisfaction = 100;
 let waste = 0;
 let completedOrders = 0;
-let player = null;
 
+let cash = 5000;
+let level = 1;
+let stock = 100;
+let ecoScore = 0;
+
+// RECIPE
 const correctIngredients = ["🥑", "🥬", "🍅"];
 
-// AVATAR SELECTION
+// SETTINGS
+const INGREDIENT_COST = 3;
+const ORDER_REWARD = {
+    perfect: 500,
+    good: 250,
+    poor: 100
+};
+
+// ==========================================
+// SAVE SYSTEM
+// ==========================================
+
+function saveGame() {
+    const gameData = {
+        points,
+        satisfaction,
+        waste,
+        completedOrders,
+        cash,
+        level,
+        stock,
+        ecoScore
+    };
+
+    localStorage.setItem(
+        "matchaGameData",
+        JSON.stringify(gameData)
+    );
+}
+
+function loadGame() {
+    const saved = localStorage.getItem("matchaGameData");
+
+    if (!saved) return;
+
+    try {
+        const data = JSON.parse(saved);
+
+        points = data.points ?? 0;
+        satisfaction = data.satisfaction ?? 100;
+        waste = data.waste ?? 0;
+        completedOrders = data.completedOrders ?? 0;
+        cash = data.cash ?? 5000;
+        level = data.level ?? 1;
+        stock = data.stock ?? 100;
+        ecoScore = data.ecoScore ?? 0;
+    } catch (error) {
+        console.error("Game save could not be loaded:", error);
+    }
+}
+
+// ==========================================
+// PLAYER AVATAR
+// ==========================================
+
 function selectAvatar(button, avatar) {
     selectedAvatar = avatar;
 
@@ -22,10 +87,17 @@ function selectAvatar(button, avatar) {
     button.classList.add("selected");
 }
 
-// CREATE PLAYER PROFILE
+// ==========================================
+// CREATE PLAYER
+// ==========================================
+
 function createPlayer() {
-    const nickname = document.getElementById("nickname").value.trim();
-    const preference = document.getElementById("preference").value;
+    const nickname = document
+        .getElementById("nickname")
+        .value.trim();
+
+    const preference = document
+        .getElementById("preference").value;
 
     if (!nickname) {
         alert("Please enter your nickname!");
@@ -33,12 +105,15 @@ function createPlayer() {
     }
 
     player = {
-        nickname: nickname,
+        nickname,
         avatar: selectedAvatar,
-        preference: preference
+        preference
     };
 
-    localStorage.setItem("matchaPlayer", JSON.stringify(player));
+    localStorage.setItem(
+        "matchaPlayer",
+        JSON.stringify(player)
+    );
 
     document.getElementById("player-welcome").textContent =
         "Welcome, " + player.avatar + " " + player.nickname + "!";
@@ -47,43 +122,97 @@ function createPlayer() {
     updateStats();
 }
 
+// ==========================================
 // SCREEN NAVIGATION
+// ==========================================
+
 function showScreen(screenId) {
     document.querySelectorAll(".screen").forEach(screen => {
         screen.classList.remove("active");
     });
 
-    document.getElementById(screenId).classList.add("active");
+    const target = document.getElementById(screenId);
+
+    if (target) {
+        target.classList.add("active");
+    }
 }
 
-// UPDATE GAME STATISTICS
+// ==========================================
+// UPDATE DASHBOARD
+// ==========================================
+
 function updateStats() {
     document.getElementById("points").textContent = points;
+
     document.getElementById("satisfaction").textContent =
         satisfaction + "%";
-    document.getElementById("waste").textContent = waste + "%";
+
+    document.getElementById("waste").textContent =
+        waste + "%";
+
+    updateManagementStats();
+    saveGame();
 }
 
+function updateManagementStats() {
+    document.getElementById("cash").textContent =
+        "₺" + cash.toLocaleString("tr-TR");
+
+    document.getElementById("level").textContent =
+        level;
+
+    document.getElementById("stock").textContent =
+        stock;
+
+    document.getElementById("eco-score").textContent =
+        ecoScore;
+}
+
+// ==========================================
+// LEVEL SYSTEM
+// ==========================================
+
+function updateLevel() {
+    const newLevel = Math.floor(points / 500) + 1;
+
+    if (newLevel > level) {
+        level = newLevel;
+
+        alert(
+            "Congratulations! You reached Level " +
+            level + "!"
+        );
+    }
+}
+
+// ==========================================
 // START RESTAURANT
+// ==========================================
+
 function startGame() {
     selectedIngredients = [];
+
     updateIngredientSelection();
+
     document.getElementById("game-message").textContent =
         "Choose three fresh ingredients for your bowl.";
 
     showScreen("game-screen");
 }
 
-// SELECT FOOD INGREDIENTS
+// ==========================================
+// INGREDIENT SELECTION
+// ==========================================
+
 function chooseIngredient(button, ingredient) {
 
     if (selectedIngredients.includes(ingredient)) {
         selectedIngredients = selectedIngredients.filter(
             item => item !== ingredient
         );
-
-        button.classList.remove("selected");
     } else {
+
         if (selectedIngredients.length >= 3) {
             document.getElementById("game-message").textContent =
                 "You can only choose three ingredients!";
@@ -91,18 +220,22 @@ function chooseIngredient(button, ingredient) {
         }
 
         selectedIngredients.push(ingredient);
-        button.classList.add("selected");
     }
 
     updateIngredientSelection();
 }
 
+// ==========================================
 // UPDATE INGREDIENT COUNTER
+// ==========================================
+
 function updateIngredientSelection() {
+
     document.getElementById("selected-count").textContent =
         selectedIngredients.length;
 
     document.querySelectorAll(".ingredient-list button").forEach(button => {
+
         const emoji = button.textContent.trim().split(" ")[0];
 
         button.classList.toggle(
@@ -112,14 +245,30 @@ function updateIngredientSelection() {
     });
 }
 
-// SERVE CUSTOMER ORDER
+// ==========================================
+// CUSTOMER ORDER SYSTEM
+// ==========================================
+
 function serveOrder() {
 
+    const message = document.getElementById("game-message");
+
     if (selectedIngredients.length !== 3) {
-        document.getElementById("game-message").textContent =
+        message.textContent =
             "Please select exactly three ingredients!";
         return;
     }
+
+    const totalCost = selectedIngredients.length * INGREDIENT_COST;
+
+    if (stock < totalCost) {
+        message.textContent =
+            "Not enough food stock! Restock your restaurant first.";
+        return;
+    }
+
+    // CONSUME INGREDIENTS
+    stock -= totalCost;
 
     const correctCount = selectedIngredients.filter(
         ingredient => correctIngredients.includes(ingredient)
@@ -127,53 +276,142 @@ function serveOrder() {
 
     completedOrders++;
 
+    // PERFECT ORDER
     if (correctCount === 3) {
+
         points += 100;
-        satisfaction = Math.min(100, satisfaction + 5);
+        cash += ORDER_REWARD.perfect;
 
-        document.getElementById("game-message").textContent =
-            "Excellent! Your customer loved the healthy bowl. +100 points!";
+        satisfaction = Math.min(
+            100,
+            satisfaction + 5
+        );
 
-        alert("Perfect service! You earned 100 points!");
+        ecoScore += 20;
 
-    } else if (correctCount === 2) {
+        message.textContent =
+            "Excellent! Perfect healthy bowl! +100 points, +₺500 and +20 Eco Score.";
+
+    }
+
+    // GOOD ORDER
+    else if (correctCount === 2) {
+
         points += 40;
-        satisfaction = Math.max(0, satisfaction - 5);
-        waste = Math.min(100, waste + 5);
+        cash += ORDER_REWARD.good;
 
-        document.getElementById("game-message").textContent =
-            "Good attempt! But your recipe needs improvement. +40 points.";
+        satisfaction = Math.max(
+            0,
+            satisfaction - 3
+        );
 
-        alert("Your customer was partly satisfied. +40 points.");
+        waste = Math.min(
+            100,
+            waste + 5
+        );
 
-    } else {
-        points = Math.max(0, points - 30);
-        satisfaction = Math.max(0, satisfaction - 15);
-        waste = Math.min(100, waste + 15);
+        ecoScore += 5;
 
-        document.getElementById("game-message").textContent =
-            "Not a good choice. Try to use fresh and balanced ingredients!";
+        message.textContent =
+            "Good attempt! +40 points and +₺250. Try to reduce food waste.";
 
-        alert("Order failed! You lost 30 points.");
+    }
+
+    // POOR ORDER
+    else {
+
+        points = Math.max(
+            0,
+            points - 30
+        );
+
+        cash += ORDER_REWARD.poor;
+
+        satisfaction = Math.max(
+            0,
+            satisfaction - 12
+        );
+
+        waste = Math.min(
+            100,
+            waste + 15
+        );
+
+        ecoScore = Math.max(
+            0,
+            ecoScore - 5
+        );
+
+        message.textContent =
+            "The customer was not satisfied. +₺100. Improve your recipe!";
     }
 
     // BONUS REWARD
-    if (correctCount === 3 && completedOrders % 3 === 0) {
+    if (
+        correctCount === 3 &&
+        completedOrders % 3 === 0
+    ) {
         points += 150;
-        alert("BONUS REWARD! Three successful orders! +150 points!");
+        cash += 300;
+
+        message.textContent +=
+            " BONUS! Three successful orders! +150 points and +₺300.";
     }
+
+    // UPDATE LEVEL
+    updateLevel();
+
+    // RESET INGREDIENTS
+    selectedIngredients = [];
+
+    updateIngredientSelection();
+
+    // UPDATE ALL STATISTICS
+    updateStats();
+}
+
+// ==========================================
+// RESTOCK SYSTEM
+// ==========================================
+
+function restockFood() {
+
+    const restockCost = 300;
+    const restockAmount = 30;
+
+    if (cash < restockCost) {
+        alert("Not enough money to restock!");
+        return;
+    }
+
+    if (stock >= 100) {
+        alert("Your stock is already full!");
+        return;
+    }
+
+    cash -= restockCost;
+
+    stock = Math.min(
+        100,
+        stock + restockAmount
+    );
 
     updateStats();
 
-    selectedIngredients = [];
-    updateIngredientSelection();
+    alert("Food stock replenished!");
 }
 
-// RESTORE SAVED PLAYER
+// ==========================================
+// RESTORE PLAYER
+// ==========================================
+
 function loadPlayer() {
+
     const savedPlayer = localStorage.getItem("matchaPlayer");
 
-    if (savedPlayer) {
+    if (!savedPlayer) return;
+
+    try {
         player = JSON.parse(savedPlayer);
 
         document.getElementById("nickname").value =
@@ -190,11 +428,25 @@ function loadPlayer() {
                 button.textContent.trim() === selectedAvatar
             );
         });
+
+        document.getElementById("player-welcome").textContent =
+            "Welcome, " + player.avatar + " " + player.nickname + "!";
+
+    } catch (error) {
+        console.error("Player data could not be loaded:", error);
     }
 }
 
+// ==========================================
 // INITIALIZE GAME
+// ==========================================
+
 document.addEventListener("DOMContentLoaded", function() {
+
     loadPlayer();
+    loadGame();
+
     updateStats();
+
+    console.log("MATCHA WORLD GAME ENGINE 2.0 READY");
 });
