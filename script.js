@@ -21,7 +21,95 @@ let ecoScore = 0;
 
 // RECIPE
 const correctIngredients = ["🥑", "🥬", "🍅"];
+// ==========================================
+// CUSTOMER DATABASE - GAME ENGINE 3.0
+// ==========================================
 
+const customers = [
+    {
+        name: "Emma",
+        avatar: "👩‍🦰",
+        type: "Regular Customer",
+        recipe: "Healthy Green Bowl",
+        request: "I want a fresh and balanced green bowl.",
+        ingredients: ["🥑", "🥬", "🍅"],
+        reward: 500
+    },
+    {
+        name: "Oliver",
+        avatar: "👨‍💼",
+        type: "VIP Customer",
+        recipe: "Premium Garden Bowl",
+        request: "Please prepare my premium garden bowl!",
+        ingredients: ["🥕", "🥒", "🥑"],
+        reward: 800
+    },
+    {
+        name: "Mia",
+        avatar: "👧",
+        type: "Young Customer",
+        recipe: "Colorful Veggie Bowl",
+        request: "I want something colorful and delicious!",
+        ingredients: ["🥕", "🍅", "🥒"],
+        reward: 400
+    },
+    {
+        name: "Lucas",
+        avatar: "🧑‍🍳",
+        type: "Gourmet Customer",
+        recipe: "Chef's Special Bowl",
+        request: "I expect a perfectly balanced recipe.",
+        ingredients: ["🥬", "🥒", "🥑"],
+        reward: 650
+    },
+    {
+        name: "Sophia",
+        avatar: "👩‍💻",
+        type: "Busy Customer",
+        recipe: "Fresh Energy Bowl",
+        request: "I need a fresh and nutritious meal!",
+        ingredients: ["🍅", "🥬", "🥕"],
+        reward: 550
+    }
+];
+
+let currentCustomer = null;
+
+// ==========================================
+// GENERATE CUSTOMER ORDER
+// ==========================================
+
+function generateCustomerOrder() {
+    const randomIndex = Math.floor(
+        Math.random() * customers.length
+    );
+
+    currentCustomer = customers[randomIndex];
+
+    document.getElementById("customer-avatar").textContent =
+        currentCustomer.avatar;
+
+    document.getElementById("customer-name").textContent =
+        currentCustomer.name;
+
+    document.getElementById("customer-type").textContent =
+        currentCustomer.type;
+
+    document.getElementById("recipe-name").textContent =
+        currentCustomer.recipe;
+
+    document.getElementById("customer-request").textContent =
+        currentCustomer.request;
+
+    document.getElementById("order-reward").textContent =
+        "₺" + currentCustomer.reward;
+
+    selectedIngredients = [];
+    updateIngredientSelection();
+
+    document.getElementById("game-message").textContent =
+        "Prepare " + currentCustomer.name + "'s order!";
+}
 // SETTINGS
 const INGREDIENT_COST = 3;
 const ORDER_REWARD = {
@@ -193,10 +281,7 @@ function updateLevel() {
 function startGame() {
     selectedIngredients = [];
 
-    updateIngredientSelection();
-
-    document.getElementById("game-message").textContent =
-        "Choose three fresh ingredients for your bowl.";
+    generateCustomerOrder();
 
     showScreen("game-screen");
 }
@@ -253,11 +338,90 @@ function serveOrder() {
 
     const message = document.getElementById("game-message");
 
+    if (!currentCustomer) {
+        message.textContent = "No customer order found!";
+        return;
+    }
+
     if (selectedIngredients.length !== 3) {
         message.textContent =
             "Please select exactly three ingredients!";
         return;
     }
+
+    const totalCost = selectedIngredients.length * INGREDIENT_COST;
+
+    if (stock < totalCost) {
+        message.textContent =
+            "Not enough stock! Restock your restaurant first.";
+        return;
+    }
+
+    stock -= totalCost;
+    completedOrders++;
+
+    const correctCount = selectedIngredients.filter(
+        ingredient =>
+            currentCustomer.ingredients.includes(ingredient)
+    ).length;
+
+    const customerName = currentCustomer.name;
+
+    if (correctCount === 3) {
+
+        const reward = currentCustomer.reward;
+
+        points += 100;
+        cash += reward;
+        satisfaction = Math.min(100, satisfaction + 5);
+        ecoScore += 20;
+
+        message.textContent =
+            "PERFECT ORDER! " + customerName +
+            " is happy! +100 points and +₺" + reward;
+
+    } else if (correctCount === 2) {
+
+        const reward = 250;
+
+        points += 40;
+        cash += reward;
+        satisfaction = Math.max(0, satisfaction - 3);
+        waste = Math.min(100, waste + 5);
+        ecoScore += 5;
+
+        message.textContent =
+            "GOOD ORDER! +40 points and +₺250";
+
+    } else {
+
+        points = Math.max(0, points - 30);
+        cash += 100;
+        satisfaction = Math.max(0, satisfaction - 12);
+        waste = Math.min(100, waste + 15);
+        ecoScore = Math.max(0, ecoScore - 5);
+
+        message.textContent =
+            "POOR ORDER! " + customerName +
+            " was not satisfied. +₺100";
+    }
+
+    if (correctCount === 3 && completedOrders % 3 === 0) {
+        points += 150;
+        cash += 300;
+        message.textContent +=
+            " BONUS! +150 points and +₺300";
+    }
+
+    updateLevel();
+
+    selectedIngredients = [];
+    updateIngredientSelection();
+    updateStats();
+
+    // LOAD NEXT CUSTOMER
+    generateCustomerOrder();
+}
 
     const totalCost = selectedIngredients.length * INGREDIENT_COST;
 
