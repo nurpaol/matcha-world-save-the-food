@@ -585,6 +585,139 @@ select:focus-visible {
     font-size: 12px;
     letter-spacing: 2px;
 }
+/* =====================================
+   MATCHA WORLD - MANAGEMENT DASHBOARD
+===================================== */
+
+.dashboard {
+    padding: 30px 22px 40px;
+}
+
+.dashboard h1 {
+    font-size: 33px;
+    margin: 12px 0 22px;
+}
+
+/* MANAGEMENT PANEL */
+
+.management-panel {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 22px 0;
+}
+
+.management-item {
+    min-height: 105px;
+    padding: 17px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #fffefa;
+    border: 1px solid #e8e5dc;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(38,60,50,.05);
+    transition: all .25s ease;
+}
+
+.management-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 9px 20px rgba(38,60,50,.10);
+}
+
+.management-item span {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.management-item strong {
+    font-family: 'Playfair Display', serif;
+    font-size: 25px;
+    color: var(--green);
+    margin-top: 12px;
+}
+
+/* STATISTICS */
+
+.stats {
+    gap: 10px;
+}
+
+.stat-card {
+    min-height: 115px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+.stat-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+}
+
+/* RESTAURANT CARD */
+
+.restaurant-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 175px;
+    padding: 26px 22px;
+    border-radius: 13px;
+    background: linear-gradient(
+        135deg,
+        #263c32,
+        #526b53
+    );
+    box-shadow: 0 10px 25px rgba(38,60,50,.15);
+}
+
+.restaurant-card span {
+    letter-spacing: 2px;
+}
+
+.restaurant-card h2 {
+    font-size: 29px;
+}
+
+.restaurant-card p {
+    max-width: 250px;
+    line-height: 1.7;
+}
+
+/* DASHBOARD BUTTON */
+
+.dashboard .primary-button {
+    border-radius: 9px;
+    min-height: 58px;
+    margin-top: 25px;
+}
+
+/* MOBILE RESPONSIVE */
+
+@media (max-width: 380px) {
+    .management-panel {
+        gap: 8px;
+    }
+
+    .management-item {
+        padding: 13px 10px;
+        min-height: 95px;
+    }
+
+    .management-item strong {
+        font-size: 21px;
+    }
+
+    .management-item span {
+        font-size: 10px;
+    }
+
+    .stat-card p {
+        font-size: 8px;
+    }
+}    
 
     .stat-card h3 {
         font-size: 16px;
