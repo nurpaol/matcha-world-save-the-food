@@ -137,11 +137,55 @@
                 </button>
             </section>
         </main>
+<main id="game-screen" class="screen">
+    <section class="dashboard">
+        <p class="eyebrow">DAILY RESTAURANT OPERATIONS</p>
+        <h1>Today's Order</h1>
 
-        <main id="game-screen" class="screen">
-            <section class="dashboard">
-                <p class="eyebrow">DAILY RESTAURANT OPERATIONS</p>
-                <h1>Today's Order</h1>
+        <div class="order-card">
+            <div id="customer-avatar" class="customer-avatar">👩‍🦰</div>
+            <span class="eyebrow">CUSTOMER ORDER</span>
+            <h2 id="customer-name">Emma</h2>
+            <p id="customer-type">Regular Customer</p>
+
+            <div class="order-divider"></div>
+
+            <span class="order-icon">🥗</span>
+            <h2 id="recipe-name">Healthy Green Bowl</h2>
+            <p id="customer-request">
+                A fresh and balanced meal.
+            </p>
+
+            <p><strong>Reward:</strong> <span id="order-reward">₺500</span></p>
+        </div>
+
+        <h3>Select your ingredients</h3>
+
+        <div class="ingredient-list">
+            <button onclick="chooseIngredient(this,'🥑')">🥑 Avocado</button>
+            <button onclick="chooseIngredient(this,'🥬')">🥬 Spinach</button>
+            <button onclick="chooseIngredient(this,'🍅')">🍅 Tomato</button>
+            <button onclick="chooseIngredient(this,'🍟')">🍟 Fries</button>
+            <button onclick="chooseIngredient(this,'🥕')">🥕 Carrot</button>
+            <button onclick="chooseIngredient(this,'🥒')">🥒 Cucumber</button>
+        </div>
+
+        <p id="game-message">
+            Prepare the customer's order!
+        </p>
+
+        <p>Selected: <span id="selected-count">0</span>/3</p>
+
+        <button class="primary-button" onclick="serveOrder()">
+            SERVE CUSTOMER →
+        </button>
+
+        <button class="secondary-button"
+            onclick="showScreen('dashboard-screen')">
+            BACK TO RESTAURANT
+        </button>
+    </section>
+</main>
 
                 <div class="order-card">
                     <span class="order-icon">🥗</span>
