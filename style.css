@@ -603,6 +603,48 @@ select:focus-visible {
     *::before,
     *::after {
         animation-duration: .01ms !important;
+       /* INGREDIENT MARKET */
+
+.supply-panel {
+    background: #edf3ec;
+    padding: 22px;
+    border-radius: 20px;
+    margin: 24px 0;
+    color: #263c32;
+}
+
+.supply-panel h2 {
+    margin-bottom: 8px;
+}
+
+.supply-card {
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    margin-top: 14px;
+    box-shadow: 0 4px 15px rgba(38,60,50,0.06);
+}
+
+.supply-card h3 {
+    margin-bottom: 8px;
+}
+
+.supply-card strong {
+    display: block;
+    font-size: 22px;
+    margin: 12px 0;
+    color: #42664f;
+}
+
+.supply-card button {
+    width: 100%;
+}
+
+#supply-message {
+    font-weight: 600;
+    margin-top: 18px;
+    color: #42664f;
+}
         transition-duration: .01ms !important;
         scroll-behavior: auto !important;
     }
