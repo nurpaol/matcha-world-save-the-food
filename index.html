@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#263c32">
+    <meta name="description" content="Matcha World - Save the Food">
+    <title>Matcha World: Save the Food</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <header class="top-header">
+            <div class="brand">
+                <span class="brand-icon">M</span>
+                <div>
+                    <h2>MATCHA WORLD</h2>
+                    <p>SAVE THE FOOD</p>
+                </div>
+            </div>
+            <span class="version">GAME 1.0</span>
+        </header>
+
+        <main id="welcome-screen" class="screen active">
+            <div class="hero">
+                <div class="hero-image">
+                    <div class="hero-overlay">
+                        <span class="hero-tag">SUSTAINABLE GASTRONOMY</span>
+                        <h1>Build Your<br>Dream Restaurant.</h1>
+                        <p>Serve better. Waste less. Make a difference.</p>
+                    </div>
+                </div>
+            </div>
+
+            <section class="welcome-content">
+                <p class="eyebrow">YOUR JOURNEY STARTS HERE</p>
+                <h2>Welcome to<br>Matcha World</h2>
+                <p class="description">
+                    Manage your own restaurant, delight your customers
+                    and create a more sustainable food future.
+                </p>
+                <button class="primary-button" onclick="showScreen('profile-screen')">
+                    START YOUR JOURNEY →
+                </button>
+                <p class="footer-note">A better plate. A better planet.</p>
+            </section>
+        </main>
+
+        <main id="profile-screen" class="screen">
+            <section class="form-section">
+                <p class="eyebrow">PLAYER REGISTRATION</p>
+                <h1>Create Your Profile</h1>
+                <p>Let's get to know our new restaurant manager.</p>
+
+                <label for="nickname">Your nickname</label>
+                <input id="nickname" type="text" maxlength="18"
+                    placeholder="Enter your nickname">
+
+                <label>Choose your avatar</label>
+                <div class="avatar-list">
+                    <button class="avatar selected" onclick="selectAvatar(this,'👩‍🍳')">👩‍🍳</button>
+                    <button class="avatar" onclick="selectAvatar(this,'👨‍🍳')">👨‍🍳</button>
+                    <button class="avatar" onclick="selectAvatar(this,'🧑‍🍳')">🧑‍🍳</button>
+                    <button class="avatar" onclick="selectAvatar(this,'🥑')">🥑</button>
+                </div>
+
+                <label for="preference">Food preference</label>
+                <select id="preference">
+                    <option value="Balanced">Balanced diet</option>
+                    <option value="Vegetarian">Vegetarian</option>
+                    <option value="Vegan">Vegan</option>
+                    <option value="Gluten-free">Gluten-free</option>
+                    <option value="All">All foods</option>
+                </select>
+
+                <button class="primary-button" onclick="createPlayer()">
+                    CREATE MY PROFILE →
+                </button>
+            </section>
+        </main>
+
+        <main id="dashboard-screen" class="screen">
+            <section class="dashboard">
+                <p class="eyebrow">RESTAURANT MANAGEMENT</p>
+                <h1 id="player-welcome">Welcome, Chef!</h1>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <span>⭐</span>
+                        <h3 id="points">0</h3>
+                        <p>Points</p>
+                    </div>
+                    <div class="stat-card">
+                        <span>💚</span>
+                        <h3 id="satisfaction">100%</h3>
+                        <p>Customer happiness</p>
+                    </div>
+                    <div class="stat-card">
+                        <span>🌱</span>
+                        <h3 id="waste">0%</h3>
+                        <p>Food waste</p>
+                    </div>
+                </div>
+
+                <div class="restaurant-card">
+                    <span>YOUR RESTAURANT</span>
+                    <h2>Matcha Kitchen</h2>
+                    <p>Your sustainable food journey begins now.</p>
+                </div>
+
+                <button class="primary-button" onclick="startGame()">
+                    OPEN RESTAURANT →
+                </button>
+            </section>
+        </main>
+
+        <main id="game-screen" class="screen">
+            <section class="dashboard">
+                <p class="eyebrow">DAILY RESTAURANT OPERATIONS</p>
+                <h1>Today's Order</h1>
+
+                <div class="order-card">
+                    <span class="order-icon">🥗</span>
+                    <h2>Healthy Green Bowl</h2>
+                    <p>Your customer wants a fresh and balanced meal.</p>
+                    <p><strong>Customer:</strong> Alex</p>
+                </div>
+
+                <h3>Select your ingredients</h3>
+                <div class="ingredient-list">
+                    <button onclick="chooseIngredient(this,'🥑')">🥑 Avocado</button>
+                    <button onclick="chooseIngredient(this,'🥬')">🥬 Spinach</button>
+                    <button onclick="chooseIngredient(this,'🍅')">🍅 Tomato</button>
+                    <button onclick="chooseIngredient(this,'🍟')">🍟 Fries</button>
+                </div>
+
+                <p id="game-message">Choose three ingredients for your bowl.</p>
+                <p>Selected: <span id="selected-count">0</span>/3</p>
+
+                <button class="primary-button" onclick="serveOrder()">
+                    SERVE CUSTOMER →
+                </button>
+
+                <button class="secondary-button" onclick="showScreen('dashboard-screen')">
+                    BACK TO RESTAURANT
+                </button>
+            </section>
+        </main>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
