@@ -1,0 +1,374 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap');
+
+:root {
+    --green: #263c32;
+    --green-light: #526b53;
+    --cream: #f5f1e7;
+    --white: #ffffff;
+    --gold: #c6a66b;
+    --text: #26352c;
+    --muted: #7d887e;
+    --border: #e8e5dc;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: #e9e8e0;
+    color: var(--text);
+    min-height: 100vh;
+}
+
+button, input, select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 520px;
+    min-height: 100vh;
+    margin: auto;
+    background: var(--cream);
+    overflow: hidden;
+    box-shadow: 0 0 45px rgba(0,0,0,.08);
+}
+
+.top-header {
+    height: 76px;
+    padding: 0 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--green);
+    color: white;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.brand-icon {
+    width: 39px;
+    height: 39px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: var(--gold);
+    font-family: Georgia, serif;
+    font-size: 24px;
+}
+
+.brand h2 {
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+.brand p {
+    color: #c4c9bb;
+    font-size: 9px;
+    letter-spacing: 3px;
+    margin-top: 4px;
+}
+
+.version {
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: #d3c39f;
+}
+
+.screen {
+    display: none;
+    animation: fadeIn .4s ease;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hero {
+    padding: 18px 18px 0;
+}
+
+.hero-image {
+    height: 310px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background:
+        linear-gradient(0deg, rgba(15,32,24,.88), transparent 85%),
+        url('https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1000')
+        center/cover;
+}
+
+.hero-overlay {
+    position: absolute;
+    bottom: 26px;
+    left: 23px;
+    right: 20px;
+    color: white;
+}
+
+.hero-tag, .eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--gold);
+}
+
+.hero-overlay h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 35px;
+    line-height: 1.16;
+    margin: 12px 0;
+}
+
+.hero-overlay p {
+    font-size: 12px;
+    color: #eee;
+}
+
+.welcome-content {
+    padding: 30px 27px 40px;
+}
+
+.welcome-content h2, .form-section h1,
+.dashboard h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    line-height: 1.2;
+    margin: 12px 0;
+    color: var(--green);
+}
+
+.description, .form-section > p,
+.restaurant-card p {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--muted);
+}
+
+.primary-button {
+    width: 100%;
+    min-height: 55px;
+    margin-top: 24px;
+    border: none;
+    border-radius: 5px;
+    background: var(--green);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.7px;
+    transition: .25s;
+}
+
+.primary-button:hover {
+    background: var(--green-light);
+    transform: translateY(-2px);
+}
+
+.secondary-button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 12px;
+    border: 1px solid var(--green);
+    border-radius: 5px;
+    color: var(--green);
+    background: transparent;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.footer-note {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+}
+
+.form-section, .dashboard {
+    padding: 34px 24px 45px;
+}
+
+.form-section label {
+    display: block;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--green);
+}
+
+.form-section input, .form-section select {
+    width: 100%;
+    height: 51px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: white;
+    padding: 0 14px;
+    outline: none;
+    color: var(--text);
+}
+
+.form-section input:focus,
+.form-section select:focus {
+    border-color: var(--green-light);
+}
+
+.avatar-list {
+    display: flex;
+    gap: 12px;
+}
+
+.avatar {
+    width: 58px;
+    height: 58px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 27px;
+}
+
+.avatar.selected {
+    border: 2px solid var(--green);
+    background: #e6eadf;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+    margin: 25px 0;
+}
+
+.stat-card {
+    background: white;
+    padding: 15px 8px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid var(--border);
+}
+
+.stat-card span {
+    font-size: 20px;
+}
+
+.stat-card h3 {
+    margin: 8px 0 4px;
+    color: var(--green);
+    font-size: 19px;
+}
+
+.stat-card p {
+    font-size: 9px;
+    color: var(--muted);
+}
+
+.restaurant-card {
+    padding: 27px 20px;
+    border-radius: 8px;
+    background: var(--green);
+    color: white;
+}
+
+.restaurant-card span {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--gold);
+}
+
+.restaurant-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 27px;
+    margin: 13px 0;
+}
+
+.restaurant-card p {
+    color: #d3ddd2;
+}
+
+.order-card {
+    margin: 22px 0;
+    padding: 24px;
+    background: white;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+.order-icon {
+    display: block;
+    font-size: 53px;
+    margin-bottom: 12px;
+}
+
+.order-card h2 {
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 10px;
+    color: var(--green);
+}
+
+.order-card p {
+    margin: 8px 0;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.dashboard h3 {
+    margin: 18px 0;
+}
+
+.ingredient-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.ingredient-list button {
+    padding: 15px 8px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-size: 12px;
+}
+
+.ingredient-list button.selected {
+    border: 2px solid var(--green);
+    background: #e6eadf;
+}
+
+#game-message {
+    margin-top: 20px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--green-light);
+}
+
+@media (min-width: 600px) {
+    body {
+        padding: 25px 0;
+    }
+
+    .app-container {
+        border-radius: 14px;
+        min-height: 90vh;
+    }
+}
