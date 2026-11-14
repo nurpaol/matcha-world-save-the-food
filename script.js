@@ -538,31 +538,30 @@ function serveOrder() {
 // RESTOCK SYSTEM
 // ==========================================
 
-function restockFood() {
+function buyIngredients(amount, cost) {
 
-    const restockCost = 300;
-    const restockAmount = 30;
+    const message = document.getElementById("supply-message");
 
-    if (cash < restockCost) {
-        alert("Not enough money to restock!");
+    if (cash < cost) {
+        message.textContent =
+            "Not enough money! Complete more orders.";
         return;
     }
 
-    if (stock >= 100) {
-        alert("Your stock is already full!");
+    if (stock + amount > 100) {
+        message.textContent =
+            "Your storage is almost full! Maximum stock is 100.";
         return;
     }
 
-    cash -= restockCost;
-
-    stock = Math.min(
-        100,
-        stock + restockAmount
-    );
+    cash -= cost;
+    stock += amount;
 
     updateStats();
 
-    alert("Food stock replenished!");
+    message.textContent =
+        "Purchase successful! +" + amount +
+        " Food Stock added. -₺" + cost;
 }
 
 // ==========================================
