@@ -1201,3 +1201,204 @@ button:disabled {
         gap: 8px;
     }
 }
+/* =========================================
+   PREMIUM RESTAURANT LOBBY
+========================================= */
+
+.restaurant-lobby {
+    margin: 22px 0;
+}
+
+.lobby-hero {
+    min-height: 340px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: 25px;
+    border-radius: 25px;
+    background:
+        linear-gradient(
+            0deg,
+            rgba(15, 39, 29, .96),
+            rgba(15, 39, 29, .12)
+        ),
+        radial-gradient(circle at 75% 25%, #D6B77B 0%, transparent 22%),
+        linear-gradient(135deg, #B99A70, #526C4D 48%, #253E30);
+    box-shadow: var(--shadow-lg);
+}
+
+.lobby-hero::before {
+    content: "🍵";
+    position: absolute;
+    top: 35px;
+    right: 24px;
+    font-size: clamp(90px, 22vw, 145px);
+    opacity: .75;
+    filter: drop-shadow(0 12px 15px rgba(0,0,0,.2));
+}
+
+.lobby-hero::after {
+    content: "MATCHA KITCHEN";
+    position: absolute;
+    top: 35px;
+    left: 25px;
+    color: rgba(255,255,255,.3);
+    font-size: 10px;
+    letter-spacing: 4px;
+    font-weight: 800;
+}
+
+.lobby-overlay {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+.lobby-status {
+    display: inline-block;
+    padding: 7px 11px;
+    margin-bottom: 17px;
+    border-radius: 30px;
+    background: rgba(169,195,151,.2);
+    border: 1px solid rgba(255,255,255,.2);
+    color: #D8EDC9;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.lobby-overlay h2 {
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.lobby-overlay > p:not(.eyebrow) {
+    max-width: 290px;
+    color: rgba(255,255,255,.78);
+    font-size: 12px;
+}
+
+.lobby-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.lobby-details span {
+    padding: 7px 10px;
+    border-radius: 20px;
+    background: rgba(255,255,255,.12);
+    color: white;
+    font-size: 10px;
+}
+
+.lobby-start-button {
+    width: 100%;
+    max-width: 260px;
+    min-height: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 17px;
+    border: none;
+    border-radius: 13px;
+    background: var(--matcha-2);
+    color: var(--forest);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.lobby-start-button span {
+    font-size: 20px;
+}
+
+.lobby-operations {
+    margin-top: 19px;
+    padding: 19px;
+    border: 1px solid var(--border);
+    border-radius: 21px;
+    background: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.lobby-day {
+    padding: 8px 11px;
+    border-radius: 20px;
+    background: var(--sage-light);
+    color: var(--forest);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.lobby-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 10px;
+    margin: 17px 0;
+}
+
+.lobby-metric {
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    background: #F8FAF6;
+}
+
+.lobby-metric span {
+    display: block;
+    font-size: 21px;
+}
+
+.lobby-metric small {
+    display: block;
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.lobby-metric strong {
+    display: block;
+    margin-top: 5px;
+    color: var(--forest);
+    font-size: 17px;
+}
+
+.lobby-status-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 4px;
+    border-top: 1px solid var(--border);
+}
+
+.lobby-status-card strong {
+    color: var(--forest);
+    font-size: 12px;
+    text-align: right;
+}
+
+.lobby-status-card p {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+@media (max-width: 360px) {
+    .lobby-hero {
+        padding: 19px;
+    }
+
+    .lobby-overlay h2 {
+        font-size: 27px;
+    }
+
+    .lobby-operations {
+        padding: 14px;
+    }
+}
