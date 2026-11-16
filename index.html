@@ -1,788 +1,571 @@
-
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#173D32">
-    <meta name="description" content="Matcha World: Save the Food - Ultimate Restaurant Simulation">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Matcha World: Save the Food - Build a sustainable restaurant, serve customers and fight food waste.">
+    <title>Matcha World: Save the Food</title>
 
-    <title>Matcha World | Ultimate Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-<div class="app-container">
 
-    <!-- =================================
-         GLOBAL HEADER
-    ================================== -->
-    <header class="top-header">
-        <div class="brand">
-            <div class="brand-icon">M</div>
-            <div>
-                <h2>MATCHA WORLD</h2>
-                <p>SAVE THE FOOD</p>
-            </div>
+<div id="app">
+
+    <!-- WELCOME SCREEN -->
+    <section id="welcome-screen" class="screen active">
+        <div class="welcome-content">
+            <div class="brand-icon">🍵</div>
+            <p class="eyebrow">A SUSTAINABLE RESTAURANT ADVENTURE</p>
+            <h1>Matcha World</h1>
+            <h2>Save the Food</h2>
+            <p class="welcome-description">
+                Create your dream restaurant, serve delicious food,
+                make sustainable choices and save the planet.
+            </p>
+            <button class="primary-btn" onclick="showScreen('profile-screen')">
+                Start Your Journey →
+            </button>
+            <p class="welcome-footer">GOOD FOOD. LESS WASTE. BETTER FUTURE.</p>
         </div>
+    </section>
 
-        <div class="header-actions">
-            <span class="header-level">LV. <strong id="header-level">1</strong></span>
-            <button class="icon-button" onclick="showScreen('settings-screen')" aria-label="Ayarlar">⚙️</button>
-        </div>
-    </header>
+    <!-- PROFILE SCREEN -->
+    <section id="profile-screen" class="screen">
+        <div class="setup-container">
+            <p class="eyebrow">YOUR RESTAURANT STORY STARTS HERE</p>
+            <h1>Create Your Profile</h1>
+            <p>Choose your identity and become a sustainable chef.</p>
 
-    <!-- =================================
-         WELCOME SCREEN
-    ================================== -->
-    <main id="welcome-screen" class="screen active">
-        <section class="welcome-hero">
-            <div class="hero-content">
-                <span class="hero-tag">🌱 SUSTAINABLE GASTRONOMY</span>
-                <h1>Lezzetin geleceğini<br>sen tasarla.</h1>
-                <p>Kendi restoranını kur. Müşterilerini mutlu et. Gıda israfına karşı mücadele et.</p>
-                <button class="primary-button" onclick="showScreen('profile-screen')">
-                    YOLCULUĞA BAŞLA →
-                </button>
-            </div>
-            <div class="hero-decoration">🍵</div>
-        </section>
+            <label for="nickname">Chef Name</label>
+            <input id="nickname" type="text" placeholder="Enter your name" maxlength="20">
 
-        <section class="welcome-features">
-            <div>🍃 Sürdürülebilir mutfak</div>
-            <div>👩‍🍳 Restoran yönetimi</div>
-            <div>🥗 Yaratıcı gastronomi</div>
-        </section>
-    </main>
-
-    <!-- =================================
-         PLAYER PROFILE
-    ================================== -->
-    <main id="profile-screen" class="screen">
-        <section class="page-heading">
-            <span class="eyebrow">PLAYER REGISTRATION</span>
-            <h1>Şef, seni tanıyalım!</h1>
-            <p>Restoran yöneticisi profilini oluştur.</p>
-        </section>
-
-        <section class="panel profile-panel">
-            <label for="nickname">Oyuncu adı</label>
-            <input id="nickname" type="text" maxlength="18" placeholder="Oyuncu adını gir">
-
-            <label>Karakterini seç</label>
-            <div class="avatar-list">
-                <button class="avatar selected" onclick="selectAvatar(this,'👩‍🍳')">👩‍🍳</button>
-                <button class="avatar" onclick="selectAvatar(this,'👨‍🍳')">👨‍🍳</button>
-                <button class="avatar" onclick="selectAvatar(this,'🧑‍🍳')">🧑‍🍳</button>
-                <button class="avatar" onclick="selectAvatar(this,'🥑')">🥑</button>
+            <label>Choose Your Avatar</label>
+            <div class="avatar-selection">
+                <button class="avatar selected" onclick="selectAvatar(this)">👩‍🍳</button>
+                <button class="avatar" onclick="selectAvatar(this)">👨‍🍳</button>
+                <button class="avatar" onclick="selectAvatar(this)">🧑‍🍳</button>
+                <button class="avatar" onclick="selectAvatar(this)">👩🏻‍🍳</button>
+                <button class="avatar" onclick="selectAvatar(this)">👨🏻‍🍳</button>
             </div>
 
-            <label for="preference">Beslenme tercihi</label>
+            <label for="preference">Food Philosophy</label>
             <select id="preference">
-                <option value="Balanced">Dengeli beslenme</option>
-                <option value="Vegetarian">Vejetaryen</option>
-                <option value="Vegan">Vegan</option>
-                <option value="Gluten-free">Glutensiz</option>
-                <option value="All">Tüm yiyecekler</option>
+                <option value="Sustainable">Sustainable Gastronomy</option>
+                <option value="Vegetarian">Vegetarian Cuisine</option>
+                <option value="Vegan">Vegan Cuisine</option>
+                <option value="Organic">Organic Ingredients</option>
+                <option value="Balanced">Balanced Nutrition</option>
             </select>
 
-            <button class="primary-button full-button" onclick="createPlayer()">
-                PROFİLİ OLUŞTUR →
-            </button>
-            <p id="profile-message" class="feedback-message"></p>
-        </section>
-    </main>
+            <p id="profile-message"></p>
 
-    <!-- =================================
-         MAIN DASHBOARD
-    ================================== -->
-    <main id="dashboard-screen" class="screen">
-
-        <section class="dashboard-heading">
-            <div>
-                <span class="eyebrow">RESTAURANT MANAGEMENT</span>
-                <h1 id="player-welcome">Hoş geldin, Şef!</h1>
-                <p>Restoranının bugünkü performansı.</p>
-            </div>
-            <div id="dashboard-avatar" class="chef-avatar">👩‍🍳</div>
-        </section>
-
-        <!-- PLAYER PROGRESS -->
-        <section class="panel progress-panel">
-            <div class="progress-info">
-                <span>🏆 RESTORAN SEVİYESİ</span>
-                <strong id="level">1</strong>
-            </div>
-            <div class="progress-track">
-                <div id="experience-progress" class="progress-fill"></div>
-            </div>
-            <p id="experience-text">Bir sonraki seviyeye hazırlan!</p>
-        </section>
-
-        <!-- PERFORMANCE -->
-        <section class="stats">
-            <article class="stat-card">
-                <span>⭐</span>
-                <p>Toplam puan</p>
-                <h3 id="points">0</h3>
-            </article>
-            <article class="stat-card">
-                <span>💚</span>
-                <p>Memnuniyet</p>
-                <h3 id="satisfaction">100%</h3>
-            </article>
-            <article class="stat-card">
-                <span>🌱</span>
-                <p>Gıda israfı</p>
-                <h3 id="waste">0%</h3>
-            </article>
-        </section>
-
-        <!-- BUSINESS OVERVIEW -->
-        <section class="panel management-panel">
-            <div class="section-heading">
-                <div>
-                    <span class="eyebrow">BUSINESS OVERVIEW</span>
-                    <h2>İşletme durumu</h2>
-                </div>
-                <span>📊</span>
-            </div>
-
-            <div class="management-grid">
-                <div class="management-item">
-                    <span>💰 Kasa</span>
-                    <strong id="cash">₺5.000</strong>
-                </div>
-                <div class="management-item">
-                    <span>📦 Genel stok</span>
-                    <strong id="stock">100</strong>
-                </div>
-                <div class="management-item">
-                    <span>🌍 Eko puan</span>
-                    <strong id="eco-score">0</strong>
-                </div>
-                <div class="management-item">
-                    <span>🍽️ Tamamlanan sipariş</span>
-                    <strong id="completed-orders">0</strong>
-                </div>
-            </div>
-        </section>
-
-        <!-- RESTAURANT IDENTITY -->
-        <section class="restaurant-lobby">
-    <div class="lobby-hero">
-        <div class="lobby-overlay">
-            <span class="lobby-status">● RESTORAN AÇIK</span>
-            <p class="eyebrow">YOUR RESTAURANT</p>
-            <h2>Matcha Kitchen</h2>
-            <p>Doğadan ilham alan, sürdürülebilir gastronomi deneyimi.</p>
-
-            <div class="lobby-details">
-                <span>🍃 Organik mutfak</span>
-                <span>☕ Matcha konsepti</span>
-            </div>
-
-            <button class="lobby-start-button" onclick="startGame()">
-                SERVİSİ BAŞLAT <span>→</span>
+            <button class="primary-btn" onclick="createPlayer()">
+                Create My Restaurant →
             </button>
         </div>
-    </div>
+    </section>
 
-    <div class="lobby-operations">
-        <div class="section-heading">
-            <div>
-                <span class="eyebrow">RESTAURANT MANAGEMENT</span>
-                <h2>İşletme Özeti</h2>
-            </div>
-            <span class="lobby-day" id="lobby-day">GÜN 1</span>
-        </div>
+    <!-- MAIN DASHBOARD -->
+    <section id="dashboard-screen" class="screen">
 
-        <div class="lobby-metrics">
-            <div class="lobby-metric">
-                <span>💰</span>
-                <small>Kasa</small>
-                <strong id="lobby-cash">1.500 ₺</strong>
-            </div>
-            <div class="lobby-metric">
-                <span>👥</span>
-                <small>Tamamlanan sipariş</small>
-                <strong id="lobby-orders">0</strong>
-            </div>
-            <div class="lobby-metric">
-                <span>😊</span>
-                <small>Memnuniyet</small>
-                <strong id="lobby-satisfaction">100%</strong>
-            </div>
-            <div class="lobby-metric">
-                <span>🌱</span>
-                <small>Eco Score</small>
-                <strong id="lobby-eco">75/100</strong>
-            </div>
-        </div>
-
-        <div class="lobby-status-card">
-            <div>
-                <strong>📦 Mutfak stoğu</strong>
-                <p>Servis için mevcut malzeme miktarı</p>
-            </div>
-            <strong id="lobby-stock">30 / 100</strong>
-        </div>
-
-        <div class="lobby-status-card">
-            <div>
-                <strong>👨‍🍳 Çalışan ekibi</strong>
-                <p>Restorandaki aktif personel</p>
-            </div>
-            <strong id="lobby-staff">0 kişi</strong>
-        </div>
-
-        <div class="lobby-status-card">
-            <div>
-                <strong>♻️ Günlük atık</strong>
-                <p>Kontrol altında tutulması gereken atık</p>
-            </div>
-            <strong id="lobby-waste">0 birim</strong>
-        </div>
-
-        <button class="secondary-button full-button"
-                onclick="endBusinessDay()">
-            İŞLETME GÜNÜNÜ BİTİR
-        </button>
-    </div>
-</section>
-            <span class="eyebrow">YOUR RESTAURANT</span>
-            <h2>Matcha Kitchen</h2>
-            <p>Doğaya saygılı, yaratıcı ve lezzetli bir mutfak.</p>
-            <div class="restaurant-decoration">🍃</div>
-        </section>
-
-        <!-- QUICK ACCESS -->
-        <section class="dashboard-menu">
-            <div class="section-heading">
+        <header class="top-header">
+            <div class="brand">
+                <span>🍵</span>
                 <div>
-                    <span class="eyebrow">MANAGEMENT CENTER</span>
-                    <h2>Restoranını yönet</h2>
+                    <strong>Matcha World</strong>
+                    <small>Save the Food</small>
                 </div>
             </div>
 
-            <div class="menu-grid">
-                <button class="menu-card" onclick="startGame()">
-                    <span>🍽️</span>
-                    <strong>Siparişler</strong>
-                    <small>Müşterilere servis yap</small>
-                </button>
-
-                <button class="menu-card" onclick="showScreen('kitchen-screen')">
-                    <span>👩‍🍳</span>
-                    <strong>Mutfak</strong>
-                    <small>Tariflerini yönet</small>
-                </button>
-
-                <button class="menu-card" onclick="showScreen('inventory-screen')">
-                    <span>📦</span>
-                    <strong>Envanter</strong>
-                    <small>Stoklarını incele</small>
-                </button>
-
-                <button class="menu-card" onclick="showScreen('market-screen')">
-                    <span>🛒</span>
-                    <strong>Market</strong>
-                    <small>Malzeme satın al</small>
-                </button>
-
-                <button class="menu-card" onclick="showScreen('staff-screen')">
-                    <span>🧑‍🍳</span>
-                    <strong>Personel</strong>
-                    <small>Ekibini yönet</small>
-                </button>
-
-                <button class="menu-card" onclick="showScreen('upgrade-screen')">
-                    <span>🏗️</span>
-                    <strong>Geliştirmeler</strong>
-                    <small>Restoranını büyüt</small>
-                </button>
-
-                <button class="menu-card" onclick="showScreen('finance-screen')">
-                    <span>💹</span>
-                    <strong>Finans</strong>
-                    <small>Gelir ve giderler</small>
-                </button>
-
-                <button class="menu-card" onclick="showScreen('eco-screen')">
-                    <span>🌍</span>
-                    <strong>Ekoloji</strong>
-                    <small>Sürdürülebilirlik</small>
-                </button>
-
-                <button class="menu-card" onclick="showScreen('quests-screen')">
-                    <span>🎯</span>
-                    <strong>Görevler</strong>
-                    <small>Hedeflerini tamamla</small>
-                </button>
-
-                <button class="menu-card" onclick="showScreen('report-screen')">
-                    <span>📈</span>
-                    <strong>Raporlar</strong>
-                    <small>İşletmeni değerlendir</small>
-                </button>
+            <div class="player-mini">
+                <span id="dashboard-avatar">👩‍🍳</span>
+                <div>
+                    <strong id="player-welcome">Chef</strong>
+                    <small>Level <span id="header-level">1</span></small>
+                </div>
             </div>
-        </section>
-    </main>
+        </header>
 
-    <!-- =================================
-         CUSTOMER ORDERS
-    ================================== -->
-    <main id="game-screen" class="screen">
-        <section class="page-heading">
-            <span class="eyebrow">CUSTOMER EXPERIENCE</span>
-            <h1>Müşteri siparişi</h1>
-            <p>Her tabak bir deneyimdir.</p>
-        </section>
+        <main class="dashboard-content">
 
-        <section class="panel order-card">
-            <div id="customer-avatar" class="customer-avatar">👩‍🦰</div>
-            <span class="eyebrow">CUSTOMER ORDER</span>
-            <h2 id="customer-name">Emma</h2>
-            <p id="customer-type">Düzenli müşteri</p>
+            <!-- RESTAURANT HERO -->
+            <section class="restaurant-hero">
+                <div class="restaurant-overlay">
+                    <span class="open-label">● RESTAURANT OPEN</span>
+                    <p class="eyebrow">WELCOME TO YOUR RESTAURANT</p>
+                    <h1>Your Sustainable<br>Food Journey</h1>
+                    <p>Every meal makes a difference.</p>
+                    <button class="primary-btn" onclick="startGame()">
+                        ▶ Start Service
+                    </button>
+                </div>
+            </section>
+
+            <!-- PLAYER STATUS -->
+            <section class="section-block">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">YOUR PERFORMANCE</p>
+                        <h2>Restaurant Overview</h2>
+                    </div>
+                    <span class="level-tag">LVL <span id="level">1</span></span>
+                </div>
+
+                <div class="stats-grid">
+
+                    <article class="stat-card">
+                        <span>⭐</span>
+                        <small>Total Points</small>
+                        <strong id="points">0</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span>💰</span>
+                        <small>Restaurant Cash</small>
+                        <strong id="cash">0</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span>😊</span>
+                        <small>Customer Satisfaction</small>
+                        <strong id="satisfaction">100</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span>♻️</span>
+                        <small>Food Waste</small>
+                        <strong id="waste">0</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span>🌱</span>
+                        <small>Eco Score</small>
+                        <strong id="eco-score">100</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span>📦</span>
+                        <small>Food Stock</small>
+                        <strong id="stock">100</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span>🍽️</span>
+                        <small>Completed Orders</small>
+                        <strong id="completed-orders">0</strong>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- EXPERIENCE -->
+            <section class="section-block experience-card">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">KEEP GROWING</p>
+                        <h2>Chef Progress</h2>
+                    </div>
+                    <span id="experience-text">0 XP</span>
+                </div>
+                <div class="progress-track">
+                    <div id="experience-progress" class="progress-fill"></div>
+                </div>
+                <p>Earn experience points by completing orders and challenges.</p>
+            </section>
+
+            <!-- RESTAURANT MANAGEMENT -->
+            <section class="section-block">
+                <p class="eyebrow">MANAGE YOUR BUSINESS</p>
+                <h2>Restaurant Management</h2>
+
+                <div class="management-grid">
+
+                    <button class="management-card" onclick="showScreen('orders-screen')">
+                        <span>🧾</span>
+                        <strong>Orders</strong>
+                        <small>Customer requests</small>
+                    </button>
+
+                    <button class="management-card" onclick="showScreen('kitchen-screen')">
+                        <span>👩‍🍳</span>
+                        <strong>Kitchen</strong>
+                        <small>Recipes and cooking</small>
+                    </button>
+
+                    <button class="management-card" onclick="showScreen('inventory-screen')">
+                        <span>📦</span>
+                        <strong>Inventory</strong>
+                        <small>Manage your stock</small>
+                    </button>
+
+                    <button class="management-card" onclick="showScreen('market-screen')">
+                        <span>🛒</span>
+                        <strong>Market</strong>
+                        <small>Buy ingredients</small>
+                    </button>
+
+                    <button class="management-card" onclick="showScreen('staff-screen')">
+                        <span>👥</span>
+                        <strong>Staff</strong>
+                        <small>Build your team</small>
+                    </button>
+
+                    <button class="management-card" onclick="showScreen('upgrades-screen')">
+                        <span>✨</span>
+                        <strong>Upgrades</strong>
+                        <small>Improve your restaurant</small>
+                    </button>
+
+                    <button class="management-card" onclick="showScreen('finance-screen')">
+                        <span>💳</span>
+                        <strong>Finance</strong>
+                        <small>Business performance</small>
+                    </button>
+
+                    <button class="management-card" onclick="showScreen('sustainability-screen')">
+                        <span>🌍</span>
+                        <strong>Ecology</strong>
+                        <small>Protect the planet</small>
+                    </button>
+
+                    <button class="management-card" onclick="showScreen('quests-screen')">
+                        <span>🏆</span>
+                        <strong>Quests</strong>
+                        <small>Daily challenges</small>
+                    </button>
+
+                    <button class="management-card" onclick="showScreen('reports-screen')">
+                        <span>📊</span>
+                        <strong>Reports</strong>
+                        <small>Track your progress</small>
+                    </button>
+
+                </div>
+            </section>
+
+            <section class="section-block">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">YOUR MISSION</p>
+                        <h2>Save the Food</h2>
+                    </div>
+                    <span>🌿</span>
+                </div>
+                <p class="mission-text">
+                    Reduce food waste, choose local ingredients,
+                    recycle resources and create a better food future.
+                </p>
+                <button class="secondary-btn" onclick="showScreen('sustainability-screen')">
+                    Explore Sustainability →
+                </button>
+            </section>
+
+        </main>
+    </section>
+
+    <!-- GAME / CUSTOMER ORDER SCREEN -->
+    <section id="game-screen" class="screen">
+
+        <header class="page-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <div>
+                <p class="eyebrow">LIVE RESTAURANT SERVICE</p>
+                <h2>Customer Order</h2>
+            </div>
+            <span>🍵</span>
+        </header>
+
+        <div class="order-card">
+
+            <div class="customer-avatar" id="customer-avatar">👩</div>
+
+            <p class="eyebrow">NEW CUSTOMER</p>
+            <h2 id="customer-name">Guest</h2>
+            <p id="customer-type">Customer</p>
+
             <div class="order-divider"></div>
-            <div class="order-icon">🥗</div>
-            <h2 id="recipe-name">Sağlıklı Yeşil Kase</h2>
-            <p id="customer-request">Taze ve dengeli bir öğün.</p>
-            <div class="reward-line">
-                <span>Sipariş ödülü</span>
-                <strong id="order-reward">₺500</strong>
-            </div>
-        </section>
 
-        <section class="panel kitchen-order-panel">
-            <div class="section-heading">
-                <h2>Malzemelerini seç</h2>
-                <span class="selection-counter"><span id="selected-count">0</span>/3</span>
+            <div class="order-icon">🍽️</div>
+            <p class="eyebrow">ORDER REQUEST</p>
+            <h2 id="recipe-name">Sustainable Bowl</h2>
+            <p id="customer-request">Prepare a fresh and delicious meal.</p>
+
+            <div class="reward-info">
+                <span>⭐ Order Reward</span>
+                <strong id="order-reward">+50 Points</strong>
             </div>
+
+        </div>
+
+        <div class="section-block">
+            <h2>Select Ingredients</h2>
+            <p>Choose the correct ingredients for the order.</p>
 
             <div class="ingredient-list">
-                <button onclick="chooseIngredient(this,'🥑')">🥑 Avokado</button>
-                <button onclick="chooseIngredient(this,'🥬')">🥬 Ispanak</button>
-                <button onclick="chooseIngredient(this,'🍅')">🍅 Domates</button>
-                <button onclick="chooseIngredient(this,'🍟')">🍟 Patates</button>
-                <button onclick="chooseIngredient(this,'🥕')">🥕 Havuç</button>
-                <button onclick="chooseIngredient(this,'🥒')">🥒 Salatalık</button>
-            </div>
-        </section>
-
-        <p id="game-message" class="feedback-message">Siparişini hazırlamaya başla!</p>
-
-        <button class="primary-button full-button" onclick="serveOrder()">
-            SİPARİŞİ SERVİS ET →
-        </button>
-        <button class="secondary-button full-button" onclick="showScreen('dashboard-screen')">
-            RESTORANA DÖN
-        </button>
-    </main>
-
-    <!-- =================================
-         KITCHEN & RECIPE BOOK
-    ================================== -->
-    <main id="kitchen-screen" class="screen">
-        <section class="page-heading">
-            <span class="eyebrow">CULINARY MANAGEMENT</span>
-            <h1>Profesyonel mutfak</h1>
-            <p>Tariflerini keşfet ve menünü geliştir.</p>
-        </section>
-
-        <section class="panel">
-            <div class="section-heading">
-                <h2>Tarif kitabı</h2>
-                <span>📖</span>
+                <button onclick="chooseIngredient(this, '🥑')">🥑<small>Avocado</small></button>
+                <button onclick="chooseIngredient(this, '🥬')">🥬<small>Lettuce</small></button>
+                <button onclick="chooseIngredient(this, '🍅')">🍅<small>Tomato</small></button>
+                <button onclick="chooseIngredient(this, '🥕')">🥕<small>Carrot</small></button>
+                <button onclick="chooseIngredient(this, '🍚')">🍚<small>Rice</small></button>
+                <button onclick="chooseIngredient(this, '🥦')">🥦<small>Broccoli</small></button>
+                <button onclick="chooseIngredient(this, '🍄')">🍄<small>Mushroom</small></button>
+                <button onclick="chooseIngredient(this, '🌽')">🌽<small>Corn</small></button>
+                <button onclick="chooseIngredient(this, '🍋')">🍋<small>Lemon</small></button>
+                <button onclick="chooseIngredient(this, '🥒')">🥒<small>Cucumber</small></button>
+                <button onclick="chooseIngredient(this, '🧀')">🧀<small>Cheese</small></button>
+                <button onclick="chooseIngredient(this, '🌿')">🌿<small>Herbs</small></button>
             </div>
 
-            <div id="recipe-list" class="recipe-list">
-                <article class="recipe-card">
-                    <span>🥗</span>
-                    <div>
-                        <h3>Sağlıklı Yeşil Kase</h3>
-                        <p>Besleyici ve taze malzemeler.</p>
-                    </div>
-                    <small>Başlangıç</small>
-                </article>
+            <div class="selection-info">
+                Selected Ingredients: <strong id="selected-count">0</strong>
             </div>
-        </section>
 
-        <section class="panel">
-            <h2>Mutfak performansı</h2>
-            <div class="management-item">
-                <span>Hazırlanan siparişler</span>
-                <strong id="kitchen-orders">0</strong>
-            </div>
-        </section>
+            <p id="game-message" aria-live="polite"></p>
 
-        <button class="secondary-button full-button" onclick="showScreen('dashboard-screen')">← RESTORANA DÖN</button>
-    </main>
+            <button class="primary-btn" onclick="serveOrder()">
+                Serve Customer 🍽️
+            </button>
 
-    <!-- =================================
-         INVENTORY
-    ================================== -->
-    <main id="inventory-screen" class="screen">
-        <section class="page-heading">
-            <span class="eyebrow">STOCK MANAGEMENT</span>
-            <h1>Malzeme envanteri</h1>
-            <p>Mutfağındaki kaynakları kontrol et.</p>
-        </section>
+            <button class="secondary-btn" onclick="showScreen('dashboard-screen')">
+                Return to Restaurant
+            </button>
+        </div>
+    </section>
 
-        <section class="panel">
-            <div class="section-heading">
-                <h2>Stok özeti</h2>
-                <span>📦</span>
-            </div>
-            <div class="management-item">
-                <span>Toplam gıda stoğu</span>
-                <strong id="inventory-total">100</strong>
-            </div>
-            <div id="inventory-list" class="inventory-list">
-                <p>Malzeme envanteri oyun motoruyla eşleştirilecek.</p>
-            </div>
-        </section>
+    <!-- ORDERS SCREEN -->
+    <section id="orders-screen" class="screen">
+        <div class="page-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h2>Order Management</h2>
+        </div>
+        <div class="feature-card">
+            <span>🧾</span>
+            <h2>Customer Orders</h2>
+            <p>Welcome your guests and prepare fresh sustainable meals.</p>
+            <button class="primary-btn" onclick="startGame()">Start Taking Orders</button>
+        </div>
+        <div class="feature-card">
+            <h3>Completed Orders</h3>
+            <strong id="report-orders">0</strong>
+            <p>Orders successfully served.</p>
+        </div>
+    </section>
 
-        <button class="secondary-button full-button" onclick="showScreen('market-screen')">MARKETE GİT →</button>
-        <button class="secondary-button full-button" onclick="showScreen('dashboard-screen')">← RESTORANA DÖN</button>
-    </main>
+    <!-- KITCHEN SCREEN -->
+    <section id="kitchen-screen" class="screen">
+        <div class="page-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h2>Kitchen & Recipes</h2>
+        </div>
+        <div class="feature-card">
+            <span>👩‍🍳</span>
+            <h2>Professional Kitchen</h2>
+            <p>Prepare meals using seasonal and sustainable ingredients.</p>
+            <div id="recipe-list"></div>
+            <div id="kitchen-orders"></div>
+            <button class="primary-btn" onclick="startGame()">Prepare an Order</button>
+        </div>
+    </section>
 
-    <!-- =================================
-         MARKET
-    ================================== -->
-    <main id="market-screen" class="screen">
-        <section class="page-heading">
-            <span class="eyebrow">SUPPLY MANAGEMENT</span>
-            <h1>Malzeme marketi</h1>
-            <p>Mutfağını kaliteli malzemelerle güçlendir.</p>
-        </section>
+    <!-- INVENTORY SCREEN -->
+    <section id="inventory-screen" class="screen">
+        <div class="page-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h2>Inventory</h2>
+        </div>
+        <div class="feature-card">
+            <span>📦</span>
+            <h2>Stock Management</h2>
+            <p>Monitor your ingredients and prevent unnecessary food waste.</p>
+            <h3>Total Inventory</h3>
+            <strong id="inventory-total">100</strong>
+            <div id="inventory-list"></div>
+        </div>
+    </section>
 
-        <section class="panel market-balance">
-            <span>💰 Restoran bakiyesi</span>
-            <strong id="market-cash">₺5.000</strong>
-        </section>
+    <!-- MARKET SCREEN -->
+    <section id="market-screen" class="screen">
+        <div class="page-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h2>Green Market</h2>
+        </div>
+        <div class="feature-card">
+            <span>🛒</span>
+            <h2>Buy Fresh Ingredients</h2>
+            <p>Support local suppliers and choose seasonal products.</p>
+            <strong>Available Cash: <span id="market-cash">0</span></strong>
+            <p id="supply-message"></p>
+            <button class="secondary-btn" onclick="showScreen('inventory-screen')">View Inventory</button>
+        </div>
+    </section>
 
-        <section class="supply-list">
-            <article class="supply-card">
-                <span class="supply-emoji">🥑</span>
-                <div>
-                    <h3>Küçük paket</h3>
-                    <p>+10 gıda stoğu</p>
-                    <strong>₺120</strong>
-                </div>
-                <button class="secondary-button" onclick="buyIngredients(10,120)">SATIN AL</button>
+    <!-- STAFF SCREEN -->
+    <section id="staff-screen" class="screen">
+        <div class="page-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h2>Restaurant Staff</h2>
+        </div>
+        <div class="feature-card">
+            <span>👥</span>
+            <h2>Your Team</h2>
+            <p>Build a motivated team and improve restaurant operations.</p>
+            <div id="staff-list"></div>
+        </div>
+    </section>
+
+    <!-- UPGRADES SCREEN -->
+    <section id="upgrades-screen" class="screen">
+        <div class="page-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h2>Restaurant Upgrades</h2>
+        </div>
+        <div class="feature-card">
+            <span>✨</span>
+            <h2>Build a Better Restaurant</h2>
+            <p>Improve your kitchen, equipment and customer experience.</p>
+            <p>Earn money and experience through successful service.</p>
+        </div>
+    </section>
+
+    <!-- FINANCE SCREEN -->
+    <section id="finance-screen" class="screen">
+        <div class="page-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h2>Financial Management</h2>
+        </div>
+        <div class="stats-grid">
+            <article class="stat-card">
+                <small>Available Cash</small>
+                <strong id="finance-cash">0</strong>
             </article>
-
-            <article class="supply-card">
-                <span class="supply-emoji">🥬</span>
-                <div>
-                    <h3>Orta paket</h3>
-                    <p>+25 gıda stoğu</p>
-                    <strong>₺250</strong>
-                </div>
-                <button class="secondary-button" onclick="buyIngredients(25,250)">SATIN AL</button>
+            <article class="stat-card">
+                <small>Total Income</small>
+                <strong id="total-income">0</strong>
             </article>
-
-            <article class="supply-card">
-                <span class="supply-emoji">🌱</span>
-                <div>
-                    <h3>Büyük paket</h3>
-                    <p>+50 gıda stoğu</p>
-                    <strong>₺450</strong>
-                </div>
-                <button class="primary-button" onclick="buyIngredients(50,450)">SATIN AL</button>
+            <article class="stat-card">
+                <small>Total Expenses</small>
+                <strong id="total-expenses">0</strong>
             </article>
-        </section>
-
-        <p id="supply-message" class="feedback-message">Mutfağını stoklarla güçlendir!</p>
-        <button class="secondary-button full-button" onclick="showScreen('dashboard-screen')">← RESTORANA DÖN</button>
-    </main>
-
-    <!-- =================================
-         STAFF MANAGEMENT
-    ================================== -->
-    <main id="staff-screen" class="screen">
-        <section class="page-heading">
-            <span class="eyebrow">HUMAN RESOURCES</span>
-            <h1>Personel yönetimi</h1>
-            <p>Başarılı bir restoran güçlü bir ekiple çalışır.</p>
-        </section>
-
-        <section class="panel">
-            <div class="section-heading">
-                <h2>Ekibin</h2>
-                <span>👩‍🍳</span>
-            </div>
-            <div id="staff-list" class="staff-list">
-                <p>Henüz işe alınmış personel bulunmuyor.</p>
-            </div>
-            <button class="secondary-button full-button" onclick="hireStaff('chef')">AŞÇI İŞE AL</button>
-            <button class="secondary-button full-button" onclick="hireStaff('waiter')">SERVİS PERSONELİ İŞE AL</button>
-        </section>
-
-        <button class="secondary-button full-button" onclick="showScreen('dashboard-screen')">← RESTORANA DÖN</button>
-    </main>
-
-    <!-- =================================
-         RESTAURANT UPGRADES
-    ================================== -->
-    <main id="upgrade-screen" class="screen">
-        <section class="page-heading">
-            <span class="eyebrow">RESTAURANT DEVELOPMENT</span>
-            <h1>Restoranını geliştir</h1>
-            <p>İşletmeni daha güçlü ve modern hâle getir.</p>
-        </section>
-
-        <section class="panel upgrade-list">
-            <article class="upgrade-card">
-                <span>🍳</span>
-                <div>
-                    <h3>Profesyonel ocak</h3>
-                    <p>Mutfak kapasitesini artır.</p>
-                    <strong>₺1.000</strong>
-                </div>
-                <button onclick="purchaseUpgrade('stove')">GELİŞTİR</button>
+            <article class="stat-card">
+                <small>Net Profit</small>
+                <strong id="net-profit">0</strong>
             </article>
+        </div>
+        <div class="feature-card">
+            <h3>Financial History</h3>
+            <div id="finance-history"></div>
+        </div>
+    </section>
 
-            <article class="upgrade-card">
-                <span>🪑</span>
-                <div>
-                    <h3>Yeni masa takımı</h3>
-                    <p>Müşteri kapasitesini artır.</p>
-                    <strong>₺800</strong>
-                </div>
-                <button onclick="purchaseUpgrade('tables')">GELİŞTİR</button>
-            </article>
+    <!-- SUSTAINABILITY SCREEN -->
+    <section id="sustainability-screen" class="screen">
+        <div class="page-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h2>Sustainability Center</h2>
+        </div>
+        <div class="feature-card">
+            <span>🌍</span>
+            <h2>Protect Our Planet</h2>
+            <p>Track your environmental performance.</p>
+            <h3>Eco Performance</h3>
+            <strong id="eco-dashboard-score">100</strong>
+            <p>Food Waste: <span id="eco-waste">0</span></p>
+            <p>Recycling Score: <span id="recycling-score">0</span></p>
+            <p>Water Score: <span id="water-score">0</span></p>
+            <p>Energy Score: <span id="energy-score">0</span></p>
+        </div>
+    </section>
 
-            <article class="upgrade-card">
-                <span>🌿</span>
-                <div>
-                    <h3>Ekolojik bahçe</h3>
-                    <p>Sürdürülebilirlik imajını geliştir.</p>
-                    <strong>₺700</strong>
-                </div>
-                <button onclick="purchaseUpgrade('garden')">GELİŞTİR</button>
-            </article>
-        </section>
+    <!-- QUESTS SCREEN -->
+    <section id="quests-screen" class="screen">
+        <div class="page-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h2>Daily Quests</h2>
+        </div>
+        <div class="feature-card">
+            <span>🏆</span>
+            <h2>Your Challenges</h2>
+            <p>Complete restaurant missions, earn rewards and unlock achievements.</p>
+            <ul>
+                <li>Serve customers successfully.</li>
+                <li>Reduce food waste.</li>
+                <li>Maintain customer satisfaction.</li>
+                <li>Improve your eco score.</li>
+            </ul>
+        </div>
+    </section>
 
-        <button class="secondary-button full-button" onclick="showScreen('dashboard-screen')">← RESTORANA DÖN</button>
-    </main>
-
-    <!-- =================================
-         FINANCE
-    ================================== -->
-    <main id="finance-screen" class="screen">
-        <section class="page-heading">
-            <span class="eyebrow">FINANCIAL CONTROL</span>
-            <h1>Finans merkezi</h1>
-            <p>Gelirlerini, giderlerini ve işletme kârını takip et.</p>
-        </section>
-
-        <section class="panel finance-panel">
-            <div class="management-item">
-                <span>💰 Mevcut bakiye</span>
-                <strong id="finance-cash">₺5.000</strong>
-            </div>
-            <div class="management-item">
-                <span>📈 Toplam gelir</span>
-                <strong id="total-income">₺0</strong>
-            </div>
-            <div class="management-item">
-                <span>📉 Toplam gider</span>
-                <strong id="total-expenses">₺0</strong>
-            </div>
-            <div class="management-item">
-                <span>💎 Net kâr</span>
-                <strong id="net-profit">₺0</strong>
-            </div>
-        </section>
-
-        <section class="panel">
-            <h2>Finans geçmişi</h2>
-            <div id="finance-history">
-                <p>Henüz finansal işlem bulunmuyor.</p>
-            </div>
-        </section>
-
-        <button class="secondary-button full-button" onclick="showScreen('dashboard-screen')">← RESTORANA DÖN</button>
-    </main>
-
-    <!-- =================================
-         ECOLOGY
-    ================================== -->
-    <main id="eco-screen" class="screen">
-        <section class="page-heading">
-            <span class="eyebrow">SUSTAINABILITY CENTER</span>
-            <h1>Yeşil gelecek</h1>
-            <p>Restoranının çevresel etkisini azalt.</p>
-        </section>
-
-        <section class="panel eco-panel">
-            <div class="eco-score-display">
-                <span>🌍</span>
-                <h2 id="eco-dashboard-score">0</h2>
-                <p>Sürdürülebilirlik puanı</p>
-            </div>
-            <div class="management-item">
-                <span>🌱 Gıda israfı</span>
-                <strong id="eco-waste">0%</strong>
-            </div>
-            <div class="management-item">
-                <span>♻️ Geri dönüşüm</span>
-                <strong id="recycling-score">0</strong>
-            </div>
-            <div class="management-item">
-                <span>💧 Su tasarrufu</span>
-                <strong id="water-score">0</strong>
-            </div>
-            <div class="management-item">
-                <span>⚡ Enerji verimliliği</span>
-                <strong id="energy-score">0</strong>
-            </div>
-        </section>
-
-        <button class="secondary-button full-button" onclick="showScreen('dashboard-screen')">← RESTORANA DÖN</button>
-    </main>
-
-    <!-- =================================
-         DAILY QUESTS
-    ================================== -->
-    <main id="quests-screen" class="screen">
-        <section class="page-heading">
-            <span class="eyebrow">DAILY CHALLENGES</span>
-            <h1>Görev merkezi</h1>
-            <p>Görevleri tamamla, ödüller kazan.</p>
-        </section>
-
-        <section class="panel quest-panel">
-            <article class="quest-item">
-                <span>🥗</span>
-                <div>
-                    <h3>İlk sipariş</h3>
-                    <p>Bir müşteriye servis yap.</p>
-                </div>
-                <strong>+100 ⭐</strong>
-            </article>
-
-            <article class="quest-item">
-                <span>🌱</span>
-                <div>
-                    <h3>Yeşil mutfak</h3>
-                    <p>Doğru malzemelerle sipariş tamamla.</p>
-                </div>
-                <strong>+150 ⭐</strong>
-            </article>
-
-            <article class="quest-item">
-                <span>💚</span>
-                <div>
-                    <h3>İsrafı azalt</h3>
-                    <p>Gıda israfını düşük tut.</p>
-                </div>
-                <strong>+200 ⭐</strong>
-            </article>
-        </section>
-
-        <button class="secondary-button full-button" onclick="showScreen('dashboard-screen')">← RESTORANA DÖN</button>
-    </main>
-
-    <!-- =================================
-         REPORTS
-    ================================== -->
-    <main id="report-screen" class="screen">
-        <section class="page-heading">
-            <span class="eyebrow">BUSINESS ANALYTICS</span>
-            <h1>Performans raporu</h1>
-            <p>Restoranının gelişimini değerlendir.</p>
-        </section>
-
-        <section class="panel report-panel">
-            <div class="management-item">
-                <span>🍽️ Tamamlanan siparişler</span>
+    <!-- REPORTS SCREEN -->
+    <section id="reports-screen" class="screen">
+        <div class="page-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h2>Restaurant Reports</h2>
+        </div>
+        <div class="stats-grid">
+            <article class="stat-card">
+                <small>Completed Orders</small>
                 <strong id="report-orders">0</strong>
-            </div>
-            <div class="management-item">
-                <span>⭐ Toplam puan</span>
+            </article>
+            <article class="stat-card">
+                <small>Total Points</small>
                 <strong id="report-points">0</strong>
-            </div>
-            <div class="management-item">
-                <span>💚 Müşteri memnuniyeti</span>
-                <strong id="report-satisfaction">100%</strong>
-            </div>
-            <div class="management-item">
-                <span>🌍 Eko puan</span>
-                <strong id="report-eco">0</strong>
-            </div>
-        </section>
+            </article>
+            <article class="stat-card">
+                <small>Satisfaction</small>
+                <strong id="report-satisfaction">100</strong>
+            </article>
+            <article class="stat-card">
+                <small>Eco Score</small>
+                <strong id="report-eco">100</strong>
+            </article>
+        </div>
+    </section>
 
-        <button class="secondary-button full-button" onclick="showScreen('dashboard-screen')">← RESTORANA DÖN</button>
-    </main>
+    <!-- SETTINGS SCREEN -->
+    <section id="settings-screen" class="screen">
+        <div class="page-header">
+            <button class="back-btn" onclick="showScreen('dashboard-screen')">←</button>
+            <h2>Settings</h2>
+        </div>
+        <div class="feature-card">
+            <h2>Game Preferences</h2>
+            <label for="sound-toggle">Sound Effects</label>
+            <input id="sound-toggle" type="checkbox" checked>
+            <label for="music-toggle">Background Music</label>
+            <input id="music-toggle" type="checkbox">
+            <p>Matcha World: Save the Food</p>
+        </div>
+    </section>
 
-    <!-- =================================
-         SETTINGS
-    ================================== -->
-    <main id="settings-screen" class="screen">
-        <section class="page-heading">
-            <span class="eyebrow">GAME CONFIGURATION</span>
-            <h1>Ayarlar</h1>
-            <p>Oyun deneyimini düzenle.</p>
-        </section>
-
-        <section class="panel settings-panel">
-            <div class="setting-item">
-                <label for="sound-toggle">🔊 Ses efektleri</label>
-                <input id="sound-toggle" type="checkbox" checked>
-            </div>
-
-            <div class="setting-item">
-                <label for="music-toggle">🎵 Müzik</label>
-                <input id="music-toggle" type="checkbox" checked>
-            </div>
-
-            <div class="setting-item">
-                <label for="language-select">🌐 Dil</label>
-                <select id="language-select">
-                    <option value="tr">Türkçe</option>
-                    <option value="en">English</option>
-                </select>
-            </div>
-
-            <button class="secondary-button full-button" onclick="saveGame()">OYUNU KAYDET</button>
-            <button class="secondary-button full-button" onclick="loadGame()">KAYDI YÜKLE</button>
-            <p id="settings-message" class="feedback-message"></p>
-        </section>
-
-        <button class="secondary-button full-button" onclick="showScreen('dashboard-screen')">← RESTORANA DÖN</button>
-    </main>
-
-    <!-- =================================
-         BOTTOM NAVIGATION
-    ================================== -->
+    <!-- BOTTOM NAVIGATION -->
     <nav class="bottom-nav" id="bottom-nav">
         <button onclick="showScreen('dashboard-screen')">
-            <span>🏠</span>
-            <small>Restoran</small>
+            <span>🏠</span><small>Home</small>
         </button>
-        <button onclick="showScreen('market-screen')">
-            <span>🛒</span>
-            <small>Market</small>
+        <button onclick="showScreen('orders-screen')">
+            <span>🧾</span><small>Orders</small>
         </button>
-        <button onclick="startGame()">
-            <span>🍽️</span>
-            <small>Sipariş</small>
+        <button onclick="showScreen('inventory-screen')">
+            <span>📦</span><small>Stock</small>
         </button>
-        <button onclick="showScreen('quests-screen')">
-            <span>🎯</span>
-            <small>Görevler</small>
+        <button onclick="showScreen('sustainability-screen')">
+            <span>🌱</span><small>Eco</small>
+        </button>
+        <button onclick="showScreen('settings-screen')">
+            <span>⚙️</span><small>Settings</small>
         </button>
     </nav>
 
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
-
