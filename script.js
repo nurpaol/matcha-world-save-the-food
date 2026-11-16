@@ -204,7 +204,7 @@ function updateRestaurantLobby() {
     setText("lobby-staff", game.staff.length + " kişi");
     setText("lobby-waste", game.waste + " birim");
 }
-    updateAll();
+    updateAll() {updateRestaurantLobby();};
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
