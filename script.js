@@ -190,7 +190,20 @@ function showScreen(screenId) {
                 ? "none"
                 : "flex";
     }
+/* =========================================
+   PREMIUM LOBBY DATA
+========================================= */
 
+function updateRestaurantLobby() {
+    setText("lobby-day", "GÜN " + game.day);
+    setText("lobby-cash", formatMoney(game.cash));
+    setText("lobby-orders", game.completedOrders);
+    setText("lobby-satisfaction", game.satisfaction + "%");
+    setText("lobby-eco", game.ecoScore + "/100");
+    setText("lobby-stock", game.stock + " / 100");
+    setText("lobby-staff", game.staff.length + " kişi");
+    setText("lobby-waste", game.waste + " birim");
+}
     updateAll();
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
