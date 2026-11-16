@@ -172,7 +172,87 @@
         </section>
 
         <!-- RESTAURANT IDENTITY -->
-        <section class="restaurant-card">
+        <section class="restaurant-lobby">
+    <div class="lobby-hero">
+        <div class="lobby-overlay">
+            <span class="lobby-status">● RESTORAN AÇIK</span>
+            <p class="eyebrow">YOUR RESTAURANT</p>
+            <h2>Matcha Kitchen</h2>
+            <p>Doğadan ilham alan, sürdürülebilir gastronomi deneyimi.</p>
+
+            <div class="lobby-details">
+                <span>🍃 Organik mutfak</span>
+                <span>☕ Matcha konsepti</span>
+            </div>
+
+            <button class="lobby-start-button" onclick="startGame()">
+                SERVİSİ BAŞLAT <span>→</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="lobby-operations">
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">RESTAURANT MANAGEMENT</span>
+                <h2>İşletme Özeti</h2>
+            </div>
+            <span class="lobby-day" id="lobby-day">GÜN 1</span>
+        </div>
+
+        <div class="lobby-metrics">
+            <div class="lobby-metric">
+                <span>💰</span>
+                <small>Kasa</small>
+                <strong id="lobby-cash">1.500 ₺</strong>
+            </div>
+            <div class="lobby-metric">
+                <span>👥</span>
+                <small>Tamamlanan sipariş</small>
+                <strong id="lobby-orders">0</strong>
+            </div>
+            <div class="lobby-metric">
+                <span>😊</span>
+                <small>Memnuniyet</small>
+                <strong id="lobby-satisfaction">100%</strong>
+            </div>
+            <div class="lobby-metric">
+                <span>🌱</span>
+                <small>Eco Score</small>
+                <strong id="lobby-eco">75/100</strong>
+            </div>
+        </div>
+
+        <div class="lobby-status-card">
+            <div>
+                <strong>📦 Mutfak stoğu</strong>
+                <p>Servis için mevcut malzeme miktarı</p>
+            </div>
+            <strong id="lobby-stock">30 / 100</strong>
+        </div>
+
+        <div class="lobby-status-card">
+            <div>
+                <strong>👨‍🍳 Çalışan ekibi</strong>
+                <p>Restorandaki aktif personel</p>
+            </div>
+            <strong id="lobby-staff">0 kişi</strong>
+        </div>
+
+        <div class="lobby-status-card">
+            <div>
+                <strong>♻️ Günlük atık</strong>
+                <p>Kontrol altında tutulması gereken atık</p>
+            </div>
+            <strong id="lobby-waste">0 birim</strong>
+        </div>
+
+        <button class="secondary-button full-button"
+                onclick="endBusinessDay()">
+            İŞLETME GÜNÜNÜ BİTİR
+        </button>
+    </div>
+</section>
             <span class="eyebrow">YOUR RESTAURANT</span>
             <h2>Matcha Kitchen</h2>
             <p>Doğaya saygılı, yaratıcı ve lezzetli bir mutfak.</p>
