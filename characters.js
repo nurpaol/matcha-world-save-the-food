@@ -1,6 +1,5 @@
 /* =====================================================
-   FRESHOPIA — ANIME CHARACTER SYSTEM
-   Character selection, levels and unlocks
+   FRESHOPIA — CHARACTER COLLECTION 2.0
 ===================================================== */
 
 const FRESHOPIA_CHARACTERS = [
@@ -9,86 +8,93 @@ const FRESHOPIA_CHARACTERS = [
     name: "Sakura",
     role: "Head Chef",
     description: "A cheerful chef who loves creating beautiful dishes.",
-    avatar: "🌸",
-    color: "#f4b5cc",
+    image: "assets/characters/sakura.png",
+    color: "#f6b2cc",
     unlockLevel: 1,
-    bonus: "Extra cooking experience"
+    bonus: "+20% Cooking Experience"
   },
   {
     id: "hana",
     name: "Hana",
     role: "Organic Chef",
     description: "An expert in fresh ingredients and sustainable cooking.",
-    avatar: "🌿",
+    image: "assets/characters/hana.png",
     color: "#a9d5ae",
     unlockLevel: 3,
-    bonus: "Better ingredient efficiency"
+    bonus: "+15% Ingredient Efficiency"
   },
   {
     id: "yuki",
     name: "Yuki",
     role: "Premium Chef",
     description: "A talented chef specializing in premium recipes.",
-    avatar: "❄️",
+    image: "assets/characters/yuki.png",
     color: "#c9c0e9",
     unlockLevel: 5,
-    bonus: "Premium recipe bonus"
+    bonus: "+15% Premium Recipe Rewards"
   },
   {
     id: "mika",
     name: "Mika",
     role: "Sustainability Expert",
     description: "A creative chef who believes in a zero-waste kitchen.",
-    avatar: "🌷",
+    image: "assets/characters/mika.png",
     color: "#edbfd3",
     unlockLevel: 7,
-    bonus: "More sustainability points"
+    bonus: "+20% Sustainability Points"
   }
 ];
 
-const CHARACTER_STORAGE_KEY = "freshopiaSelectedCharacter";
+const FRESHOPIA_CHARACTER_KEY = "freshopiaSelectedCharacter";
 
-function getFreshopiaPlayerLevel() {
+function freshopiaGetLevel() {
   try {
-    const player = JSON.parse(
+    const saved = JSON.parse(
       localStorage.getItem("freshopiaProfessional6")
     );
 
-    return Number(player?.level) || 1;
+    return Number(saved?.level) || 1;
   } catch {
     return 1;
   }
 }
 
-function getSelectedCharacter() {
-  return localStorage.getItem(CHARACTER_STORAGE_KEY) || "sakura";
+function freshopiaGetSelected() {
+  return localStorage.getItem(FRESHOPIA_CHARACTER_KEY) || "sakura";
 }
 
-function selectFreshopiaCharacter(characterId) {
+function freshopiaNotify(message) {
+  if (typeof window.showNotification === "function") {
+    window.showNotification(message);
+  } else {
+    console.info("[Freshopia]", message);
+  }
+}
+
+function selectFreshopiaCharacter(id) {
   const character = FRESHOPIA_CHARACTERS.find(
-    item => item.id === characterId
+    item => item.id === id
   );
 
   if (!character) return;
 
-  const level = getFreshopiaPlayerLevel();
-
-  if (level < character.unlockLevel) {
-    if (typeof showNotification === "function") {
-      showNotification(
-        `Unlock ${character.name} at level ${character.unlockLevel}!`
-      );
-    }
+  if (freshopiaGetLevel() < character.unlockLevel) {
+    freshopiaNotify(
+      `Reach Level ${character.unlockLevel} to unlock ${character.name}!`
+    );
     return;
   }
 
-  localStorage.setItem(CHARACTER_STORAGE_KEY, characterId);
+  localStorage.setItem(FRESHOPIA_CHARACTER_KEY, id);
 
   renderFreshopiaCharacters();
+  freshopiaNotify(`${character.name} is now your active chef!`);
 
-  if (typeof showNotification === "function") {
-    showNotification(`${character.name} is now your chef!`);
-  }
+  window.dispatchEvent(
+    new CustomEvent("freshopia:characterChanged", {
+      detail: character
+    })
+  );
 }
 
 function renderFreshopiaCharacters() {
@@ -96,8 +102,8 @@ function renderFreshopiaCharacters() {
 
   if (!container) return;
 
-  const level = getFreshopiaPlayerLevel();
-  const selected = getSelectedCharacter();
+  const level = freshopiaGetLevel();
+  const selected = freshopiaGetSelected();
 
   container.innerHTML = FRESHOPIA_CHARACTERS.map(character => {
     const unlocked = level >= character.unlockLevel;
@@ -105,15 +111,29 @@ function renderFreshopiaCharacters() {
 
     return `
       <article
-        class="fresh-character-card ${active ? "selected" : ""} ${!unlocked ? "locked" : ""}"
+        class="fresh-character-card
+          ${active ? "selected" : ""}
+          ${!unlocked ? "locked" : ""}"
         style="--character-color:${character.color}"
       >
         <div class="fresh-character-art">
-          <div class="fresh-character-glow"></div>
-          <span class="fresh-character-avatar">${character.avatar}</span>
+          <img
+            src="${character.image}"
+            alt="${character.name}, ${character.role}"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='grid';"
+          >
+
+          <div class="character-image-fallback">
+            ${character.name}
+          </div>
+
+          ${active ? `
+            <span class="character-status">ACTIVE ✓</span>
+          ` : ""}
+
           ${!unlocked ? `
-            <span class="fresh-character-lock">
-              🔒 Level ${character.unlockLevel}
+            <span class="character-lock">
+              🔒 LEVEL ${character.unlockLevel}
             </span>
           ` : ""}
         </div>
@@ -130,11 +150,17 @@ function renderFreshopiaCharacters() {
           </div>
 
           <button
-            class="primary-btn"
+            class="character-select-button"
             ${!unlocked ? "disabled" : ""}
             onclick="selectFreshopiaCharacter('${character.id}')"
           >
-            ${active ? "Selected ✓" : unlocked ? "Choose Chef" : "Locked"}
+            ${
+              active
+                ? "✓ Selected"
+                : unlocked
+                  ? "Choose Chef"
+                  : `Unlock at Level ${character.unlockLevel}`
+            }
           </button>
         </div>
       </article>
@@ -142,28 +168,53 @@ function renderFreshopiaCharacters() {
   }).join("");
 }
 
-function renderActiveFreshopiaCharacter() {
-  const character = FRESHOPIA_CHARACTERS.find(
-    item => item.id === getSelectedCharacter()
+function renderFreshopiaActiveChef() {
+  const container = document.getElementById(
+    "active-freshopia-character"
   );
 
-  const container = document.getElementById("active-freshopia-character");
+  if (!container) return;
 
-  if (!container || !character) return;
+  const character = FRESHOPIA_CHARACTERS.find(
+    item => item.id === freshopiaGetSelected()
+  );
+
+  if (!character) return;
 
   container.innerHTML = `
-    <div class="active-chef-display" style="--character-color:${character.color}">
-      <span class="active-chef-avatar">${character.avatar}</span>
+    <div class="active-chef-display"
+      style="--character-color:${character.color}">
+
+      <img src="${character.image}"
+        alt="${character.name}"
+        onerror="this.style.display='none'">
+
       <div>
         <strong>${character.name}</strong>
         <p>${character.role}</p>
-        <small>Your Freshopia chef</small>
+        <small>${character.bonus}</small>
       </div>
     </div>
   `;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+function refreshFreshopiaCharacters() {
   renderFreshopiaCharacters();
-  renderActiveFreshopiaCharacter();
+  renderFreshopiaActiveChef();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  refreshFreshopiaCharacters();
 });
+
+window.addEventListener("freshopia:levelUp", () => {
+  refreshFreshopiaCharacters();
+});
+
+window.FreshopiaCharacters = {
+  all: FRESHOPIA_CHARACTERS,
+  getSelected: freshopiaGetSelected,
+  getLevel: freshopiaGetLevel,
+  select: selectFreshopiaCharacter,
+  refresh: refreshFreshopiaCharacters
+};
