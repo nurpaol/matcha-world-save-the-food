@@ -1,4 +1,5 @@
-/* =========================================================
+<script src="characters.js" defer></script>
+<script src="script.js" defer></script>/* =========================================================
    FRESHOPIA — PROFESSIONAL GAME ENGINE 3.0
    Anime Cooking Adventure + Restaurant Simulator
 ========================================================= */
