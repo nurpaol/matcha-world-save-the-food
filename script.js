@@ -1,8 +1,11 @@
-// ========================================
-// FRESHOPIA - ANIME COOKING ADVENTURE
-// ========================================
+/* ==========================================
+   FRESHOPIA - ANIME COOKING ADVENTURE
+   Complete Game Script
+========================================== */
 
 const $ = id => document.getElementById(id);
+
+/* PLAYER DATA */
 
 let player = {
   level: 1,
@@ -23,44 +26,53 @@ let voiceEnabled = true;
 let mikaStep = 0;
 let currentPuzzleAnswer = null;
 
+/* INGREDIENTS */
+
 const ingredients = [
-  ["bread","Burger Bun","https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300"],
-  ["beef","Beef Patty","https://images.unsplash.com/photo-1558030006-450675393462?w=300"],
-  ["cheese","Cheese","https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=300"],
-  ["lettuce","Lettuce","https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300"],
-  ["tomato","Tomato","https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=300"],
-  ["pasta","Pasta","https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=300"],
-  ["basil","Fresh Basil","https://images.unsplash.com/photo-1618375569909-3c8616cf7733?w=300"],
-  ["cream","Cream","https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300"],
-  ["chicken","Chicken","https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=300"],
-  ["rice","Rice","https://images.unsplash.com/photo-1516684732162-798a0062be99?w=300"],
-  ["carrot","Carrot","https://images.unsplash.com/photo-1445282768818-728615cc910a?w=300"],
-  ["potato","Potato","https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300"]
-].map(([id,name,image]) => ({id,name,image}));
+  {id:"bread",name:"Burger Bun",image:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500"},
+  {id:"beef",name:"Beef Patty",image:"https://images.unsplash.com/photo-1558030006-450675393462?w=500"},
+  {id:"cheese",name:"Cheese",image:"https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=500"},
+  {id:"lettuce",name:"Lettuce",image:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500"},
+  {id:"tomato",name:"Tomato",image:"https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=500"},
+  {id:"pasta",name:"Pasta",image:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=500"},
+  {id:"basil",name:"Fresh Basil",image:"https://images.unsplash.com/photo-1618375569909-3c8616cf7733?w=500"},
+  {id:"cream",name:"Cream",image:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500"},
+  {id:"chicken",name:"Chicken",image:"https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=500"},
+  {id:"rice",name:"Rice",image:"https://images.unsplash.com/photo-1516684732162-798a0062be99?w=500"},
+  {id:"carrot",name:"Carrot",image:"https://images.unsplash.com/photo-1445282768818-728615cc910a?w=500"},
+  {id:"potato",name:"Potato",image:"https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=500"}
+];
+
+/* RECIPES */
 
 const recipes = [
   {
-    id:"burger", name:"Classic Burger",
+    id:"burger",
+    name:"Classic Burger",
     description:"A juicy burger with cheese and fresh vegetables.",
-    image:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500",
+    image:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600",
     ingredients:["bread","beef","cheese","lettuce","tomato"],
     reward:35
   },
   {
-    id:"pasta", name:"Creamy Basil Pasta",
+    id:"pasta",
+    name:"Creamy Basil Pasta",
     description:"Creamy pasta with fresh basil.",
-    image:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=500",
+    image:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600",
     ingredients:["pasta","basil","cream"],
     reward:40
   },
   {
-    id:"chicken", name:"Chicken Rice Bowl",
+    id:"chicken",
+    name:"Chicken Rice Bowl",
     description:"Chicken served with rice and carrots.",
-    image:"https://images.unsplash.com/photo-1547592180-85f173990554?w=500",
+    image:"https://images.unsplash.com/photo-1547592180-85f173990554?w=600",
     ingredients:["chicken","rice","carrot"],
     reward:45
   }
 ];
+
+/* CUSTOMERS */
 
 const customers = [
   {name:"Emma",avatar:"👩🏻",mood:"😊",message:"I'm hungry! Can you cook for me?"},
@@ -70,6 +82,8 @@ const customers = [
   {name:"Noah",avatar:"🧑🏻",mood:"🙂",message:"I hope my order is ready soon!"}
 ];
 
+/* MIKA DIALOGUES */
+
 const mikaMessages = [
   {title:"Welcome, Chef! 🌸",message:"Hi! I'm Mika, your cooking guide. Welcome to Freshopia!"},
   {title:"Your first mission 🍓",message:"Choose ingredients, prepare a delicious meal and serve your customer!"},
@@ -78,11 +92,15 @@ const mikaMessages = [
   {title:"Let's begin! 💗",message:"You're ready, Chef! Open your restaurant!"}
 ];
 
+/* MISSIONS */
+
 const missions = [
   {id:1,title:"Serve your first customer",target:1,progress:0,reward:30},
   {id:2,title:"Prepare 3 delicious meals",target:3,progress:0,reward:60},
   {id:3,title:"Earn 100 coins",target:100,progress:0,reward:50}
 ];
+
+/* ACHIEVEMENTS */
 
 const achievements = [
   {id:1,title:"First Customer",description:"Serve your first customer.",unlocked:false},
@@ -90,9 +108,7 @@ const achievements = [
   {id:3,title:"Rising Star",description:"Reach level 3.",unlocked:false}
 ];
 
-// ========================================
-// INITIALIZATION
-// ========================================
+/* INITIALIZATION */
 
 document.addEventListener("DOMContentLoaded",initializeGame);
 
@@ -114,22 +130,24 @@ function loadPlayer(){
   try{
     const saved=localStorage.getItem("freshopiaPlayer");
     if(saved) player={...player,...JSON.parse(saved)};
-  }catch(e){console.log("New game");}
+  }catch(error){
+    console.log("Starting a new game.");
+  }
 }
 
 function savePlayer(){
   try{
     localStorage.setItem("freshopiaPlayer",JSON.stringify(player));
-  }catch(e){console.log("Save unavailable");}
+  }catch(error){
+    console.log("Save unavailable.");
+  }
 }
 
-// ========================================
-// PLAYER DISPLAY
-// ========================================
+/* GENERAL HELPERS */
 
 function setText(id,value){
-  const el=$(id);
-  if(el) el.textContent=value;
+  const element=$(id);
+  if(element) element.textContent=value;
 }
 
 function updatePlayerDisplay(){
@@ -142,10 +160,17 @@ function updatePlayerDisplay(){
   setText("happyCustomers",player.happyCustomers);
 
   const needed=player.level*100;
-  if($("xpProgress")) $("xpProgress").style.width=Math.min(100,player.xp/needed*100)+"%";
+
+  if($("xpProgress")){
+    $("xpProgress").style.width=
+      Math.min(100,player.xp/needed*100)+"%";
+  }
+
   setText("xpText",`${player.xp} / ${needed} XP`);
   savePlayer();
 }
+
+/* XP AND COINS */
 
 function addXP(amount){
   player.xp+=amount;
@@ -168,19 +193,23 @@ function addCoins(amount){
 
 function showLevelUp(){
   setText("levelMessage",`You reached Level ${player.level}!`);
-  if($("levelModal")) $("levelModal").classList.add("show");
+
+  if($("levelModal")){
+    $("levelModal").classList.add("show");
+  }
+
   mikaDance();
   guideSay(`Amazing! You reached level ${player.level}! Let's dance!`,"LEVEL UP! 🎉");
 }
 
 function closeLevelModal(){
-  if($("levelModal")) $("levelModal").classList.remove("show");
+  if($("levelModal")){
+    $("levelModal").classList.remove("show");
+  }
   stopMikaDance();
 }
 
-// ========================================
-// MIKA SYSTEM
-// ========================================
+/* MIKA SYSTEM */
 
 function mikaElement(){
   return $("mika-art") || $("mikaAssistant");
@@ -190,13 +219,18 @@ function mikaSpeak(message){
   const text=$("mika-text") || $("mikaMessage");
   const mika=mikaElement();
 
-  if(text && message) text.textContent=message;
+  if(text && message){
+    text.textContent=message;
+  }
 
   if(mika){
     mika.classList.remove("mika-talking");
     void mika.offsetWidth;
     mika.classList.add("mika-talking");
-    setTimeout(()=>mika.classList.remove("mika-talking"),3000);
+
+    setTimeout(()=>{
+      mika.classList.remove("mika-talking");
+    },3000);
   }
 
   if(voiceEnabled) speakMika(message);
@@ -205,6 +239,7 @@ function mikaSpeak(message){
 function mikaWave(){
   const mika=mikaElement();
   if(!mika) return;
+
   mika.classList.remove("mika-wave");
   void mika.offsetWidth;
   mika.classList.add("mika-wave");
@@ -213,24 +248,35 @@ function mikaWave(){
 function mikaDance(){
   const mika=mikaElement();
   if(!mika) return;
+
   mika.classList.remove("mika-dance","mika-dancing");
   void mika.offsetWidth;
   mika.classList.add("mika-dance");
-  setTimeout(()=>mika.classList.remove("mika-dance"),4000);
+
+  setTimeout(()=>{
+    mika.classList.remove("mika-dance");
+  },4000);
 }
 
 function stopMikaDance(){
   const mika=mikaElement();
-  if(mika) mika.classList.remove("mika-dance","mika-dancing");
+
+  if(mika){
+    mika.classList.remove("mika-dance","mika-dancing");
+  }
 }
 
 function mikaHappy(){
   const mika=mikaElement();
+
   if(mika){
     mika.classList.remove("mika-happy");
     void mika.offsetWidth;
     mika.classList.add("mika-happy");
-    setTimeout(()=>mika.classList.remove("mika-happy"),1800);
+
+    setTimeout(()=>{
+      mika.classList.remove("mika-happy");
+    },1800);
   }
 
   mikaSpeak("Yaaa! Our customer is so happy! You are an amazing chef! 💗");
@@ -239,15 +285,23 @@ function mikaHappy(){
 function startMikaIntroduction(){
   mikaStep=0;
   showMikaMessage();
-  if($("mikaBubble")) $("mikaBubble").classList.add("show");
+
+  if($("mikaBubble")){
+    $("mikaBubble").classList.add("show");
+  }
 }
 
 function showMikaMessage(){
   const item=mikaMessages[mikaStep];
   if(!item) return;
+
   setText("mikaTitle",item.title);
   setText("mikaMessage",item.message);
-  setText("mikaNextButton",mikaStep===mikaMessages.length-1?"Let's Go! →":"Next →");
+
+  setText(
+    "mikaNextButton",
+    mikaStep===mikaMessages.length-1 ? "Let's Go! →" : "Next →"
+  );
 }
 
 function mikaNext(){
@@ -265,48 +319,70 @@ function mikaNext(){
 function guideSay(message,title="Mika 💗"){
   setText("mikaTitle",title);
   setText("mikaMessage",message);
-  if($("mikaBubble")) $("mikaBubble").classList.add("show");
+
+  if($("mikaBubble")){
+    $("mikaBubble").classList.add("show");
+  }
+
   mikaSpeak(message);
 }
 
 function closeMika(){
-  if($("mikaBubble")) $("mikaBubble").classList.remove("show");
+  if($("mikaBubble")){
+    $("mikaBubble").classList.remove("show");
+  }
 }
 
 function toggleMika(){
-  if(!$("mikaBubble")) return;
-  $("mikaBubble").classList.toggle("show");
+  if($("mikaBubble")){
+    $("mikaBubble").classList.toggle("show");
+  }
 }
 
 function toggleMikaVoice(){
   voiceEnabled=!voiceEnabled;
-  if(!voiceEnabled && "speechSynthesis" in window) speechSynthesis.cancel();
-  showToast(voiceEnabled?"Mika voice is ON 🔊":"Mika voice is OFF 🔇");
+
+  if(!voiceEnabled && "speechSynthesis" in window){
+    speechSynthesis.cancel();
+  }
+
+  showToast(voiceEnabled ? "Mika voice is ON 🔊" : "Mika voice is OFF 🔇");
 }
 
 function speakMika(message){
   if(!voiceEnabled || !("speechSynthesis" in window)) return;
+
   speechSynthesis.cancel();
+
   const speech=new SpeechSynthesisUtterance(message);
   speech.lang="en-US";
   speech.rate=.95;
   speech.pitch=1.25;
+
   speechSynthesis.speak(speech);
 }
 
-// ========================================
-// NAVIGATION
-// ========================================
+/* NAVIGATION */
 
 function showSection(sectionId){
-  document.querySelectorAll(".game-section").forEach(s=>s.classList.remove("active"));
-  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
-
-  const target=$(sectionId);
-  if(target) target.classList.add("active");
+  document.querySelectorAll(".game-section").forEach(section=>{
+    section.classList.remove("active");
+  });
 
   document.querySelectorAll(".nav-btn").forEach(button=>{
-    if(button.getAttribute("onclick")?.includes(sectionId)) button.classList.add("active");
+    button.classList.remove("active");
+  });
+
+  const target=$(sectionId);
+
+  if(target){
+    target.classList.add("active");
+  }
+
+  document.querySelectorAll(".nav-btn").forEach(button=>{
+    if(button.getAttribute("onclick")?.includes(sectionId)){
+      button.classList.add("active");
+    }
   });
 
   if(sectionId==="restaurant" && !restaurantOpen){
@@ -316,9 +392,7 @@ function showSection(sectionId){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-// ========================================
-// RESTAURANT
-// ========================================
+/* RESTAURANT */
 
 function openRestaurant(){
   if(restaurantOpen){
@@ -327,7 +401,9 @@ function openRestaurant(){
   }
 
   restaurantOpen=true;
+
   const button=$("openRestaurantBtn");
+
   if(button){
     button.textContent="Restaurant Open ✓";
     button.disabled=true;
@@ -355,7 +431,15 @@ function startNextOrder(){
   setText("orderFeedback","");
 
   const image=$("orderImage");
-  if(image){image.src=recipe.image;image.alt=recipe.name;}
+
+  if(image){
+    image.src=recipe.image;
+    image.alt=recipe.name;
+    image.onerror=function(){
+      this.style.visibility="hidden";
+    };
+    image.style.visibility="visible";
+  }
 
   if($("prepareMealBtn")) $("prepareMealBtn").disabled=false;
   if($("serveMealBtn")) $("serveMealBtn").disabled=true;
@@ -371,17 +455,25 @@ function startNextOrder(){
     orderTime--;
     setText("orderTimer",orderTime);
 
-    if(orderTime<=20) setText("customerMood","😟 Getting impatient...");
+    if(orderTime<=20){
+      setText("customerMood","😟 Getting impatient...");
+    }
 
     if(orderTime<=0){
       clearInterval(orderTimerInterval);
+
       setText("customerMood","😢 Customer left");
       setText("orderFeedback","The customer ran out of patience.");
+
       if($("prepareMealBtn")) $("prepareMealBtn").disabled=true;
       if($("serveMealBtn")) $("serveMealBtn").disabled=true;
+
       showToast("Customer left. Try the next order!");
       guideSay("Oh no! Let's be faster next time, Chef.");
-      setTimeout(()=>{if(restaurantOpen) startNextOrder();},2500);
+
+      setTimeout(()=>{
+        if(restaurantOpen) startNextOrder();
+      },2500);
     }
   },1000);
 }
@@ -402,48 +494,46 @@ function updateCustomerArea(){
   `;
 }
 
-// ========================================
-// INGREDIENTS
-// ========================================
+/* INGREDIENTS - IMAGE CARD SYSTEM */
 
-function renderIngredients() {
-  const grid = $("ingredientGrid");
-  if (!grid) return;
+function renderIngredients(){
+  const grid=$("ingredientGrid");
+  if(!grid) return;
 
-  grid.innerHTML = "";
+  grid.innerHTML="";
 
-  ingredients.forEach(ingredient => {
-    const selected = selectedItems.includes(ingredient.id);
+  ingredients.forEach(ingredient=>{
+    const selected=selectedItems.includes(ingredient.id);
 
-    const card = document.createElement("div");
-    card.className = "ingredient-card" + (selected ? " selected" : "");
+    const card=document.createElement("div");
+    card.className="ingredient-card"+(selected?" selected":"");
 
-    const image = document.createElement("img");
-    image.src = ingredient.image;
-    image.alt = ingredient.name;
-    image.loading = "lazy";
+    const image=document.createElement("img");
+    image.src=ingredient.image;
+    image.alt=ingredient.name;
+    image.loading="lazy";
 
-    // Görsel yüklenemezse düzenli bir yedek göster
-    image.onerror = function () {
-      this.style.display = "none";
+    image.onerror=function(){
+      this.onerror=null;
+      this.style.display="none";
 
-      const fallback = document.createElement("div");
-      fallback.className = "ingredient-placeholder";
-      fallback.textContent = "🥗";
-      this.parentElement.insertBefore(fallback, this);
+      const placeholder=document.createElement("div");
+      placeholder.className="ingredient-placeholder";
+      placeholder.textContent="🥗";
+      card.insertBefore(placeholder,name);
     };
 
-    const name = document.createElement("strong");
-    name.textContent = ingredient.name;
+    const name=document.createElement("strong");
+    name.textContent=ingredient.name;
 
-    const instruction = document.createElement("small");
-    instruction.textContent = selected ? "Selected ✓" : "Tap to select";
+    const instruction=document.createElement("small");
+    instruction.textContent=selected?"Selected ✓":"Tap to select";
 
     card.appendChild(image);
     card.appendChild(name);
     card.appendChild(instruction);
 
-    card.addEventListener("click", () => {
+    card.addEventListener("click",()=>{
       toggleIngredient(ingredient.id);
     });
 
@@ -467,6 +557,7 @@ function toggleIngredient(id){
 function renderSelectedIngredients(){
   const area=$("selectedIngredients");
   if(!area) return;
+
   area.className="selected-list";
 
   if(selectedItems.length===0){
@@ -475,19 +566,20 @@ function renderSelectedIngredients(){
   }
 
   area.innerHTML="";
+
   selectedItems.forEach(id=>{
-    const ingredient=ingredients.find(i=>i.id===id);
+    const ingredient=ingredients.find(item=>item.id===id);
     if(!ingredient) return;
+
     const chip=document.createElement("span");
     chip.className="selected-chip";
     chip.textContent=ingredient.name;
+
     area.appendChild(chip);
   });
 }
 
-// ========================================
-// COOKING
-// ========================================
+/* COOKING */
 
 function prepareMeal(){
   if(!currentOrder || cookingReady) return;
@@ -506,12 +598,16 @@ function prepareMeal(){
     setText("cookingSteps","Not quite right! Check the recipe.");
     setText("cookingContent","You need the correct ingredients.");
     setText("orderFeedback","Some ingredients are missing or incorrect.");
+
     guideSay("Oops! Check the recipe again. You can remove ingredients by tapping them.");
     return;
   }
 
   cookingReady=true;
-  if($("prepareMealBtn")) $("prepareMealBtn").disabled=true;
+
+  if($("prepareMealBtn")){
+    $("prepareMealBtn").disabled=true;
+  }
 
   setText("cookingSteps","Step 1: Ingredients collected ✓");
   setText("cookingContent","Step 2: Mixing and cooking...");
@@ -520,15 +616,17 @@ function prepareMeal(){
 
   setTimeout(()=>{
     if(!currentOrder || currentOrder.completed) return;
+
     setText("cookingSteps","Step 3: Your dish is ready! ✓");
     setText("cookingContent","Beautifully prepared! Now serve your customer.");
-    if($("serveMealBtn")) $("serveMealBtn").disabled=false;
+
+    if($("serveMealBtn")){
+      $("serveMealBtn").disabled=false;
+    }
   },1800);
 }
 
-// ========================================
-// SERVE MEAL - MIKA HAPPY CUSTOMER EVENT
-// ========================================
+/* SERVING */
 
 function serveMeal(){
   if(!currentOrder || !cookingReady || currentOrder.completed) return;
@@ -538,6 +636,7 @@ function serveMeal(){
 
   const recipe=currentOrder.recipe;
   const customer=currentOrder.customer;
+
   const speedBonus=orderTime>=40?15:orderTime>=20?8:0;
   const reward=recipe.reward+speedBonus;
 
@@ -555,18 +654,19 @@ function serveMeal(){
   setText("orderFeedback",`Amazing! You earned ${reward} coins and 35 XP!`);
   setText("cookingContent","Your customer loved the meal! 🎉");
 
-  if($("serveMealBtn")) $("serveMealBtn").disabled=true;
+  if($("serveMealBtn")){
+    $("serveMealBtn").disabled=true;
+  }
 
   addOrderHistory(recipe.name,reward);
 
   showToast(`Order completed! +${reward} coins and +35 XP`);
 
-  // MIKA MUTLU MÜŞTERİ ANİMASYONU
   mikaHappy();
   mikaDance();
 
   guideSay(
-    `Yaaay! ${customer.name} loved your ${recipe.name}! You earned ${reward} coins. You're an amazing chef! 💗`,
+    `${customer.name} loved your ${recipe.name}! You earned ${reward} coins. You're an amazing chef! 💗`,
     "Wonderful, Chef! 🌟"
   );
 
@@ -578,9 +678,7 @@ function serveMeal(){
   },3500);
 }
 
-// ========================================
-// ORDER HISTORY
-// ========================================
+/* ORDER HISTORY */
 
 function addOrderHistory(name,reward){
   const history=$("orderHistory");
@@ -591,18 +689,18 @@ function addOrderHistory(name,reward){
   history.prepend(item);
 }
 
-// ========================================
-// RECIPES
-// ========================================
+/* RECIPES */
 
 function renderRecipes(){
   const grid=$("recipeGrid");
   if(!grid) return;
+
   grid.innerHTML="";
 
   recipes.forEach(recipe=>{
     const card=document.createElement("div");
     card.className="recipe-card";
+
     card.innerHTML=`
       <img src="${recipe.image}" alt="${recipe.name}" loading="lazy">
       <h3>${recipe.name}</h3>
@@ -611,8 +709,16 @@ function renderRecipes(){
       <button type="button">View ingredients</button>
     `;
 
+    const image=card.querySelector("img");
+    image.onerror=function(){
+      this.style.visibility="hidden";
+    };
+
     card.querySelector("button").addEventListener("click",()=>{
-      const names=recipe.ingredients.map(id=>ingredients.find(i=>i.id===id)?.name).filter(Boolean);
+      const names=recipe.ingredients
+        .map(id=>ingredients.find(item=>item.id===id)?.name)
+        .filter(Boolean);
+
       showToast(names.join(" • "));
     });
 
@@ -620,9 +726,7 @@ function renderRecipes(){
   });
 }
 
-// ========================================
-// CHARACTERS
-// ========================================
+/* CHARACTERS */
 
 function renderCharacters(){
   const grid=$("characterGrid");
@@ -635,48 +739,73 @@ function renderCharacters(){
   ];
 
   grid.innerHTML="";
+
   team.forEach(character=>{
     const card=document.createElement("div");
     card.className="character-card";
 
-    card.innerHTML=`
-      ${character.image?`<img src="${character.image}" alt="${character.name}" loading="lazy">`:'<div class="character-emoji">👩🏻‍🍳</div>'}
-      <h3>${character.name}</h3>
-      <p>${character.role}</p>
-    `;
+    if(character.image){
+      const image=document.createElement("img");
+      image.src=character.image;
+      image.alt=character.name;
+      image.loading="lazy";
+
+      image.onerror=function(){
+        this.style.display="none";
+      };
+
+      card.appendChild(image);
+    }else{
+      const avatar=document.createElement("div");
+      avatar.className="character-emoji";
+      avatar.textContent="👩🏻‍🍳";
+      card.appendChild(avatar);
+    }
+
+    const name=document.createElement("h3");
+    name.textContent=character.name;
+
+    const role=document.createElement("p");
+    role.textContent=character.role;
+
+    card.appendChild(name);
+    card.appendChild(role);
 
     grid.appendChild(card);
   });
 }
 
-// ========================================
-// MISSIONS
-// ========================================
+/* MISSIONS */
 
 function renderMissions(){
   const list=$("missionList");
   if(!list) return;
+
   list.innerHTML="";
 
   missions.forEach(mission=>{
     const completed=mission.progress>=mission.target;
     const card=document.createElement("div");
+
     card.className="mission-card"+(completed?" completed":"");
+
     card.innerHTML=`
       <h3>${completed?"✅":"🎯"} ${mission.title}</h3>
       <p>Progress: ${Math.min(mission.progress,mission.target)} / ${mission.target}</p>
       <p>Reward: ${mission.reward} coins</p>
       ${completed?"<strong>Mission completed!</strong>":""}
     `;
+
     list.appendChild(card);
   });
 }
 
 function updateMissionProgress(id,amount){
-  const mission=missions.find(m=>m.id===id);
+  const mission=missions.find(item=>item.id===id);
   if(!mission) return;
 
   const wasCompleted=mission.progress>=mission.target;
+
   mission.progress+=amount;
 
   if(!wasCompleted && mission.progress>=mission.target){
@@ -688,23 +817,25 @@ function updateMissionProgress(id,amount){
   renderMissions();
 }
 
-// ========================================
-// ACHIEVEMENTS
-// ========================================
+/* ACHIEVEMENTS */
 
 function renderAchievements(){
   const list=$("achievementList");
   if(!list) return;
+
   list.innerHTML="";
 
-  achievements.forEach(a=>{
+  achievements.forEach(achievement=>{
     const card=document.createElement("div");
-    card.className="achievement-card"+(a.unlocked?" unlocked":"");
+
+    card.className="achievement-card"+(achievement.unlocked?" unlocked":"");
+
     card.innerHTML=`
-      <h3>${a.unlocked?"🏆":"🔒"} ${a.title}</h3>
-      <p>${a.description}</p>
-      <small>${a.unlocked?"Unlocked!":"Not unlocked yet"}</small>
+      <h3>${achievement.unlocked?"🏆":"🔒"} ${achievement.title}</h3>
+      <p>${achievement.description}</p>
+      <small>${achievement.unlocked?"Unlocked!":"Not unlocked yet"}</small>
     `;
+
     list.appendChild(card);
   });
 }
@@ -716,10 +847,10 @@ function checkAchievements(){
     player.level>=3
   ];
 
-  achievements.forEach((a,index)=>{
-    if(checks[index] && !a.unlocked){
-      a.unlocked=true;
-      showToast(`Achievement unlocked: ${a.title} 🏆`);
+  achievements.forEach((achievement,index)=>{
+    if(checks[index] && !achievement.unlocked){
+      achievement.unlocked=true;
+      showToast(`Achievement unlocked: ${achievement.title} 🏆`);
       addXP(10);
     }
   });
@@ -727,18 +858,28 @@ function checkAchievements(){
   renderAchievements();
 }
 
-// ========================================
-// FOOD QUIZ
-// ========================================
+/* FOOD QUIZ */
 
 function renderPuzzle(){
   const area=$("puzzleGame");
   if(!area) return;
 
   const questions=[
-    {question:"Which ingredient is commonly used to make pesto?",options:["Fresh basil","Chocolate","Potato"],answer:"Fresh basil"},
-    {question:"Which food is a good source of protein?",options:["Chicken","Sugar","Soft drink"],answer:"Chicken"},
-    {question:"Which ingredient is used to make pasta?",options:["Pasta","Lettuce","Apple"],answer:"Pasta"}
+    {
+      question:"Which ingredient is commonly used to make pesto?",
+      options:["Fresh basil","Chocolate","Potato"],
+      answer:"Fresh basil"
+    },
+    {
+      question:"Which food is a good source of protein?",
+      options:["Chicken","Sugar","Soft drink"],
+      answer:"Chicken"
+    },
+    {
+      question:"Which ingredient is used to make pasta?",
+      options:["Pasta","Lettuce","Apple"],
+      answer:"Pasta"
+    }
   ];
 
   const question=questions[Math.floor(Math.random()*questions.length)];
@@ -758,6 +899,7 @@ function renderPuzzle(){
     const button=document.createElement("button");
     button.textContent=option;
     button.addEventListener("click",()=>answerPuzzle(option));
+
     $("puzzleOptions").appendChild(button);
   });
 }
@@ -774,9 +916,7 @@ function answerPuzzle(answer){
   }
 }
 
-// ========================================
-// GENERAL MESSAGE
-// ========================================
+/* TOAST MESSAGE */
 
 function showToast(message){
   const toast=$("toast");
@@ -786,12 +926,13 @@ function showToast(message){
   toast.classList.add("show");
 
   clearTimeout(showToast.timeout);
-  showToast.timeout=setTimeout(()=>toast.classList.remove("show"),2600);
+
+  showToast.timeout=setTimeout(()=>{
+    toast.classList.remove("show");
+  },2600);
 }
 
-// ========================================
-// BUTTON ANIMATIONS
-// ========================================
+/* BUTTON ANIMATIONS */
 
 document.addEventListener("click",event=>{
   const button=event.target.closest("button");
@@ -805,17 +946,3 @@ document.addEventListener("click",event=>{
 window.addEventListener("load",()=>{
   mikaWave();
 });
-// GAME RULES OPEN AND CLOSE
-const rulesButton = document.getElementById("rulesButton");
-const rulesPanel = document.getElementById("rulesPanel");
-const closeRules = document.getElementById("closeRules");
-
-if (rulesButton && rulesPanel && closeRules) {
-  rulesButton.addEventListener("click", () => {
-    rulesPanel.classList.add("show");
-  });
-
-  closeRules.addEventListener("click", () => {
-    rulesPanel.classList.remove("show");
-  });
-}
