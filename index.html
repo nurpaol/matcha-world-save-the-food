@@ -1,581 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#173D32">
-    <meta name="description" content="Freshopia - The Healthy Food Adventure. Cook healthy, save food and protect our planet!">
-
-    <title>Freshopia | The Healthy Food Adventure</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffe5f1">
+  <title>Freshopia - Anime Cooking Adventure</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="app-shell">
-
-    <!-- HEADER -->
-    <header class="topbar">
-
-        <a href="#" class="brand">
-            <span class="brand-mark">🌱</span>
-            <span>
-                <strong>FRESHOPIA</strong>
-                <small>THE HEALTHY FOOD ADVENTURE</small>
-            </span>
-        </a>
-
-        <div class="top-actions">
-            <button id="musicToggle" class="icon-button" type="button">
-                ♫ <span>Music</span>
-            </button>
-
-            <button id="voiceToggle" class="icon-button" type="button">
-                🔊 <span>Voice</span>
-            </button>
-
-            <button id="soundToggle" class="icon-button" type="button">
-                ✨ <span>Sounds</span>
-            </button>
-        </div>
-
-    </header>
-
-    <main>
-
-        <!-- WELCOME SCREEN -->
-        <section class="hero panel" id="welcomeScreen">
-
-            <div class="hero-copy">
-
-                <p class="eyebrow">A LITTLE KINDNESS CAN CHANGE THE PLANET</p>
-
-                <h1>
-                    Welcome to
-                    <span>Freshopia!</span>
-                </h1>
-
-                <p class="hero-text">
-                    Cook colorful and healthy meals, discover new recipes,
-                    reduce food waste and build a greener future!
-                </p>
-
-                <label for="playerName" class="name-label">
-                    What should we call you, Chef?
-                </label>
-
-                <input
-                    type="text"
-                    id="playerName"
-                    class="text-input"
-                    maxlength="16"
-                    placeholder="Enter your chef name"
-                    autocomplete="nickname"
-                >
-
-                <button id="startButton" class="primary-button" type="button">
-                    Start My Adventure →
-                </button>
-
-                <p class="microcopy">
-                    Your adventure begins here!
-                </p>
-
-            </div>
-
-            <div class="hero-art" aria-hidden="true">
-                <div class="sun-orb"></div>
-                <div class="hero-food">🥑 🍓 🥦</div>
-
-                <div class="hero-mika">
-                    <span class="mika-face">👩🏻‍🍳</span>
-                    <span class="sparkle">✦</span>
-                </div>
-
-                <div class="leaf leaf-one">🌿</div>
-                <div class="leaf leaf-two">🍃</div>
-            </div>
-
-        </section>
-
-
-        <!-- MAIN GAME -->
-        <section id="gameScreen" class="game-screen hidden">
-
-            <!-- PLAYER DASHBOARD -->
-            <section class="dashboard panel">
-
-                <div class="player-block">
-
-                    <div class="player-avatar" id="playerAvatar">
-                        👩‍🍳
-                    </div>
-
-                    <div>
-                        <span class="muted-label">YOUR KITCHEN</span>
-                        <h2 id="welcomePlayer">Hello, Chef!</h2>
-                        <span class="level-name" id="levelName">
-                            Level 1 · Beginner Chef
-                        </span>
-                    </div>
-
-                </div>
-
-                <div class="stats-grid">
-
-                    <div class="stat">
-                        <span>⭐ Level</span>
-                        <strong id="levelValue">1</strong>
-                    </div>
-
-                    <div class="stat">
-                        <span>✨ XP</span>
-                        <strong id="xpValue">0 / 100</strong>
-                    </div>
-
-                    <div class="stat">
-                        <span>🪙 Coins</span>
-                        <strong id="coinValue">0</strong>
-                    </div>
-
-                    <div class="stat">
-                        <span>🌍 Eco Points</span>
-                        <strong id="ecoValue">0</strong>
-                    </div>
-
-                </div>
-
-                <div class="xp-track">
-                    <div class="xp-fill" id="xpFill"></div>
-                </div>
-
-            </section>
-
-
-            <div class="game-layout">
-
-                <!-- GAME AREA -->
-                <section class="play-column">
-
-                    <!-- CUSTOMER ORDER -->
-                    <section class="order-panel panel">
-
-                        <div class="section-heading">
-
-                            <div>
-                                <p class="eyebrow">THE CUSTOMER IS WAITING</p>
-                                <h2>Today's Healthy Order</h2>
-                            </div>
-
-                            <div class="timer-pill" id="timer">
-                                ⏱ 01:30
-                            </div>
-
-                        </div>
-
-                        <div class="customer-row">
-
-                            <div class="customer-avatar" id="customerAvatar">
-                                🧑🏽
-                            </div>
-
-                            <div class="customer-speech">
-
-                                <strong id="customerName">Alex</strong>
-
-                                <p id="customerRequest">
-                                    I'd love a fresh and healthy meal!
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <div class="recipe-hint">
-
-                            <span>🍽️</span>
-
-                            <div>
-                                <strong id="orderTitle">
-                                    Rainbow Energy Bowl
-                                </strong>
-
-                                <small id="orderDescription">
-                                    A colorful meal packed with goodness.
-                                </small>
-                            </div>
-
-                            <span class="order-reward" id="orderReward">
-                                +30 XP
-                            </span>
-
-                        </div>
-
-                    </section>
-
-
-                    <!-- INGREDIENT SELECTION -->
-                    <section class="ingredients-panel panel">
-
-                        <div class="section-heading">
-
-                            <div>
-                                <p class="eyebrow">BUILD A BETTER PLATE</p>
-                                <h2>Choose Your Ingredients</h2>
-                            </div>
-
-                            <span class="small-counter" id="ingredientCounter">
-                                0 selected
-                            </span>
-
-                        </div>
-
-                        <div
-                            class="ingredient-grid"
-                            id="ingredientGrid">
-                        </div>
-
-                        <div class="selection-row">
-
-                            <div>
-                                <strong>Your Plate</strong>
-                                <p id="selectionText">
-                                    Choose ingredients for the order.
-                                </p>
-                            </div>
-
-                            <button
-                                class="secondary-button"
-                                id="clearButton"
-                                type="button">
-                                Clear Plate
-                            </button>
-
-                        </div>
-
-                        <div class="game-actions">
-
-                            <button
-                                class="primary-button"
-                                id="serveButton"
-                                type="button"
-                                disabled>
-                                Serve the Meal 🍃
-                            </button>
-
-                            <button
-                                class="text-button"
-                                id="hintButton"
-                                type="button">
-                                Ask Mika for a Hint
-                            </button>
-
-                        </div>
-
-                        <div
-                            class="feedback hidden"
-                            id="feedback"
-                            role="status">
-                        </div>
-
-                    </section>
-
-
-                    <!-- ECO MISSION -->
-                    <section class="mission-panel panel">
-
-                        <div class="section-heading">
-
-                            <div>
-                                <p class="eyebrow">YOUR MINI CHALLENGE</p>
-                                <h2>Eco Mission</h2>
-                            </div>
-
-                            <span class="mission-icon">🌎</span>
-
-                        </div>
-
-                        <p id="missionText">
-                            Complete an order without wasting ingredients.
-                        </p>
-
-                        <div class="mission-progress">
-                            <div id="missionFill"></div>
-                        </div>
-
-                        <small id="missionProgressText">
-                            0 / 1 completed
-                        </small>
-
-                    </section>
-
-                </section>
-
-
-                <!-- SIDEBAR -->
-                <aside class="side-column">
-
-                    <!-- MIKA ANIME GUIDE -->
-                    <section class="mika-panel panel">
-
-                        <div class="mika-header">
-
-                            <span class="online-dot"></span>
-                            <strong>MIKA</strong>
-                            <span class="guide-tag">YOUR GUIDE</span>
-
-                        </div>
-
-                        <div class="mika-stage">
-
-                            <div class="mika-sparkles">
-                                ✦ ✧ ✦
-                            </div>
-
-                            <div
-                                class="mika-character"
-                                id="mikaCharacter"
-                                aria-label="Mika, your anime kitchen guide">
-
-                                <div class="mika-hair"></div>
-
-                                <div class="mika-ear left"></div>
-                                <div class="mika-ear right"></div>
-
-                                <div class="mika-head">
-
-                                    <div class="mika-eyes">
-                                        <i></i>
-                                        <i></i>
-                                    </div>
-
-                                    <div class="mika-blush left"></div>
-                                    <div class="mika-blush right"></div>
-
-                                    <div class="mika-mouth"></div>
-
-                                </div>
-
-                                <div class="mika-neck"></div>
-
-                                <div class="mika-body">
-                                    <span>🌿</span>
-                                </div>
-
-                                <div class="mika-hat">♧</div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="mika-dialogue">
-
-                            <span class="dialogue-name">
-                                Mika says
-                            </span>
-
-                            <p id="mikaMessage">
-                                Hi, Chef! I'm Mika. Let's make the world
-                                healthier, one plate at a time!
-                            </p>
-
-                            <button
-                                class="voice-line"
-                                id="repeatMika"
-                                type="button">
-                                ▶ Hear Mika
-                            </button>
-
-                        </div>
-
-                    </section>
-
-
-                    <!-- BADGES -->
-                    <section class="badges-panel panel">
-
-                        <div class="section-heading">
-
-                            <div>
-                                <p class="eyebrow">COLLECT THEM ALL</p>
-                                <h2>Your Badges</h2>
-                            </div>
-
-                            <span class="badge-count" id="badgeCount">
-                                0 / 6
-                            </span>
-
-                        </div>
-
-                        <div
-                            class="badge-list"
-                            id="badgeList">
-                        </div>
-
-                    </section>
-
-
-                    <!-- UNLOCK SYSTEM -->
-                    <section class="unlock-panel panel">
-
-                        <p class="eyebrow">WHAT'S NEXT?</p>
-
-                        <h2>Unlock New Things</h2>
-
-                        <div
-                            id="unlockList"
-                            class="unlock-list">
-                        </div>
-
-                    </section>
-
-                </aside>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- FOOTER -->
-    <footer>
-        <span>🌱 Freshopia</span>
-        <span>Cook Healthy · Waste Less · Live Green</span>
-    </footer>
+<header class="top-bar">
+  <div class="player-info">
+    <div class="player-avatar">👩🏻‍🍳</div>
+    <div>
+      <h3>Chef</h3>
+      <span>Level <b id="playerLevel">1</b></span>
+      <div class="xp-bar">
+        <div id="xpProgress"></div>
+      </div>
+      <small id="xpText">0 / 100 XP</small>
+    </div>
+  </div>
+
+  <div class="currency">
+    🪙 <span id="playerCoins">100</span>
+  </div>
+</header>
+
+<nav class="navigation">
+  <button class="nav-btn active" onclick="showSection('home')">🏠 Home</button>
+  <button class="nav-btn" onclick="showSection('restaurant')">🍳 Restaurant</button>
+  <button class="nav-btn" onclick="showSection('recipes')">📖 Recipes</button>
+  <button class="nav-btn" onclick="showSection('characters')">👩 Characters</button>
+  <button class="nav-btn" onclick="showSection('missions')">🎯 Missions</button>
+  <button class="nav-btn" onclick="showSection('awards')">🏆 Awards</button>
+  <button class="nav-btn" onclick="showSection('puzzles')">🧩 Puzzles</button>
+</nav>
+
+<main>
+
+  <!-- HOME -->
+  <section id="home" class="game-section active">
+    <div class="welcome-card">
+      <h1>Welcome to Freshopia! 🌸</h1>
+      <p>Cook delicious meals, serve customers and build your dream restaurant!</p>
+      <button onclick="showSection('restaurant')">Start Cooking 🍓</button>
+    </div>
+
+    <div class="home-stats">
+      <div class="stat-card">
+        <h3>⭐ Level</h3>
+        <p id="homeLevel">1</p>
+      </div>
+      <div class="stat-card">
+        <h3>🪙 Coins</h3>
+        <p id="homeCoins">100</p>
+      </div>
+      <div class="stat-card">
+        <h3>😊 Happy Customers</h3>
+        <p id="happyCustomers">0</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESTAURANT -->
+  <section id="restaurant" class="game-section">
+    <h1>🍳 Freshopia Restaurant</h1>
+
+    <div class="restaurant-stats">
+      <p>Coins: <span id="restaurantCoins">100</span></p>
+      <p>Reputation: <span id="restaurantReputation">0</span></p>
+    </div>
+
+    <button id="openRestaurantBtn" onclick="openRestaurant()">
+      Open Restaurant
+    </button>
+
+    <div id="customerArea" class="customer-area">
+      <h2>Waiting for customers...</h2>
+    </div>
+
+    <div class="order-card">
+      <h2>Customer Order</h2>
+      <img id="orderImage"
+           src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500"
+           alt="Burger">
+      <h3 id="orderName">Classic Burger</h3>
+      <p id="orderDescription">Prepare a delicious burger for your customer.</p>
+      <p>Patience: <span id="orderTimer">60</span></p>
+      <p id="customerMood">😊 Waiting</p>
+      <p id="orderFeedback"></p>
+    </div>
+
+    <div class="cooking-area">
+      <h2>🥬 Choose Your Ingredients</h2>
+      <div id="ingredientGrid" class="ingredient-grid"></div>
+
+      <h3>Selected Ingredients</h3>
+      <div id="selectedIngredients"></div>
+
+      <button id="prepareMealBtn" onclick="prepareMeal()">
+        Prepare Meal 🍳
+      </button>
+
+      <div id="cookingSteps"></div>
+      <div id="cookingContent"></div>
+
+      <button id="serveMealBtn" onclick="serveMeal()" disabled>
+        Serve Customer 🍽️
+      </button>
+    </div>
+
+    <h2>Order History</h2>
+    <div id="orderHistory"></div>
+  </section>
+
+  <!-- RECIPES -->
+  <section id="recipes" class="game-section">
+    <h1>📖 Recipe Book</h1>
+    <p>Discover new recipes and unlock delicious meals!</p>
+    <div id="recipeGrid" class="recipe-grid"></div>
+  </section>
+
+  <!-- CHARACTERS -->
+  <section id="characters" class="game-section">
+    <h1>🌸 Your Anime Team</h1>
+    <div id="characterGrid" class="character-grid"></div>
+  </section>
+
+  <!-- MISSIONS -->
+  <section id="missions" class="game-section">
+    <h1>🎯 Daily Missions</h1>
+    <div id="missionList"></div>
+  </section>
+
+  <!-- AWARDS -->
+  <section id="awards" class="game-section">
+    <h1>🏆 Achievements</h1>
+    <div id="achievementList"></div>
+  </section>
+
+  <!-- PUZZLES -->
+  <section id="puzzles" class="game-section">
+    <h1>🧩 Food Knowledge Games</h1>
+    <div id="puzzleGame"></div>
+  </section>
+
+</main>
+
+<!-- MIKA ASSISTANT -->
+<div id="mikaAssistant" class="mika-assistant">
+
+  <div id="mikaBubble" class="mika-bubble">
+    <div class="mika-bubble-header">
+      <strong id="mikaTitle">Welcome, Chef! 💗</strong>
+      <button onclick="closeMika()" aria-label="Close">×</button>
+    </div>
+
+    <p id="mikaMessage">
+      Hi! I'm Mika, your cooking guide.
+      Welcome to Freshopia!
+    </p>
+
+    <div class="mika-controls">
+      <button id="mikaNextButton" onclick="mikaNext()">
+        Next →
+      </button>
+
+      <button onclick="toggleMikaVoice()">
+        🔊 Voice
+      </button>
+    </div>
+  </div>
+
+  <button class="mika-character-button"
+          onclick="toggleMika()"
+          aria-label="Talk to Mika">
+    <img id="mikaCharacterImage"
+         src="mika.png"
+         alt="Mika - Freshopia cooking guide">
+  </button>
 
 </div>
-
-
-<!-- NOTIFICATION -->
-<div
-    class="toast"
-    id="toast"
-    role="status"
-    aria-live="polite">
-</div>
-
 
 <!-- LEVEL UP MODAL -->
-<div
-    class="modal-backdrop hidden"
-    id="levelModal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="levelModalTitle">
-
-    <div class="level-modal">
-
-        <button
-            class="modal-close"
-            id="closeLevelModal"
-            type="button"
-            aria-label="Close">
-            ×
-        </button>
-
-        <div class="level-confetti">
-            ✦ ✧ ⭐ ✧ ✦
-        </div>
-
-        <div class="modal-mika">👩🏻‍🍳</div>
-
-        <p class="eyebrow">
-            MIKA IS SO PROUD OF YOU!
-        </p>
-
-        <h2 id="levelModalTitle">
-            LEVEL UP!
-        </h2>
-
-        <p
-            class="level-modal-message"
-            id="levelModalMessage">
-            You did it, Chef! A new adventure is waiting.
-        </p>
-
-        <div class="new-level" id="newLevelValue">
-            LEVEL 2
-        </div>
-
-        <div
-            class="unlock-announcement"
-            id="unlockAnnouncement">
-            🎁 A new feature has been unlocked!
-        </div>
-
-        <button
-            class="primary-button"
-            id="continueButton"
-            type="button">
-            Let's Keep Growing! 🌱
-        </button>
-
-    </div>
-
+<div id="levelModal" class="level-modal">
+  <div class="level-modal-content">
+    <h1>🎉 LEVEL UP! 🎉</h1>
+    <h2>Congratulations, Chef!</h2>
+    <p id="levelMessage">You reached a new level!</p>
+    <button onclick="closeLevelModal()">Amazing! 💗</button>
+  </div>
 </div>
 
+<div id="toast" class="toast"></div>
 
-<!-- ROUND RESULT MODAL -->
-<div
-    class="modal-backdrop hidden"
-    id="resultModal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="resultTitle">
+<footer>
+  <p>Freshopia © 2026 | Cook • Serve • Grow 🌸</p>
+</footer>
 
-    <div class="result-modal">
-
-        <div class="result-emoji" id="resultEmoji">
-            🎉
-        </div>
-
-        <h2 id="resultTitle">
-            Kitchen Closed!
-        </h2>
-
-        <p id="resultMessage">
-            Great work, Chef!
-        </p>
-
-        <div class="result-stats">
-
-            <div>
-                <strong id="resultScore">0</strong>
-                <span>Points</span>
-            </div>
-
-            <div>
-                <strong id="resultOrders">0</strong>
-                <span>Orders</span>
-            </div>
-
-            <div>
-                <strong id="resultWaste">0</strong>
-                <span>Waste</span>
-            </div>
-
-        </div>
-
-        <button
-            class="primary-button"
-            id="playAgainButton"
-            type="button">
-            Play Another Round ↻
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- GAME ENGINE -->
 <script src="script.js"></script>
-
 </body>
 </html>
