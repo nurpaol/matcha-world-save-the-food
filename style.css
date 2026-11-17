@@ -1364,3 +1364,26 @@ footer {
     max-height: 110px !important;
   }
 }
+/* FRESHOPIA PINK & MINT THEME */
+
+.game-card,
+.achievement-card,
+.recipe-card,
+.character-card,
+.mission-card,
+.order-card {
+  background: rgba(255, 248, 250, 0.90);
+  border: 2px solid rgba(238, 178, 199, 0.75);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(99, 125, 105, 0.12);
+  backdrop-filter: blur(8px);
+}
+
+button {
+  border-radius: 14px;
+}
+
+nav,
+.sidebar {
+  background: rgba(225, 245, 231, 0.94);
+}
