@@ -1,129 +1,173 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#f8e8ed">
-  <title>Freshopia - Anime Restaurant Simulator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffe5f2">
+  <meta name="description" content="Freshopia - Anime Cooking and Food Sustainability Adventure">
+  <title>Freshopia - Anime Cooking Adventure</title>
   <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
 </head>
 <body>
-  <div class="app">
-    <header class="topbar">
-      <button class="menu-button" id="menu-toggle" aria-label="Open menu">☰</button>
-      <div class="brand">🌸 Freshopia</div>
-      <div class="player-stats">
-        <span>🪙 <b id="coins">500</b></span>
-        <span>⭐ <b id="level">1</b></span>
+
+<div class="game-shell">
+
+  <header class="topbar">
+    <a class="logo" href="#">🌸 Freshopia</a>
+    <div class="top-stats">
+      <span>🪙 <b id="coins">100</b></span>
+      <span>⭐ <b id="xp">0</b> XP</span>
+      <button id="soundButton" class="icon-button">🔊</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">✨ YOUR CULINARY ADVENTURE</div>
+        <h1>Welcome to<br><span>Freshopia!</span></h1>
+        <p>Cook delicious meals, help customers and become a master chef!</p>
+        <button class="primary-button" id="startButton">Start Cooking 🍓</button>
       </div>
-    </header>
 
-    <aside class="sidebar" id="sidebar">
-      <div class="side-brand">Freshopia 🌸</div>
-      <nav id="main-nav">
-        <button class="nav-button active" data-page="dashboard">🏡 Dashboard</button>
-        <button class="nav-button" data-page="restaurant">🏮 Restaurant</button>
-        <button class="nav-button" data-page="kitchen">👩‍🍳 Kitchen</button>
-        <button class="nav-button" data-page="inventory">🥕 Ingredients</button>
-        <button class="nav-button" data-page="recipes">📖 Recipes</button>
-        <button class="nav-button" data-page="customers">💗 Customers</button>
-        <button class="nav-button" data-page="achievements">🏆 Achievements</button>
-        <button class="nav-button" data-page="characters">✨ Characters</button>
-      </nav>
-      <p class="side-footer">Cook • Create • Save Food</p>
-    </aside>
-
-    <main class="main-content">
-      <section class="page active" id="dashboard">
-        <div class="hero">
-          <div>
-            <p class="eyebrow">YOUR NEW ADVENTURE</p>
-            <h1>Welcome to Freshopia!</h1>
-            <p>Build your dream restaurant, cook delicious meals and save food.</p>
-            <button class="primary-button" data-go="kitchen">Start Cooking →</button>
-          </div>
-          <div class="hero-art">🍓🥐🍵</div>
+      <div class="anime-area">
+        <div class="sparkle sparkle-one">✦</div>
+        <div class="anime-character" id="heroCharacter">👩🏻‍🍳</div>
+        <div class="character-name">Mika ♡</div>
+        <div class="speech-bubble" id="characterMessage">
+          Hi chef! Let's make something delicious!
         </div>
+      </div>
+    </section>
 
-        <div class="stats-grid">
-          <article class="stat-card"><span>💰</span><small>Restaurant Coins</small><strong id="dash-coins">500</strong></article>
-          <article class="stat-card"><span>⭐</span><small>Experience</small><strong id="xp">0 / 100 XP</strong></article>
-          <article class="stat-card"><span>🍽️</span><small>Orders Served</small><strong id="orders-served">0</strong></article>
-          <article class="stat-card"><span>🌱</span><small>Food Saved</small><strong id="food-saved">0 kg</strong></article>
+    <section class="player-panel">
+      <div class="player-avatar" id="playerAvatar">👩🏻‍🍳</div>
+      <div class="player-info">
+        <div class="player-name" id="playerName">Chef</div>
+        <div class="level-text">Level <span id="level">1</span> · Beginner Chef</div>
+        <div class="xp-track"><div id="xpBar"></div></div>
+        <small id="xpProgress">0 / 100 XP</small>
+      </div>
+      <button class="secondary-button" id="profileButton">Edit Profile</button>
+    </section>
+
+    <section class="section" id="kitchen">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">LET'S GET CREATIVE</span>
+          <h2>🍳 Cooking Kitchen</h2>
         </div>
+        <span class="pill">Fresh ingredients</span>
+      </div>
 
-        <div class="panel">
-          <h2>Daily Mission</h2>
-          <p id="mission-text">Serve your first customer!</p>
-          <div class="progress-track"><div id="mission-progress"></div></div>
+      <div class="recipe-grid" id="recipeGrid"></div>
+
+      <div class="cooking-panel" id="cookingPanel">
+        <div class="empty-kitchen">
+          <span>🍓</span>
+          <h3>Choose a recipe!</h3>
+          <p>Select a dish above to see its ingredients and cooking instructions.</p>
         </div>
-        <div class="panel">
-          <h2>Recent Activity</h2>
-          <div id="activity">Welcome to your new restaurant!</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">FRESH FOOD MARKET</span>
+          <h2>🥑 Ingredients</h2>
         </div>
-      </section>
+        <span class="pill">Real food collection</span>
+      </div>
+      <div class="ingredient-grid" id="ingredientGrid"></div>
+    </section>
 
-      <section class="page" id="restaurant">
-        <h1>🏮 My Restaurant</h1>
-        <p>Welcome to your cozy restaurant!</p>
-        <div class="restaurant-art">🌸 🍵 🍰 🌿</div>
-        <div class="panel">
-          <h2>Restaurant Upgrade</h2>
-          <p>Make your restaurant more beautiful and welcoming.</p>
-          <button class="primary-button" id="upgrade-button">Upgrade Restaurant — 100 coins</button>
-          <p id="upgrade-status">Current level: 1</p>
+    <section class="section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">LEARN WHILE PLAYING</span>
+          <h2>🌱 Food Academy</h2>
         </div>
-      </section>
+      </div>
+      <div class="academy-grid">
+        <article class="academy-card">
+          <span>🥦</span>
+          <h3>Healthy Nutrition</h3>
+          <p>Discover balanced meals, vitamins and healthy eating.</p>
+          <button class="small-button" data-lesson="nutrition">Learn More</button>
+        </article>
+        <article class="academy-card">
+          <span>♻️</span>
+          <h3>Food Sustainability</h3>
+          <p>Reduce food waste and protect our planet.</p>
+          <button class="small-button" data-lesson="sustainability">Learn More</button>
+        </article>
+        <article class="academy-card">
+          <span>🧼</span>
+          <h3>Food Safety</h3>
+          <p>Learn hygiene, safe storage and kitchen practices.</p>
+          <button class="small-button" data-lesson="safety">Learn More</button>
+        </article>
+      </div>
+    </section>
 
-      <section class="page" id="kitchen">
-        <h1>👩‍🍳 Professional Kitchen</h1>
-        <p>Choose a recipe and prepare an order.</p>
-        <div id="kitchen-recipes" class="card-grid"></div>
-        <div class="panel" id="cooking-result">Your cooking station is ready!</div>
-      </section>
-
-      <section class="page" id="inventory">
-        <h1>🥕 Ingredient Inventory</h1>
-        <p>Keep track of your fresh ingredients.</p>
-        <div id="inventory-list" class="card-grid"></div>
-      </section>
-
-      <section class="page" id="recipes">
-        <h1>📖 Recipe Book</h1>
-        <p>Discover dishes and earn experience.</p>
-        <div id="recipe-list" class="card-grid"></div>
-      </section>
-
-      <section class="page" id="customers">
-        <h1>💗 Happy Customers</h1>
-        <div class="panel">
-          <div class="customer-face">👩🏻‍🍳</div>
-          <h2 id="customer-name">Mia</h2>
-          <p id="customer-request">I would love a Strawberry Cake!</p>
-          <button class="primary-button" id="serve-customer">Serve Customer</button>
+    <section class="section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">YOUR ACHIEVEMENTS</span>
+          <h2>🏆 Badges & Rewards</h2>
         </div>
-        <div class="panel">
-          <h2>Order History</h2>
-          <div id="order-history">No orders yet.</div>
+      </div>
+      <div class="badge-grid" id="badgeGrid"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">DAILY CHALLENGES</span>
+          <h2>🎯 Chef Missions</h2>
         </div>
-      </section>
+      </div>
+      <div class="mission-card" id="missionCard"></div>
+    </section>
+  </main>
 
-      <section class="page" id="achievements">
-        <h1>🏆 Achievements</h1>
-        <div id="achievement-list" class="card-grid"></div>
-      </section>
+  <footer>
+    <div class="footer-logo">🌸 Freshopia</div>
+    <p>Cook with love. Eat with care. Save our planet. ♡</p>
+    <small>Anime Cooking Adventure · Educational Game</small>
+  </footer>
+</div>
 
-      <section class="page" id="characters">
-        <h1>✨ Anime Chef Collection</h1>
-        <p>Choose your chef and unlock new characters!</p>
-        <div id="active-character" class="panel"></div>
-        <div id="character-list" class="card-grid"></div>
-      </section>
-    </main>
+<!-- Profile Modal -->
+<div class="modal hidden" id="profileModal">
+  <div class="modal-box">
+    <button class="close-button" data-close="profileModal">×</button>
+    <h2>🌸 Create Your Chef Profile</h2>
+    <label for="nickname">Your chef name</label>
+    <input id="nickname" maxlength="18" placeholder="Enter your name">
+    <p>Choose your avatar:</p>
+    <div class="avatar-options">
+      <button class="avatar-option">👩🏻‍🍳</button>
+      <button class="avatar-option">👨🏻‍🍳</button>
+      <button class="avatar-option">👩🏽‍🍳</button>
+      <button class="avatar-option">👨🏽‍🍳</button>
+      <button class="avatar-option">🧑🏻‍🍳</button>
+    </div>
+    <button class="primary-button" id="saveProfile">Save Profile</button>
   </div>
+</div>
 
-  <div id="toast" class="toast" role="status"></div>
+<!-- General Modal -->
+<div class="modal hidden" id="infoModal">
+  <div class="modal-box">
+    <button class="close-button" data-close="infoModal">×</button>
+    <div id="infoContent"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
 </body>
 </html>
