@@ -1,581 +1,868 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#173D32">
-    <meta name="description" content="Freshopia - The Healthy Food Adventure. Cook healthy, save food and protect our planet!">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f8ddeb">
+<title>Freshopia | Anime Cooking Adventure</title>
 
-    <title>Freshopia | The Healthy Food Adventure</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="style.css">
+<style>
+:root{
+--pink:#f4a8cb;
+--light:#fff0f6;
+--purple:#b9a5e8;
+--dark:#573d64;
+--green:#9ac9a4;
+--white:#fff;
+--shadow:0 8px 25px #9b66851c;
+}
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:"Trebuchet MS",sans-serif;
+background:linear-gradient(140deg,#fff2f7,#f3edff,#eaf8f0);
+color:var(--dark);
+}
+button{font:inherit;cursor:pointer;border:0}
+.game{max-width:1150px;margin:auto;padding:18px}
+header{
+display:flex;justify-content:space-between;align-items:center;
+background:#ffffffd9;padding:18px;border-radius:22px;
+box-shadow:var(--shadow);margin-bottom:18px;gap:10px;
+}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{font-size:36px}
+.logo h1{margin:0;letter-spacing:3px;color:#d56b9d}
+.logo small{color:#947c9b}
+.wallet{display:flex;gap:10px;flex-wrap:wrap}
+.wallet span{
+background:var(--light);padding:10px;border-radius:14px;
+font-weight:bold;
+}
+.panel{
+background:#ffffffed;border-radius:23px;padding:20px;
+box-shadow:var(--shadow);margin-bottom:18px;
+}
+.profile{display:grid;grid-template-columns:1fr 1.5fr;gap:20px}
+.player{display:flex;align-items:center;gap:15px}
+.avatar{
+width:85px;height:85px;background:var(--light);
+border-radius:25px;display:grid;place-items:center;
+font-size:48px;
+}
+.xpbar,.timerbar{
+height:13px;background:#f1e5ef;border-radius:20px;overflow:hidden;
+}
+.xpfill{
+height:100%;width:0%;
+background:linear-gradient(90deg,#ed90bb,#bba4ed);
+transition:width .5s;
+}
+.stats{display:flex;justify-content:space-around;margin-top:18px}
+.stats div{text-align:center}
+.stats strong{display:block;font-size:22px}
+.mika{
+display:grid;grid-template-columns:180px 1fr;
+align-items:center;gap:20px;
+background:linear-gradient(120deg,#ffe2f0,#eee4ff);
+}
+.mika-art{
+height:170px;display:grid;place-items:center;
+font-size:110px;position:relative;
+animation:float 3s ease-in-out infinite;
+}
+@keyframes float{50%{transform:translateY(-9px)}}
+.mika-dialog{
+background:white;padding:20px;border-radius:20px;
+position:relative;
+}
+.mika-dialog:before{
+content:"";position:absolute;left:-10px;top:35px;
+border-width:10px;border-style:solid;
+border-color:transparent white transparent transparent;
+}
+.mika-dialog p{line-height:1.6}
+h2{font-size:21px}
+.heading{
+display:flex;justify-content:space-between;
+align-items:center;gap:10px;flex-wrap:wrap;
+}
+.tag{
+background:#ffe5f0;padding:7px 12px;
+border-radius:20px;font-size:12px;font-weight:bold;
+}
+.customer{
+display:flex;gap:15px;align-items:center;
+background:#fff4f8;padding:15px;border-radius:17px;
+}
+.customer-avatar{font-size:48px}
+.recipe{
+display:flex;gap:15px;align-items:center;
+background:#f3efff;padding:15px;border-radius:17px;
+margin-top:12px;
+}
+.recipe-emoji{font-size:45px}
+.timer{text-align:center;margin:18px}
+.timer strong{display:block;font-size:30px;color:#d56b9d}
+.grid{
+display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));
+gap:10px;
+}
+.ingredient{
+background:#fff1f7;padding:13px 7px;border-radius:16px;
+display:flex;flex-direction:column;align-items:center;
+gap:7px;border:2px solid transparent;transition:.2s;
+}
+.ingredient:hover{transform:translateY(-3px)}
+.ingredient.selected{
+border-color:#d86da2;background:#f9d9e9;
+}
+.ingredient span:first-child{font-size:29px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+.btn{
+padding:12px 17px;border-radius:14px;
+font-weight:bold;background:#f3e9ff;color:#684b78;
+}
+.primary{
+background:linear-gradient(100deg,#ed92bb,#b9a4eb);
+color:white;
+}
+.green{background:#e0f2e3;color:#457b50}
+.danger{background:#ffe5e5;color:#b94b4b}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.feedback{
+background:#fff2f8;padding:12px;border-radius:12px;
+min-height:42px;line-height:1.5;
+}
+.badges,.shop,.unlocks,.missions{
+display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+gap:12px;
+}
+.item{
+padding:15px;background:#fff4f8;border-radius:16px;
+border:1px solid #f8dfeb;
+}
+.item span{font-size:28px}
+.item strong{display:block;margin:8px 0}
+.item small{color:#927b9a}
+.item.locked{opacity:.5;filter:grayscale(.7)}
+.shop-item{text-align:center}
+.shop-item button{margin-top:10px}
+.settings label{
+display:flex;justify-content:space-between;
+padding:13px;border-bottom:1px solid #f4e6ef;
+}
+input[type=checkbox]{accent-color:#d56b9d;width:20px;height:20px}
+footer{text-align:center;padding:25px;color:#927b9a}
+.modal{
+position:fixed;inset:0;background:#38253c9c;
+display:grid;place-items:center;padding:20px;z-index:10;
+}
+.modal[hidden]{display:none}
+.modal-content{
+width:min(420px,100%);text-align:center;
+background:white;padding:32px;border-radius:27px;
+box-shadow:0 20px 60px #30203955;
+animation:pop .3s ease;
+}
+@keyframes pop{
+from{transform:scale(.8);opacity:0}
+to{transform:scale(1);opacity:1}
+}
+.modal-content h2{color:#d56b9d;font-size:30px}
+.notification{
+position:fixed;bottom:20px;right:20px;
+background:white;padding:18px;border-radius:17px;
+box-shadow:var(--shadow);z-index:20;max-width:300px;
+animation:pop .3s;
+}
+@media(max-width:650px){
+.game{padding:10px}
+header{align-items:flex-start}
+.logo h1{font-size:19px}
+.profile{grid-template-columns:1fr}
+.mika{grid-template-columns:1fr;text-align:center}
+.mika-art{height:125px;font-size:90px}
+.mika-dialog:before{display:none}
+.panel{padding:15px}
+.stats strong{font-size:18px}
+}
+</style>
 </head>
 
 <body>
-
-<div class="app-shell">
-
-    <!-- HEADER -->
-    <header class="topbar">
-
-        <a href="#" class="brand">
-            <span class="brand-mark">🌱</span>
-            <span>
-                <strong>FRESHOPIA</strong>
-                <small>THE HEALTHY FOOD ADVENTURE</small>
-            </span>
-        </a>
-
-        <div class="top-actions">
-            <button id="musicToggle" class="icon-button" type="button">
-                ♫ <span>Music</span>
-            </button>
-
-            <button id="voiceToggle" class="icon-button" type="button">
-                🔊 <span>Voice</span>
-            </button>
-
-            <button id="soundToggle" class="icon-button" type="button">
-                ✨ <span>Sounds</span>
-            </button>
-        </div>
-
-    </header>
-
-    <main>
-
-        <!-- WELCOME SCREEN -->
-        <section class="hero panel" id="welcomeScreen">
-
-            <div class="hero-copy">
-
-                <p class="eyebrow">A LITTLE KINDNESS CAN CHANGE THE PLANET</p>
-
-                <h1>
-                    Welcome to
-                    <span>Freshopia!</span>
-                </h1>
-
-                <p class="hero-text">
-                    Cook colorful and healthy meals, discover new recipes,
-                    reduce food waste and build a greener future!
-                </p>
-
-                <label for="playerName" class="name-label">
-                    What should we call you, Chef?
-                </label>
-
-                <input
-                    type="text"
-                    id="playerName"
-                    class="text-input"
-                    maxlength="16"
-                    placeholder="Enter your chef name"
-                    autocomplete="nickname"
-                >
-
-                <button id="startButton" class="primary-button" type="button">
-                    Start My Adventure →
-                </button>
-
-                <p class="microcopy">
-                    Your adventure begins here!
-                </p>
-
-            </div>
-
-            <div class="hero-art" aria-hidden="true">
-                <div class="sun-orb"></div>
-                <div class="hero-food">🥑 🍓 🥦</div>
-
-                <div class="hero-mika">
-                    <span class="mika-face">👩🏻‍🍳</span>
-                    <span class="sparkle">✦</span>
-                </div>
-
-                <div class="leaf leaf-one">🌿</div>
-                <div class="leaf leaf-two">🍃</div>
-            </div>
-
-        </section>
-
-
-        <!-- MAIN GAME -->
-        <section id="gameScreen" class="game-screen hidden">
-
-            <!-- PLAYER DASHBOARD -->
-            <section class="dashboard panel">
-
-                <div class="player-block">
-
-                    <div class="player-avatar" id="playerAvatar">
-                        👩‍🍳
-                    </div>
-
-                    <div>
-                        <span class="muted-label">YOUR KITCHEN</span>
-                        <h2 id="welcomePlayer">Hello, Chef!</h2>
-                        <span class="level-name" id="levelName">
-                            Level 1 · Beginner Chef
-                        </span>
-                    </div>
-
-                </div>
-
-                <div class="stats-grid">
-
-                    <div class="stat">
-                        <span>⭐ Level</span>
-                        <strong id="levelValue">1</strong>
-                    </div>
-
-                    <div class="stat">
-                        <span>✨ XP</span>
-                        <strong id="xpValue">0 / 100</strong>
-                    </div>
-
-                    <div class="stat">
-                        <span>🪙 Coins</span>
-                        <strong id="coinValue">0</strong>
-                    </div>
-
-                    <div class="stat">
-                        <span>🌍 Eco Points</span>
-                        <strong id="ecoValue">0</strong>
-                    </div>
-
-                </div>
-
-                <div class="xp-track">
-                    <div class="xp-fill" id="xpFill"></div>
-                </div>
-
-            </section>
-
-
-            <div class="game-layout">
-
-                <!-- GAME AREA -->
-                <section class="play-column">
-
-                    <!-- CUSTOMER ORDER -->
-                    <section class="order-panel panel">
-
-                        <div class="section-heading">
-
-                            <div>
-                                <p class="eyebrow">THE CUSTOMER IS WAITING</p>
-                                <h2>Today's Healthy Order</h2>
-                            </div>
-
-                            <div class="timer-pill" id="timer">
-                                ⏱ 01:30
-                            </div>
-
-                        </div>
-
-                        <div class="customer-row">
-
-                            <div class="customer-avatar" id="customerAvatar">
-                                🧑🏽
-                            </div>
-
-                            <div class="customer-speech">
-
-                                <strong id="customerName">Alex</strong>
-
-                                <p id="customerRequest">
-                                    I'd love a fresh and healthy meal!
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <div class="recipe-hint">
-
-                            <span>🍽️</span>
-
-                            <div>
-                                <strong id="orderTitle">
-                                    Rainbow Energy Bowl
-                                </strong>
-
-                                <small id="orderDescription">
-                                    A colorful meal packed with goodness.
-                                </small>
-                            </div>
-
-                            <span class="order-reward" id="orderReward">
-                                +30 XP
-                            </span>
-
-                        </div>
-
-                    </section>
-
-
-                    <!-- INGREDIENT SELECTION -->
-                    <section class="ingredients-panel panel">
-
-                        <div class="section-heading">
-
-                            <div>
-                                <p class="eyebrow">BUILD A BETTER PLATE</p>
-                                <h2>Choose Your Ingredients</h2>
-                            </div>
-
-                            <span class="small-counter" id="ingredientCounter">
-                                0 selected
-                            </span>
-
-                        </div>
-
-                        <div
-                            class="ingredient-grid"
-                            id="ingredientGrid">
-                        </div>
-
-                        <div class="selection-row">
-
-                            <div>
-                                <strong>Your Plate</strong>
-                                <p id="selectionText">
-                                    Choose ingredients for the order.
-                                </p>
-                            </div>
-
-                            <button
-                                class="secondary-button"
-                                id="clearButton"
-                                type="button">
-                                Clear Plate
-                            </button>
-
-                        </div>
-
-                        <div class="game-actions">
-
-                            <button
-                                class="primary-button"
-                                id="serveButton"
-                                type="button"
-                                disabled>
-                                Serve the Meal 🍃
-                            </button>
-
-                            <button
-                                class="text-button"
-                                id="hintButton"
-                                type="button">
-                                Ask Mika for a Hint
-                            </button>
-
-                        </div>
-
-                        <div
-                            class="feedback hidden"
-                            id="feedback"
-                            role="status">
-                        </div>
-
-                    </section>
-
-
-                    <!-- ECO MISSION -->
-                    <section class="mission-panel panel">
-
-                        <div class="section-heading">
-
-                            <div>
-                                <p class="eyebrow">YOUR MINI CHALLENGE</p>
-                                <h2>Eco Mission</h2>
-                            </div>
-
-                            <span class="mission-icon">🌎</span>
-
-                        </div>
-
-                        <p id="missionText">
-                            Complete an order without wasting ingredients.
-                        </p>
-
-                        <div class="mission-progress">
-                            <div id="missionFill"></div>
-                        </div>
-
-                        <small id="missionProgressText">
-                            0 / 1 completed
-                        </small>
-
-                    </section>
-
-                </section>
-
-
-                <!-- SIDEBAR -->
-                <aside class="side-column">
-
-                    <!-- MIKA ANIME GUIDE -->
-                    <section class="mika-panel panel">
-
-                        <div class="mika-header">
-
-                            <span class="online-dot"></span>
-                            <strong>MIKA</strong>
-                            <span class="guide-tag">YOUR GUIDE</span>
-
-                        </div>
-
-                        <div class="mika-stage">
-
-                            <div class="mika-sparkles">
-                                ✦ ✧ ✦
-                            </div>
-
-                            <div
-                                class="mika-character"
-                                id="mikaCharacter"
-                                aria-label="Mika, your anime kitchen guide">
-
-                                <div class="mika-hair"></div>
-
-                                <div class="mika-ear left"></div>
-                                <div class="mika-ear right"></div>
-
-                                <div class="mika-head">
-
-                                    <div class="mika-eyes">
-                                        <i></i>
-                                        <i></i>
-                                    </div>
-
-                                    <div class="mika-blush left"></div>
-                                    <div class="mika-blush right"></div>
-
-                                    <div class="mika-mouth"></div>
-
-                                </div>
-
-                                <div class="mika-neck"></div>
-
-                                <div class="mika-body">
-                                    <span>🌿</span>
-                                </div>
-
-                                <div class="mika-hat">♧</div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="mika-dialogue">
-
-                            <span class="dialogue-name">
-                                Mika says
-                            </span>
-
-                            <p id="mikaMessage">
-                                Hi, Chef! I'm Mika. Let's make the world
-                                healthier, one plate at a time!
-                            </p>
-
-                            <button
-                                class="voice-line"
-                                id="repeatMika"
-                                type="button">
-                                ▶ Hear Mika
-                            </button>
-
-                        </div>
-
-                    </section>
-
-
-                    <!-- BADGES -->
-                    <section class="badges-panel panel">
-
-                        <div class="section-heading">
-
-                            <div>
-                                <p class="eyebrow">COLLECT THEM ALL</p>
-                                <h2>Your Badges</h2>
-                            </div>
-
-                            <span class="badge-count" id="badgeCount">
-                                0 / 6
-                            </span>
-
-                        </div>
-
-                        <div
-                            class="badge-list"
-                            id="badgeList">
-                        </div>
-
-                    </section>
-
-
-                    <!-- UNLOCK SYSTEM -->
-                    <section class="unlock-panel panel">
-
-                        <p class="eyebrow">WHAT'S NEXT?</p>
-
-                        <h2>Unlock New Things</h2>
-
-                        <div
-                            id="unlockList"
-                            class="unlock-list">
-                        </div>
-
-                    </section>
-
-                </aside>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- FOOTER -->
-    <footer>
-        <span>🌱 Freshopia</span>
-        <span>Cook Healthy · Waste Less · Live Green</span>
-    </footer>
-
+<div class="game">
+
+<header>
+<div class="logo">
+<div class="logo-icon">🌸</div>
+<div>
+<h1>FRESHOPIA</h1>
+<small>Anime Cooking Adventure</small>
+</div>
+</div>
+<div class="wallet">
+<span>🪙 <b id="coins">150</b></span>
+<span>🌍 <b id="eco">0</b></span>
+</div>
+</header>
+
+<section class="panel profile">
+<div class="player">
+<div class="avatar" id="avatar">👩‍🍳</div>
+<div>
+<h2 id="nickname">Chef</h2>
+<p>Freshopia Explorer</p>
+<strong>LEVEL <span id="level">1</span></strong>
+</div>
+</div>
+<div>
+<div class="heading">
+<strong>⭐ Experience</strong>
+<small id="xpText">0 / 250 XP</small>
+</div>
+<div class="xpbar"><div class="xpfill" id="xpFill"></div></div>
+<div class="stats">
+<div><strong id="orders">0</strong><small>Orders</small></div>
+<div><strong id="badgesCount">0</strong><small>Badges</small></div>
+<div><strong id="perfect">0</strong><small>Perfect</small></div>
+</div>
+</div>
+</section>
+
+<section class="panel mika">
+<div class="mika-art" id="mikaArt">👩🏻‍🍳</div>
+<div class="mika-dialog">
+<strong>💗 MIKA</strong>
+<p id="mikaMessage">Welcome to Freshopia! Let's cook something amazing!</p>
+<button class="btn" id="speak">🔊 Listen to Mika</button>
+</div>
+</section>
+
+<section class="panel">
+<div class="heading">
+<h2>💌 Customer Order</h2>
+<span class="tag">LIVE ORDER</span>
+</div>
+<div class="customer">
+<div class="customer-avatar" id="customerAvatar">👩🏻</div>
+<div>
+<strong id="customerName">Waiting for Customer</strong>
+<p id="customerMessage">Your first customer is waiting!</p>
+</div>
+</div>
+<div class="recipe">
+<div class="recipe-emoji" id="recipeEmoji">🥗</div>
+<div>
+<small>CURRENT RECIPE</small>
+<h3 id="recipeName">Rainbow Salad</h3>
+</div>
+</div>
+<div class="timer">
+<small>⏱️ TIME REMAINING</small>
+<strong id="timer">03:00</strong>
+</div>
+<div class="feedback" id="feedback">Start your restaurant!</div>
+</section>
+
+<section class="panel">
+<div class="heading">
+<h2>🥑 Ingredient Kitchen</h2>
+<span class="tag">COOKING MODE</span>
+</div>
+<div class="grid" id="ingredients"></div>
+<div class="actions">
+<button class="btn" id="clear">Clear</button>
+<button class="btn" id="hint">💡 Hint (15 coins)</button>
+<button class="btn primary" id="serve">🍽️ Serve Order</button>
+</div>
+<button class="btn primary" id="start" style="width:100%;margin-top:15px">
+▶ Start Game
+</button>
+</section>
+
+<section class="panel">
+<div class="heading"><h2>🎯 Daily Missions</h2></div>
+<div class="missions" id="missions"></div>
+<button class="btn primary" id="dailyReward" style="margin-top:14px">
+🎁 Claim Daily Reward
+</button>
+</section>
+
+<section class="panel">
+<div class="heading">
+<h2>🏆 Achievement Collection</h2>
+<span id="badgeTotal">0</span>
+</div>
+<div class="badges" id="badgeList"></div>
+</section>
+
+<section class="panel">
+<div class="heading"><h2>🔓 Level Rewards</h2></div>
+<div class="unlocks" id="unlockList"></div>
+</section>
+
+<section class="panel">
+<div class="heading"><h2>👗 Mika's Fashion Shop</h2></div>
+<div class="shop" id="shop"></div>
+</section>
+
+<section class="panel">
+<div class="heading"><h2>⚙️ Settings</h2></div>
+<div class="settings">
+<label>🎵 Background Music <input type="checkbox" id="music" checked></label>
+<label>🔊 Game Sounds <input type="checkbox" id="sound" checked></label>
+<label>💗 Mika Voice <input type="checkbox" id="voice" checked></label>
+</div>
+<div class="actions">
+<button class="btn" id="report">📊 Player Report</button>
+<button class="btn danger" id="reset">Reset Game</button>
+</div>
+</section>
+
+<footer>
+<h3>🌸 FRESHOPIA</h3>
+<p>Cook with love. Save food. Protect the planet.</p>
+<small>Ultimate Anime Game Engine 7.0</small>
+</footer>
 </div>
 
-
-<!-- NOTIFICATION -->
-<div
-    class="toast"
-    id="toast"
-    role="status"
-    aria-live="polite">
+<div class="modal" id="resultModal" hidden>
+<div class="modal-content">
+<div style="font-size:50px">✨</div>
+<h2 id="resultTitle">Congratulations!</h2>
+<h3 id="resultSubtitle">Wonderful Work!</h3>
+<p id="resultDescription">Your reward is waiting!</p>
+<button class="btn primary" id="closeResult">Continue</button>
+</div>
 </div>
 
-
-<!-- LEVEL UP MODAL -->
-<div
-    class="modal-backdrop hidden"
-    id="levelModal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="levelModalTitle">
-
-    <div class="level-modal">
-
-        <button
-            class="modal-close"
-            id="closeLevelModal"
-            type="button"
-            aria-label="Close">
-            ×
-        </button>
-
-        <div class="level-confetti">
-            ✦ ✧ ⭐ ✧ ✦
-        </div>
-
-        <div class="modal-mika">👩🏻‍🍳</div>
-
-        <p class="eyebrow">
-            MIKA IS SO PROUD OF YOU!
-        </p>
-
-        <h2 id="levelModalTitle">
-            LEVEL UP!
-        </h2>
-
-        <p
-            class="level-modal-message"
-            id="levelModalMessage">
-            You did it, Chef! A new adventure is waiting.
-        </p>
-
-        <div class="new-level" id="newLevelValue">
-            LEVEL 2
-        </div>
-
-        <div
-            class="unlock-announcement"
-            id="unlockAnnouncement">
-            🎁 A new feature has been unlocked!
-        </div>
-
-        <button
-            class="primary-button"
-            id="continueButton"
-            type="button">
-            Let's Keep Growing! 🌱
-        </button>
-
-    </div>
-
+<div class="modal" id="levelModal" hidden>
+<div class="modal-content">
+<div style="font-size:65px">🌟</div>
+<h2 id="levelTitle">LEVEL UP!</h2>
+<h3>MIKA IS PROUD OF YOU!</h3>
+<p id="levelDescription">A new adventure awaits!</p>
+<button class="btn primary" id="closeLevel">Awesome!</button>
+</div>
 </div>
 
+<script>
+"use strict";
 
-<!-- ROUND RESULT MODAL -->
-<div
-    class="modal-backdrop hidden"
-    id="resultModal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="resultTitle">
+/* =========================================
+   FRESHOPIA ENGINE 7.0
+========================================= */
 
-    <div class="result-modal">
+const KEY="freshopia_engine_7";
 
-        <div class="result-emoji" id="resultEmoji">
-            🎉
-        </div>
+const recipes=[
+{id:"rainbow",name:"Rainbow Salad",emoji:"🥗",ingredients:["tomato","lettuce","carrot","avocado"],level:1,xp:100,coins:35,eco:20},
+{id:"green",name:"Green Energy Bowl",emoji:"🥑",ingredients:["avocado","broccoli","rice","lemon"],level:2,xp:130,coins:40,eco:30},
+{id:"pasta",name:"Garden Pasta",emoji:"🍝",ingredients:["pasta","tomato","mushroom","oliveoil"],level:3,xp:160,coins:50,eco:25},
+{id:"toast",name:"Protein Toast",emoji:"🍞",ingredients:["bread","egg","avocado","cheese"],level:4,xp:180,coins:55,eco:25},
+{id:"dessert",name:"Fresh Fruit Dessert",emoji:"🍓",ingredients:["strawberry","banana","apple","milk"],level:5,xp:200,coins:65,eco:40},
+{id:"rice",name:"Eco Vegetable Rice",emoji:"🍚",ingredients:["rice","carrot","corn","beans"],level:7,xp:250,coins:75,eco:50},
+{id:"deluxe",name:"Deluxe Chef Plate",emoji:"🍽️",ingredients:["pasta","tomato","cheese","mushroom","oliveoil"],level:10,xp:300,coins:100,eco:45},
+{id:"legend",name:"Legendary Garden Feast",emoji:"👑",ingredients:["broccoli","avocado","rice","beans","carrot"],level:15,xp:450,coins:150,eco:80},
+{id:"champion",name:"Freshopia Champion Dish",emoji:"🏆",ingredients:["tomato","avocado","pasta","egg","broccoli"],level:20,xp:600,coins:200,eco:100}
+];
 
-        <h2 id="resultTitle">
-            Kitchen Closed!
-        </h2>
+const ingredients=[
+["tomato","Tomato","🍅"],
+["lettuce","Lettuce","🥬"],
+["carrot","Carrot","🥕"],
+["avocado","Avocado","🥑"],
+["broccoli","Broccoli","🥦"],
+["mushroom","Mushroom","🍄"],
+["corn","Corn","🌽"],
+["pepper","Pepper","🫑"],
+["apple","Apple","🍎"],
+["strawberry","Strawberry","🍓"],
+["lemon","Lemon","🍋"],
+["banana","Banana","🍌"],
+["rice","Rice","🍚"],
+["bread","Wholegrain Bread","🍞"],
+["pasta","Pasta","🍝"],
+["egg","Egg","🥚"],
+["beans","Beans","🫘"],
+["milk","Milk","🥛"],
+["cheese","Cheese","🧀"],
+["oliveoil","Olive Oil","🫒"]
+];
 
-        <p id="resultMessage">
-            Great work, Chef!
-        </p>
+const customers=[
+["Luna","👩🏻","I'd love something fresh!"],
+["Aiko","👧🏻","Can you make a healthy meal?"],
+["Oliver","🧑🏻","Surprise me with your best dish!"],
+["Mia","👩🏽","Something delicious, please!"],
+["Noah","🧑🏼","I'm hungry! Let's order!"],
+["Emma","👩🏼","I love colorful food!"]
+];
 
-        <div class="result-stats">
+const rewards=[
+[2,"Kitchen Tools"],
+[3,"New Recipes"],
+[4,"Eco Kitchen"],
+[5,"Mika Pink Outfit"],
+[7,"Restaurant Expansion"],
+[10,"Master Chef"],
+[12,"Golden Kitchen"],
+[15,"Legendary Recipes"],
+[20,"Champion Restaurant"],
+[25,"Royal Chef"],
+[30,"Freshopia Legend"]
+];
 
-            <div>
-                <strong id="resultScore">0</strong>
-                <span>Points</span>
-            </div>
+const badges=[
+["first","🍽️","First Order",p=>p.orders>=1],
+["eco","🌱","Eco Beginner",p=>p.eco>=50],
+["chef","👩‍🍳","Professional Chef",p=>p.orders>=10],
+["perfect","💎","Perfectionist",p=>p.perfect>=10],
+["master","⭐","Master Chef",p=>p.level>=10],
+["planet","🌍","Eco Master",p=>p.eco>=500],
+["legend","👑","Freshopia Legend",p=>p.level>=30],
+["time","⏰","Dedicated Player",p=>p.playTime>=1800],
+["collector","👗","Fashion Collector",p=>p.owned.length>=4]
+];
 
-            <div>
-                <strong id="resultOrders">0</strong>
-                <span>Orders</span>
-            </div>
+const shopItems=[
+["default","Classic Mika","👩‍🍳",0,1],
+["pink","Pink Mika","👩🏻‍🎤",250,5],
+["chef","Master Chef Mika","👩🏻‍🍳",400,10],
+["star","Star Mika","🌟",600,15],
+["royal","Royal Mika","👸🏻",800,25]
+];
 
-            <div>
-                <strong id="resultWaste">0</strong>
-                <span>Waste</span>
-            </div>
+function newPlayer(){
+return {
+name:"Chef",level:1,xp:0,coins:150,eco:0,
+orders:0,perfect:0,failed:0,playTime:0,session:0,
+badges:[],unlocks:[],owned:["default"],outfit:"default",
+completed:[],dailyDate:"",dailyClaimed:false,
+music:true,sound:true,voice:true,avatar:"👩‍🍳"
+};
+}
 
-        </div>
+let player;
+try{
+player={...newPlayer(),...JSON.parse(localStorage.getItem(KEY)||"null")};
+}catch(e){player=newPlayer();}
 
-        <button
-            class="primary-button"
-            id="playAgainButton"
-            type="button">
-            Play Another Round ↻
-        </button>
+let selected=[];
+let current=null;
+let customer=null;
+let time=180;
+let timer=null;
+let sessionTimer=null;
+let audio=null;
+let musicNodes=[];
+let musicLoop=null;
 
-    </div>
+const $=id=>document.getElementById(id);
+const set=(id,value)=>{if($(id))$(id).textContent=value};
+const random=a=>a[Math.floor(Math.random()*a.length)];
+const xpNeeded=level=>250+(level-1)*150;
 
-</div>
+function save(){
+try{localStorage.setItem(KEY,JSON.stringify(player));}
+catch(e){console.warn("Save failed",e);}
+}
 
+function notify(title,subtitle,description){
+set("resultTitle",title);
+set("resultSubtitle",subtitle);
+set("resultDescription",description);
+$("resultModal").hidden=false;
+}
 
-<!-- GAME ENGINE -->
-<script src="script.js"></script>
+function closeModal(id){$(id).hidden=true;}
 
+function message(text,speak=true){
+set("mikaMessage",text);
+$("mikaArt").classList.remove("mika-excited");
+void $("mikaArt").offsetWidth;
+$("mikaArt").classList.add("mika-excited");
+if(speak&&player.voice&&"speechSynthesis"in window){
+speechSynthesis.cancel();
+const s=new SpeechSynthesisUtterance(text);
+s.lang="en-US";s.pitch=1.35;s.rate=1;
+speechSynthesis.speak(s);
+}
+}
+
+function initAudio(){
+if(audio)return;
+const AC=window.AudioContext||window.webkitAudioContext;
+if(!AC)return;
+audio=new AC();
+if(audio.state==="suspended")audio.resume();
+if(player.music)startMusic();
+}
+
+function effect(freq,duration=.2){
+if(!player.sound||!audio)return;
+const osc=audio.createOscillator();
+const gain=audio.createGain();
+osc.frequency.value=freq;
+gain.gain.setValueAtTime(.06,audio.currentTime);
+gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);
+osc.connect(gain);gain.connect(audio.destination);
+osc.start();osc.stop(audio.currentTime+duration);
+}
+
+function startMusic(){
+if(!audio||musicNodes.length)return;
+[261.63,329.63,392,440,392,329.63].forEach(f=>{
+const o=audio.createOscillator(),g=audio.createGain();
+o.frequency.value=f;o.type="sine";g.gain.value=.003;
+o.connect(g);g.connect(audio.destination);o.start();
+musicNodes.push({o,g});
+});
+let i=0;
+musicLoop=setInterval(()=>{
+const n=musicNodes[i++%musicNodes.length];
+n.g.gain.setTargetAtTime(.018,audio.currentTime,.1);
+setTimeout(()=>n.g.gain.setTargetAtTime(.003,audio.currentTime,.1),250);
+},450);
+}
+
+function stopMusic(){
+clearInterval(musicLoop);musicLoop=null;
+musicNodes.forEach(n=>{try{n.o.stop()}catch(e){}});
+musicNodes=[];
+}
+
+function update(){
+set("coins",player.coins);
+set("eco",player.eco);
+set("level",player.level);
+set("xpText",`${player.xp} / ${xpNeeded(player.level)} XP`);
+set("orders",player.orders);
+set("perfect",player.perfect);
+set("badgesCount",player.badges.length);
+set("badgeTotal",player.badges.length);
+set("nickname",player.name);
+set("xpValue",player.xp);
+$("xpFill").style.width=Math.min(100,player.xp/xpNeeded(player.level)*100)+"%";
+$("avatar").textContent=player.avatar;
+$("mikaArt").textContent=player.avatar;
+$("music").checked=player.music;
+$("sound").checked=player.sound;
+$("voice").checked=player.voice;
+}
+
+function addXP(amount){
+player.xp+=amount;
+while(player.xp>=xpNeeded(player.level)&&player.level<30){
+player.xp-=xpNeeded(player.level);
+player.level++;
+levelUp();
+}
+update();
+}
+
+function levelUp(){
+const bonus=player.level*30;
+player.coins+=bonus;
+const reward=rewards.find(r=>r[0]===player.level);
+if(reward&&!player.unlocks.includes(reward[1]))player.unlocks.push(reward[1]);
+set("levelTitle",`LEVEL ${player.level}!`);
+set("levelDescription",`Mika is proud of you! You earned ${bonus} bonus coins! ${reward?reward[1]+" unlocked!":""}`);
+$("levelModal").hidden=false;
+effect(784);setTimeout(()=>effect(988),150);
+checkBadges();
+}
+
+function renderIngredients(){
+$("ingredients").innerHTML="";
+ingredients.forEach(([id,name,emoji])=>{
+const b=document.createElement("button");
+b.className="ingredient"+(selected.includes(id)?" selected":"");
+b.innerHTML=`<span>${emoji}</span><strong>${name}</strong>`;
+b.onclick=()=>{
+if(!current)return;
+if(selected.includes(id))selected=selected.filter(x=>x!==id);
+else if(selected.length<6)selected.push(id);
+renderIngredients();effect(440);
+};
+$("ingredients").appendChild(b);
+});
+}
+
+function start(){
+initAudio();
+if(timer)return;
+if(!sessionTimer){
+sessionTimer=setInterval(()=>{
+player.playTime++;player.session++;
+checkTimeUnlocks();checkBadges();
+if(player.playTime%30===0)save();
+},1000);
+}
+generateOrder();
+$("start").disabled=true;
+$("start").textContent="Order Running";
+player.started=true;
+message("Welcome to Freshopia! Let's make something amazing!");
+save();
+}
+
+function generateOrder(){
+clearInterval(timer);timer=null;
+const available=recipes.filter(r=>r.level<=player.level);
+current=random(available);
+customer=random(customers);
+selected=[];time=180;
+set("recipeName",current.name);
+set("recipeEmoji",current.emoji);
+set("customerName",customer[0]);
+set("customerAvatar",customer[1]);
+set("customerMessage",customer[2]);
+set("timer","03:00");
+set("feedback","Select the correct ingredients!");
+renderIngredients();
+timer=setInterval(()=>{
+time--;
+set("timer",`${String(Math.floor(time/60)).padStart(2,"0")}:${String(time%60).padStart(2,"0")}`);
+if(time<=0){
+clearInterval(timer);timer=null;
+player.failed++;
+set("feedback","Time is up! Try again!");
+message("Don't give up! Every chef needs practice!");
+enableNext();
+save();
+}
+},1000);
+}
+
+function enableNext(){
+$("start").disabled=false;
+$("start").textContent="▶ Next Order";
+}
+
+function serve(){
+if(!current||!player.started){
+set("feedback","Start the game first!");return;
+}
+const missing=current.ingredients.filter(x=>!selected.includes(x));
+const extra=selected.filter(x=>!current.ingredients.includes(x));
+if(missing.length||extra.length){
+player.failed++;
+set("feedback",`Check your ingredients! Missing: ${missing.length} | Extra: ${extra.length}`);
+message("Let's try again together!");
+save();return;
+}
+clearInterval(timer);timer=null;
+player.orders++;player.perfect++;
+const bonus=Math.floor(time/10);
+const earned=current.xp+bonus;
+const coins=current.coins+Math.floor(bonus/2);
+addXP(earned);
+player.coins+=coins;
+player.eco+=current.eco;
+set("feedback",`Perfect! +${earned} XP, +${coins} Coins, +${current.eco} Eco Points!`);
+message("Amazing work! You're a wonderful chef!");
+effect(659);setTimeout(()=>effect(880),150);
+notify("ORDER COMPLETED!",current.name,`+${earned} XP • +${coins} Coins • +${current.eco} Eco Points`);
+checkBadges();checkDaily();update();renderDaily();save();
+enableNext();
+}
+
+function hint(){
+if(!current)return;
+if(player.coins<15){set("feedback","Not enough coins!");return;}
+player.coins-=15;
+const missing=current.ingredients.filter(x=>!selected.includes(x));
+const item=ingredients.find(x=>x[0]===missing[0]);
+set("feedback",item?`Mika's Hint: Add ${item[2]} ${item[1]}!`:"All ingredients selected!");
+update();save();
+}
+
+function renderBadges(){
+$("badgeList").innerHTML="";
+badges.forEach(([id,emoji,name,test])=>{
+const unlocked=player.badges.includes(id);
+const div=document.createElement("div");
+div.className="item "+(unlocked?"":"locked");
+div.innerHTML=`<span>${emoji}</span><strong>${name}</strong><small>${unlocked?"UNLOCKED":"LOCKED"}</small>`;
+$("badgeList").appendChild(div);
+});
+}
+
+function checkBadges(){
+badges.forEach(([id,emoji,name,test])=>{
+if(!player.badges.includes(id)&&test(player)){
+player.badges.push(id);player.coins+=75;
+notify("NEW BADGE!",emoji+" "+name,"You earned 75 bonus coins!");
+effect(988);
+}
+});
+renderBadges();update();
+}
+
+function renderUnlocks(){
+$("unlockList").innerHTML="";
+rewards.forEach(([level,name])=>{
+const unlocked=player.level>=level;
+const d=document.createElement("div");
+d.className="item "+(unlocked?"":"locked");
+d.innerHTML=`<strong>${unlocked?"🔓":"🔒"} ${name}</strong><small>Level ${level}</small>`;
+$("unlockList").appendChild(d);
+});
+}
+
+function dailyReset(){
+const today=new Date().toLocaleDateString("en-CA");
+if(player.dailyDate!==today){
+player.dailyDate=today;
+player.completed=[];
+player.dailyClaimed=false;
+save();
+}
+}
+
+function dailyData(){
+return [
+{id:"orders",name:"Complete 3 Orders",reward:100,done:()=>player.orders>=3},
+{id:"perfect",name:"Complete 2 Perfect Dishes",reward:100,done:()=>player.perfect>=2},
+{id:"eco",name:"Earn 50 Eco Points",reward:100,done:()=>player.eco>=50}
+];
+}
+
+function checkDaily(){
+dailyData().forEach(m=>{
+if(m.done()&&!player.completed.includes(m.id)){
+player.completed.push(m.id);player.coins+=m.reward;
+notify("DAILY MISSION COMPLETE!",m.name,`+${m.reward} Coins`);
+}
+});
+renderDaily();update();save();
+}
+
+function renderDaily(){
+$("missions").innerHTML="";
+dailyData().forEach(m=>{
+const done=player.completed.includes(m.id);
+const d=document.createElement("div");
+d.className="item";
+d.innerHTML=`<strong>${done?"✅":"🎯"} ${m.name}</strong><small>${done?"Completed":m.reward+" Coins"}</small>`;
+$("missions").appendChild(d);
+});
+}
+
+function claimDaily(){
+dailyReset();
+if(player.dailyClaimed){set("feedback","Daily reward already claimed!");return;}
+player.dailyClaimed=true;player.coins+=100;
+notify("DAILY REWARD!","🎁 Welcome back!","+100 Coins");
+update();save();
+}
+
+function renderShop(){
+$("shop").innerHTML="";
+shopItems.forEach(([id,name,emoji,price,level])=>{
+const owned=player.owned.includes(id);
+const d=document.createElement("div");
+d.className="item shop-item";
+d.innerHTML=`<span>${emoji}</span><strong>${name}</strong><small>Level ${level}</small><p>${owned?"Owned":price+" Coins"}</p><button class="btn" ${owned||player.level<level?"disabled":""}>${owned?"Owned":"Buy"}</button><button class="btn" ${!owned?"disabled":""}>Equip</button>`;
+const buttons=d.querySelectorAll("button");
+buttons[0].onclick=()=>buy(id);
+buttons[1].onclick=()=>equip(id);
+$("shop").appendChild(d);
+});
+}
+
+function buy(id){
+const item=shopItems.find(x=>x[0]===id);
+if(!item||player.owned.includes(id))return;
+if(player.level<item[4]||player.coins<item[3])return;
+player.coins-=item[3];player.owned.push(id);
+renderShop();checkBadges();update();save();
+notify("ITEM PURCHASED!",item[2]+" "+item[1],"Your new outfit is ready!");
+}
+
+function equip(id){
+if(!player.owned.includes(id))return;
+const item=shopItems.find(x=>x[0]===id);
+player.avatar=item[2];player.outfit=id;
+update();renderShop();save();
+message("I love my new outfit!");
+}
+
+function checkTimeUnlocks(){
+const list=[
+[60,"Quick Challenges"],
+[180,"Special Missions"],
+[300,"Bonus Rewards"],
+[600,"Advanced Kitchen"],
+[900,"Expert Missions"],
+[1800,"Legendary Challenges"]
+];
+list.forEach(([t,name])=>{
+if(player.session>=t&&!player.unlocks.includes(name)){
+player.unlocks.push(name);
+notify("NEW FEATURE UNLOCKED!",name,"Your dedication unlocked a new feature!");
+save();
+}
+});
+}
+
+function report(){
+notify("PLAYER REPORT",player.name+" | Level "+player.level,
+`XP: ${player.xp} | Coins: ${player.coins} | Eco: ${player.eco} | Orders: ${player.orders} | Badges: ${player.badges.length} | Play Time: ${Math.floor(player.playTime/60)} minutes`);
+}
+
+function reset(){
+if(!confirm("Reset all game progress?"))return;
+clearInterval(timer);clearInterval(sessionTimer);stopMusic();
+localStorage.removeItem(KEY);
+player=newPlayer();selected=[];current=null;
+initialize();message("A new adventure begins!");
+}
+
+function initialize(){
+dailyReset();
+update();
+renderIngredients();
+renderBadges();
+renderUnlocks();
+renderDaily();
+renderShop();
+$("music").checked=player.music;
+$("sound").checked=player.sound;
+$("voice").checked=player.voice;
+}
+
+$("start").onclick=start;
+$("serve").onclick=serve;
+$("clear").onclick=()=>{selected=[];renderIngredients();};
+$("hint").onclick=hint;
+$("dailyReward").onclick=claimDaily;
+$("report").onclick=report;
+$("reset").onclick=reset;
+$("closeResult").onclick=()=>closeModal("resultModal");
+$("closeLevel").onclick=()=>closeModal("levelModal");
+$("speak").onclick=()=>message($("mikaMessage").textContent);
+$("music").onchange=e=>{
+player.music=e.target.checked;
+if(player.music){initAudio();startMusic();}else stopMusic();
+save();
+};
+$("sound").onchange=e=>{player.sound=e.target.checked;save();};
+$("voice").onchange=e=>{
+player.voice=e.target.checked;
+if(!player.voice&&"speechSynthesis"in window)speechSynthesis.cancel();
+save();
+};
+
+document.addEventListener("visibilitychange",()=>{if(document.hidden)save();});
+window.addEventListener("beforeunload",save);
+
+initialize();
+message(`Welcome back, ${player.name}! Your Freshopia adventure continues!`,false);
+
+setInterval(save,10000);
+</script>
 </body>
 </html>
