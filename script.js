@@ -1,6 +1,6 @@
-// =====================================
-// FRESHOPIA - GAME ENGINE
-// =====================================
+// =============================================
+// FRESHOPIA - COMPLETE ANIME COOKING GAME
+// =============================================
 
 const defaultData = {
   name: "Chef",
@@ -15,27 +15,36 @@ const defaultData = {
   selectedIngredients: []
 };
 
-let game = {
-  ...defaultData,
-  ...JSON.parse(localStorage.getItem("freshopiaSave") || "{}")
-};
-
-function saveGame() {
-  localStorage.setItem("freshopiaSave", JSON.stringify(game));
+let savedData = {};
+try {
+  savedData = JSON.parse(localStorage.getItem("freshopiaSave") || "{}");
+} catch (error) {
+  savedData = {};
 }
 
+let game = {
+  ...defaultData,
+  ...savedData
+};
+
+game.xp = Math.max(0, Number(game.xp) || 0);
+game.level = Math.max(1, Number(game.level) || 1);
+game.character = Math.max(0, Number(game.character) || 0);
+
 const characters = [
-  {name:"Sakura", emoji:"👩🏻‍🍳", role:"Sweet Dessert Chef", color:"Pink"},
-  {name:"Mika", emoji:"👩🏼‍🍳", role:"Master Baker", color:"Purple"},
-  {name:"Hana", emoji:"👩🏽‍🍳", role:"Vegetable Specialist", color:"Green"},
-  {name:"Yuki", emoji:"👩🏻‍🍳", role:"Pasta Expert", color:"Blue"},
-  {name:"Akira", emoji:"👨🏻‍🍳", role:"Professional Chef", color:"Red"},
-  {name:"Ren", emoji:"👨🏽‍🍳", role:"Grill Master", color:"Orange"},
-  {name:"Aoi", emoji:"👩🏾‍🍳", role:"Healthy Food Chef", color:"Mint"},
-  {name:"Kaito", emoji:"👨🏻‍🍳", role:"Sushi Chef", color:"Black"},
-  {name:"Emi", emoji:"👩🏼‍🍳", role:"Pastry Artist", color:"Pink"},
-  {name:"Sora", emoji:"👨🏼‍🍳", role:"World Cuisine Chef", color:"Purple"}
+  {name:"Sakura",emoji:"👩🏻‍🍳",role:"Sweet Dessert Chef",color:"Pink"},
+  {name:"Mika",emoji:"👩🏼‍🍳",role:"Master Baker",color:"Purple"},
+  {name:"Hana",emoji:"👩🏽‍🍳",role:"Vegetable Specialist",color:"Green"},
+  {name:"Yuki",emoji:"👩🏻‍🍳",role:"Pasta Expert",color:"Blue"},
+  {name:"Akira",emoji:"👨🏻‍🍳",role:"Professional Chef",color:"Red"},
+  {name:"Ren",emoji:"👨🏽‍🍳",role:"Grill Master",color:"Orange"},
+  {name:"Aoi",emoji:"👩🏾‍🍳",role:"Healthy Food Chef",color:"Mint"},
+  {name:"Kaito",emoji:"👨🏻‍🍳",role:"Sushi Chef",color:"Black"},
+  {name:"Emi",emoji:"👩🏼‍🍳",role:"Pastry Artist",color:"Pink"},
+  {name:"Sora",emoji:"👨🏼‍🍳",role:"World Cuisine Chef",color:"Purple"}
 ];
+
+game.character = Math.min(game.character, characters.length - 1);
 
 const recipes = [
   {
@@ -62,7 +71,7 @@ const recipes = [
     time:"35 min",
     ingredients:["Flour","Tomato","Mozzarella","Olive Oil","Basil","Yeast"],
     steps:[
-      "Prepare the dough with flour, yeast and water.",
+      "Prepare dough with flour, yeast and water.",
       "Let the dough rise.",
       "Spread tomato sauce over the dough.",
       "Add mozzarella cheese.",
@@ -146,44 +155,71 @@ const ingredients = [
 ];
 
 const ingredientIcons = {
-  Pasta:"🍝", Rice:"🍚", Flour:"🌾", Egg:"🥚",
-  Milk:"🥛", Butter:"🧈", Tomato:"🍅",
-  Potato:"🥔", Carrot:"🥕", Lettuce:"🥬",
-  Cucumber:"🥒", Garlic:"🧄", Onion:"🧅",
-  Mushroom:"🍄", Broccoli:"🥦", Spinach:"🌿",
-  Chicken:"🍗", Beef:"🥩", Salmon:"🐟",
-  Shrimp:"🦐", Mozzarella:"🧀", Parmesan:"🧀",
-  "Feta Cheese":"🧀", "Olive Oil":"🫒",
-  Lemon:"🍋", Basil:"🌱", Parsley:"🌿",
-  Strawberry:"🍓", Banana:"🍌", Apple:"🍎",
-  Avocado:"🥑", Sugar:"🍬", Cocoa:"🍫",
-  Honey:"🍯", Nori:"🍃", "Rice Vinegar":"🍶"
+  Pasta:"🍝",Rice:"🍚",Flour:"🌾",Egg:"🥚",
+  Milk:"🥛",Butter:"🧈",Tomato:"🍅",
+  Potato:"🥔",Carrot:"🥕",Lettuce:"🥬",
+  Cucumber:"🥒",Garlic:"🧄",Onion:"🧅",
+  Mushroom:"🍄",Broccoli:"🥦",Spinach:"🌿",
+  Chicken:"🍗",Beef:"🥩",Salmon:"🐟",
+  Shrimp:"🦐",Mozzarella:"🧀",Parmesan:"🧀",
+  "Feta Cheese":"🧀","Olive Oil":"🫒",
+  Lemon:"🍋",Basil:"🌱",Parsley:"🌿",
+  Strawberry:"🍓",Banana:"🍌",Apple:"🍎",
+  Avocado:"🥑",Sugar:"🍬",Cocoa:"🍫",
+  Honey:"🍯",Nori:"🍃","Rice Vinegar":"🍶"
 };
 
 const missions = [
-  {id:"cook", title:"First Cooking Adventure", description:"Complete one recipe.", reward:40},
-  {id:"create", title:"Creative Chef", description:"Create your own recipe.", reward:50},
-  {id:"quiz", title:"Food Knowledge", description:"Complete a quiz.", reward:30},
-  {id:"memory", title:"Memory Master", description:"Complete the memory puzzle.", reward:30},
-  {id:"order", title:"Kitchen Organizer", description:"Complete the recipe order challenge.", reward:40}
+  {id:"cook",title:"First Cooking Adventure",description:"Complete one recipe.",reward:40},
+  {id:"create",title:"Creative Chef",description:"Create your own recipe.",reward:50},
+  {id:"quiz",title:"Food Knowledge",description:"Complete a quiz.",reward:30},
+  {id:"memory",title:"Memory Master",description:"Complete the memory puzzle.",reward:30},
+  {id:"order",title:"Kitchen Organizer",description:"Complete the recipe order challenge.",reward:40}
 ];
 
-// =====================================
+const achievements = [
+  {id:"first",name:"First Steps",icon:"🌱",description:"Reach Level 2",check:()=>game.level>=2},
+  {id:"chef",name:"Master Chef",icon:"👩‍🍳",description:"Reach Level 5",check:()=>game.level>=5},
+  {id:"creator",name:"Creative Mind",icon:"🎨",description:"Create a recipe",check:()=>game.recipesCreated>=1},
+  {id:"cook",name:"Cooking Star",icon:"🍳",description:"Complete 3 recipes",check:()=>game.cookedRecipes.length>=3},
+  {id:"puzzle",name:"Puzzle Genius",icon:"🧩",description:"Complete a puzzle",check:()=>game.puzzlesWon>=1},
+  {id:"legend",name:"Legendary Chef",icon:"👑",description:"Reach Level 10",check:()=>game.level>=10}
+];
+
+// =============================================
+// SAVE SYSTEM
+// =============================================
+
+function saveGame() {
+  localStorage.setItem("freshopiaSave",JSON.stringify(game));
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g,char=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[char]);
+}
+
+// =============================================
 // INITIALIZATION
-// =====================================
+// =============================================
 
 function initializeGame() {
-  const name = localStorage.getItem("freshopiaName");
+  let name = localStorage.getItem("freshopiaName");
 
   if (!name) {
     const answer = prompt("Welcome to Freshopia! What is your chef name?");
     if (answer && answer.trim()) {
-      game.name = answer.trim().slice(0,20);
-      localStorage.setItem("freshopiaName",game.name);
+      name = answer.trim().slice(0,20);
+      localStorage.setItem("freshopiaName",name);
     }
-  } else {
-    game.name = name;
   }
+
+  game.name = name || game.name;
 
   updateInterface();
   renderCharacters();
@@ -201,31 +237,34 @@ function updateInterface() {
   document.getElementById("heroCharacter").textContent =
     characters[game.character].emoji;
 
-  const progress = game.xp % 100;
+  const progress = game.xp / (game.level * 100) * 100;
+
   document.getElementById("xpProgress").style.width = progress + "%";
   document.getElementById("xpProgressText").textContent =
-    progress + " / 100 XP";
+    game.xp + " / " + (game.level * 100) + " XP";
 
   saveGame();
 }
 
 function showSection(sectionId) {
-  document.querySelectorAll(".game-section").forEach(section => {
+  document.querySelectorAll(".game-section").forEach(section=>{
     section.classList.remove("active");
   });
 
   const target = document.getElementById(sectionId);
+
   if (target) target.classList.add("active");
 
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-// =====================================
+// =============================================
 // XP AND LEVEL SYSTEM
-// =====================================
+// =============================================
 
-function addXP(amount, reason) {
+function addXP(amount,reason="") {
   const oldLevel = game.level;
+
   game.xp += amount;
 
   while (game.xp >= game.level * 100) {
@@ -235,10 +274,11 @@ function addXP(amount, reason) {
 
   updateInterface();
 
-  showToast("⭐ +" + amount + " XP! " + (reason || ""));
+  showToast("⭐ +" + amount + " XP! " + reason);
 
   if (game.level > oldLevel) {
-    setTimeout(() => showLevelUp(),400);
+    renderCharacters();
+    setTimeout(showLevelUp,400);
   }
 
   checkAchievements();
@@ -262,28 +302,30 @@ function closeLevelModal() {
 
 function showToast(message) {
   const toast = document.getElementById("toast");
+
   toast.textContent = message;
   toast.classList.add("show");
 
   clearTimeout(window.toastTimer);
-  window.toastTimer = setTimeout(() => {
+
+  window.toastTimer = setTimeout(()=>{
     toast.classList.remove("show");
   },2500);
 }
 
-// =====================================
+// =============================================
 // CHARACTER SELECTION
-// =====================================
+// =============================================
 
 function renderCharacters() {
   const grid = document.getElementById("characterGrid");
 
-  grid.innerHTML = characters.map((character,index) => {
-    const unlocked = index === 0 || game.level >= index + 1;
-    const selected = game.character === index;
+  grid.innerHTML = characters.map((character,index)=>{
+    const unlocked = index===0 || game.level>=index+1;
+    const selected = game.character===index;
 
     return `
-      <article class="character-card ${selected ? "selected" : ""}">
+      <article class="character-card ${selected?"selected":""}">
         <div class="character-art">${character.emoji}</div>
         <h3>${character.name}</h3>
         <p>${character.role}</p>
@@ -291,7 +333,7 @@ function renderCharacters() {
         ${
           unlocked
           ? `<button onclick="selectCharacter(${index})">
-              ${selected ? "Selected ✓" : "Choose Character"}
+               ${selected?"Selected ✓":"Choose Character"}
              </button>`
           : `<button disabled>Unlock at Level ${index+1} 🔒</button>`
         }
@@ -301,20 +343,22 @@ function renderCharacters() {
 }
 
 function selectCharacter(index) {
-  if (index > 0 && game.level < index+1) {
-    showToast("🔒 Reach Level " + (index+1) + " to unlock!");
+  if (index>0 && game.level<index+1) {
+    showToast("🔒 Reach Level "+(index+1)+" to unlock!");
     return;
   }
 
-  game.character = index;
+  game.character=index;
+
   updateInterface();
   renderCharacters();
   updateCharacterMessage();
-  showToast(characters[index].name + " is your new chef!");
+
+  showToast(characters[index].name+" is your new chef!");
 }
 
 function updateCharacterMessage() {
-  const messages = [
+  const messages=[
     "Let's make something delicious today! 💗",
     "Every great chef starts with a recipe!",
     "Learning is the secret ingredient!",
@@ -322,17 +366,17 @@ function updateCharacterMessage() {
   ];
 
   document.getElementById("characterMessage").textContent =
-    messages[game.level % messages.length];
+    messages[game.level%messages.length];
 }
 
-// =====================================
+// =============================================
 // RECIPE ACADEMY
-// =====================================
+// =============================================
 
 function renderRecipes() {
-  const grid = document.getElementById("recipeGrid");
+  const grid=document.getElementById("recipeGrid");
 
-  grid.innerHTML = recipes.map(recipe => `
+  grid.innerHTML=recipes.map(recipe=>`
     <article class="recipe-card">
       <div class="recipe-art">${recipe.emoji}</div>
       <h3>${recipe.name}</h3>
@@ -344,25 +388,18 @@ function renderRecipes() {
 }
 
 function openRecipe(id) {
-  const recipe = recipes.find(item => item.id === id);
-  const details = document.getElementById("recipeDetails");
+  const recipe=recipes.find(item=>item.id===id);
+  const details=document.getElementById("recipeDetails");
 
   details.classList.remove("hidden");
 
-  details.innerHTML = `
+  details.innerHTML=`
     <h2>${recipe.emoji} ${recipe.name}</h2>
     <p>Category: ${recipe.category} | Time: ${recipe.time}</p>
-
     <h3>Ingredients</h3>
-    <ul>
-      ${recipe.ingredients.map(item => `<li>${item}</li>`).join("")}
-    </ul>
-
+    <ul>${recipe.ingredients.map(item=>`<li>${item}</li>`).join("")}</ul>
     <h3>Preparation Steps</h3>
-    <ol>
-      ${recipe.steps.map(step => `<li>${step}</li>`).join("")}
-    </ol>
-
+    <ol>${recipe.steps.map(step=>`<li>${step}</li>`).join("")}</ol>
     <button class="primary-btn" onclick="completeRecipe(${id})">
       I Completed This Recipe! 🍳
     </button>
@@ -372,94 +409,95 @@ function openRecipe(id) {
 }
 
 function completeRecipe(id) {
-  if (game.cookedRecipes.includes(id)) {
+  if(game.cookedRecipes.includes(id)) {
     showToast("You already completed this recipe!");
     return;
   }
 
   game.cookedRecipes.push(id);
+
   addXP(50,"Recipe completed!");
   completeMission("cook");
   saveGame();
 }
 
-// =====================================
-// RECIPE CREATOR
-// =====================================
+// =============================================
+// CUSTOM RECIPE CREATOR
+// =============================================
 
 function renderIngredients() {
-  const grid = document.getElementById("ingredientGrid");
+  const grid=document.getElementById("ingredientGrid");
 
-  grid.innerHTML = ingredients.map(item => `
+  grid.innerHTML=ingredients.map(item=>`
     <label class="ingredient-option">
       <input type="checkbox" value="${item}"
         onchange="toggleIngredient('${item}',this.checked)">
-      <span>${ingredientIcons[item] || "🍴"} ${item}</span>
+      <span>${ingredientIcons[item]||"🍴"} ${item}</span>
     </label>
   `).join("");
 }
 
 function toggleIngredient(item,checked) {
-  if (checked && !game.selectedIngredients.includes(item)) {
+  if(checked && !game.selectedIngredients.includes(item)) {
     game.selectedIngredients.push(item);
-  } else if (!checked) {
-    game.selectedIngredients =
-      game.selectedIngredients.filter(x => x !== item);
+  } else if(!checked) {
+    game.selectedIngredients=
+      game.selectedIngredients.filter(x=>x!==item);
   }
 }
 
 function createRecipe() {
-  const name = document.getElementById("dishName").value.trim();
-  const method = document.getElementById("cookingMethod").value;
-  const selected = game.selectedIngredients;
+  const name=document.getElementById("dishName").value.trim();
+  const method=document.getElementById("cookingMethod").value;
+  const selected=game.selectedIngredients;
 
-  if (!name) {
+  if(!name) {
     showToast("Please give your recipe a name!");
     return;
   }
 
-  if (selected.length < 2) {
+  if(selected.length<2) {
     showToast("Choose at least two ingredients!");
     return;
   }
 
-  if (!method) {
+  if(!method) {
     showToast("Choose a cooking method!");
     return;
   }
 
   game.recipesCreated++;
 
-  const output = document.getElementById("createdRecipe");
-
-  output.innerHTML = `
+  document.getElementById("createdRecipe").innerHTML=`
     <h3>🎉 Your Recipe Is Ready!</h3>
     <h2>${escapeHTML(name)}</h2>
     <p><b>Cooking Method:</b> ${method}</p>
     <p><b>Ingredients:</b></p>
-    <ul>${selected.map(x => `<li>${ingredientIcons[x] || "🍴"} ${x}</li>`).join("")}</ul>
+    <ul>
+      ${selected.map(x=>`<li>${ingredientIcons[x]||"🍴"} ${x}</li>`).join("")}
+    </ul>
     <p>Great creativity, Chef!</p>
   `;
 
   addXP(50,"Creative recipe!");
   completeMission("create");
 
-  game.selectedIngredients = [];
-  document.querySelectorAll(".ingredient-option input").forEach(input => {
-    input.checked = false;
-  });
+  game.selectedIngredients=[];
 
-  document.getElementById("dishName").value = "";
-  document.getElementById("cookingMethod").value = "";
+  document.querySelectorAll(".ingredient-option input")
+    .forEach(input=>input.checked=false);
+
+  document.getElementById("dishName").value="";
+  document.getElementById("cookingMethod").value="";
 
   saveGame();
 }
 
-// =====================================
+// =============================================
 // PUZZLE 1 - INGREDIENT QUIZ
-// =====================================
+// =============================================
 
-const quizQuestions = [
+const quizQuestions=[
   {
     question:"Which ingredient is commonly used to make guacamole?",
     answers:["Avocado","Potato","Strawberry"],
@@ -470,13 +508,13 @@ const quizQuestions = [
     question:"Which food is rich in vitamin C?",
     answers:["Lemon","Butter","Rice"],
     correct:"Lemon",
-    fact:"Lemons are a good source of vitamin C."
+    fact:"Lemons are a source of vitamin C."
   },
   {
     question:"Which ingredient helps bread dough rise?",
     answers:["Yeast","Salt","Olive Oil"],
     correct:"Yeast",
-    fact:"Yeast produces carbon dioxide, helping dough rise."
+    fact:"Yeast produces carbon dioxide and helps dough rise."
   },
   {
     question:"Which cooking method uses hot water?",
@@ -492,156 +530,164 @@ const quizQuestions = [
   }
 ];
 
-let quizIndex = 0;
-let quizScore = 0;
+let quizIndex=0;
+let quizScore=0;
+let quizRewarded=false;
 
 function startQuiz() {
-  quizIndex = 0;
-  quizScore = 0;
+  quizIndex=0;
+  quizScore=0;
+  quizRewarded=false;
   showSection("puzzles");
   showQuizQuestion();
 }
 
 function showQuizQuestion() {
-  const area = document.getElementById("puzzleGame");
+  const area=document.getElementById("puzzleGame");
   area.classList.remove("hidden");
 
-  if (quizIndex >= quizQuestions.length) {
-    area.innerHTML = `
+  if(quizIndex>=quizQuestions.length) {
+    area.innerHTML=`
       <h2>🎉 Quiz Completed!</h2>
-      <p>Your score: ${quizScore} / ${quizQuestions.length}</p>
+      <p>Your score: ${quizScore}/${quizQuestions.length}</p>
       <button onclick="startQuiz()">Play Again</button>
     `;
 
-    if (quizScore >= 3) {
+    if(quizScore>=3 && !quizRewarded) {
+      quizRewarded=true;
+      game.puzzlesWon++;
       addXP(30,"Quiz completed!");
       completeMission("quiz");
-      game.puzzlesWon++;
       checkAchievements();
     }
 
     return;
   }
 
-  const q = quizQuestions[quizIndex];
+  const q=quizQuestions[quizIndex];
 
-  area.innerHTML = `
+  area.innerHTML=`
     <p>Question ${quizIndex+1} of ${quizQuestions.length}</p>
     <div class="quiz-question">${q.question}</div>
-    ${q.answers.map(answer => `
-      <button onclick="answerQuiz('${answer.replace(/'/g,"\\'")}')">
-        ${answer}
-      </button>
+    ${q.answers.map(answer=>`
+      <button onclick="answerQuiz('${answer}')">${answer}</button>
     `).join("")}
     <p id="quizFeedback"></p>
   `;
 }
 
 function answerQuiz(answer) {
-  const q = quizQuestions[quizIndex];
-  const feedback = document.getElementById("quizFeedback");
+  const q=quizQuestions[quizIndex];
+  const feedback=document.getElementById("quizFeedback");
 
-  if (answer === q.correct) {
+  if(answer===q.correct) {
     quizScore++;
-    feedback.innerHTML = "✅ Correct! " + q.fact;
+    feedback.innerHTML="✅ Correct! "+q.fact;
   } else {
-    feedback.innerHTML = "❌ Correct answer: " + q.correct + ". " + q.fact;
+    feedback.innerHTML="❌ Correct answer: "+q.correct+". "+q.fact;
   }
 
-  document.querySelectorAll("#puzzleGame button").forEach(button => {
-    button.disabled = true;
-  });
+  document.querySelectorAll("#puzzleGame button")
+    .forEach(button=>button.disabled=true);
 
   quizIndex++;
   setTimeout(showQuizQuestion,1800);
 }
 
-// =====================================
+// =============================================
 // PUZZLE 2 - FOOD MEMORY
-// =====================================
+// =============================================
 
-let memoryCards = [];
-let memoryOpen = [];
-let memoryMatches = 0;
-let memoryLocked = false;
+let memoryCards=[];
+let memoryOpen=[];
+let memoryMatched=[];
+let memoryMatches=0;
+let memoryLocked=false;
 
 function startMemory() {
   showSection("puzzles");
 
-  const foods = ["🍓","🍕","🥕","🍰","🍋","🥑"];
-  memoryCards = [...foods,...foods].sort(() => Math.random()-.5);
-  memoryOpen = [];
-  memoryMatches = 0;
-  memoryLocked = false;
+  const foods=["🍓","🍕","🥕","🍰","🍋","🥑"];
+
+  memoryCards=[...foods,...foods].sort(()=>Math.random()-.5);
+  memoryOpen=[];
+  memoryMatched=[];
+  memoryMatches=0;
+  memoryLocked=false;
 
   renderMemory();
 }
 
 function renderMemory() {
-  const area = document.getElementById("puzzleGame");
+  const area=document.getElementById("puzzleGame");
   area.classList.remove("hidden");
 
-  area.innerHTML = `
+  area.innerHTML=`
     <h2>🧠 Food Memory</h2>
     <p>Find all matching food pairs!</p>
     <div class="memory-grid">
-      ${memoryCards.map((food,index) => `
+      ${memoryCards.map((food,index)=>`
         <button class="memory-tile"
           onclick="flipMemory(${index})"
           id="memory-${index}">
-          ${memoryOpen.includes(index) ? food : "❔"}
+          ${memoryOpen.includes(index)||memoryMatched.includes(index)
+            ?food:"❔"}
         </button>
       `).join("")}
     </div>
-    <p>Matches: ${memoryMatches} / 6</p>
+    <p>Matches: ${memoryMatches}/6</p>
   `;
 }
 
 function flipMemory(index) {
-  if (memoryLocked || memoryOpen.includes(index)) return;
+  if(memoryLocked||
+     memoryOpen.includes(index)||
+     memoryMatched.includes(index)) return;
 
-  const button = document.getElementById("memory-"+index);
-  button.textContent = memoryCards[index];
   memoryOpen.push(index);
+  renderMemory();
 
-  if (memoryOpen.length === 2) {
-    memoryLocked = true;
+  if(memoryOpen.length===2) {
+    memoryLocked=true;
 
-    const [a,b] = memoryOpen;
+    const [a,b]=memoryOpen;
 
-    if (memoryCards[a] === memoryCards[b]) {
+    if(memoryCards[a]===memoryCards[b]) {
+      memoryMatched.push(a,b);
       memoryMatches++;
-      memoryOpen = [];
-      memoryLocked = false;
+      memoryOpen=[];
+      memoryLocked=false;
 
-      if (memoryMatches === 6) {
-        setTimeout(() => {
-          document.getElementById("puzzleGame").innerHTML =
-            "<h2>🏆 Memory Master!</h2><p>All pairs matched!</p>";
+      if(memoryMatches===6) {
+        document.getElementById("puzzleGame").innerHTML=`
+          <h2>🏆 Memory Master!</h2>
+          <p>All pairs matched!</p>
+          <button onclick="startMemory()">Play Again</button>
+        `;
 
-          addXP(30,"Memory completed!");
-          completeMission("memory");
-          game.puzzlesWon++;
-          checkAchievements();
-        },300);
+        game.puzzlesWon++;
+        addXP(30,"Memory completed!");
+        completeMission("memory");
+        checkAchievements();
       } else {
         renderMemory();
       }
+
     } else {
-      setTimeout(() => {
-        memoryOpen = [];
-        memoryLocked = false;
+      setTimeout(()=>{
+        memoryOpen=[];
+        memoryLocked=false;
         renderMemory();
       },900);
     }
   }
 }
 
-// =====================================
+// =============================================
 // PUZZLE 3 - RECIPE ORDER
-// =====================================
+// =============================================
 
-const correctSteps = [
+const correctSteps=[
   "Wash the vegetables.",
   "Chop the vegetables.",
   "Heat olive oil in a pan.",
@@ -652,15 +698,16 @@ const correctSteps = [
 function startOrder() {
   showSection("puzzles");
 
-  const shuffled = [...correctSteps].sort(() => Math.random()-.5);
-  const area = document.getElementById("puzzleGame");
+  const shuffled=[...correctSteps].sort(()=>Math.random()-.5);
+  const area=document.getElementById("puzzleGame");
+
   area.classList.remove("hidden");
 
-  area.innerHTML = `
+  area.innerHTML=`
     <h2>📋 Recipe Order Challenge</h2>
     <p>Arrange the cooking steps in the correct order.</p>
     <div id="orderOptions">
-      ${shuffled.map((step,index) => `
+      ${shuffled.map((step,index)=>`
         <button onclick="selectOrder(${index})"
           id="order-${index}">${step}</button>
       `).join("")}
@@ -668,31 +715,32 @@ function startOrder() {
     <p id="orderResult"></p>
   `;
 
-  window.orderShuffled = shuffled;
-  window.orderSelected = [];
+  window.orderShuffled=shuffled;
+  window.orderSelected=[];
 }
 
 function selectOrder(index) {
-  if (window.orderSelected.includes(index)) return;
+  if(window.orderSelected.includes(index)) return;
 
   window.orderSelected.push(index);
 
-  const button = document.getElementById("order-"+index);
+  const button=document.getElementById("order-"+index);
   button.classList.add("correct");
-  button.disabled = true;
+  button.disabled=true;
 
-  if (window.orderSelected.length === correctSteps.length) {
-    const result = window.orderSelected.map(i => window.orderShuffled[i]);
-    const success = result.every((step,i) => step === correctSteps[i]);
+  if(window.orderSelected.length===correctSteps.length) {
+    const result=window.orderSelected.map(i=>window.orderShuffled[i]);
+    const success=result.every((step,i)=>step===correctSteps[i]);
 
-    document.getElementById("orderResult").textContent =
-      success ? "🎉 Perfect! All steps are correct!" :
-      "Not quite! Try again to learn the correct sequence.";
+    document.getElementById("orderResult").textContent=
+      success
+      ?"🎉 Perfect! All steps are correct!"
+      :"Not quite! Try again to learn the correct sequence.";
 
-    if (success) {
+    if(success) {
+      game.puzzlesWon++;
       addXP(40,"Recipe order completed!");
       completeMission("order");
-      game.puzzlesWon++;
       checkAchievements();
     } else {
       setTimeout(startOrder,2000);
@@ -700,26 +748,26 @@ function selectOrder(index) {
   }
 }
 
-// =====================================
-// DAILY MISSIONS
-// =====================================
+// =============================================
+// DAILY MISSIONS AND REWARDS
+// =============================================
 
 function renderMissions() {
-  const area = document.getElementById("missionList");
+  const area=document.getElementById("missionList");
 
-  area.innerHTML = missions.map(mission => {
-    const completed = game.completedMissions.includes(mission.id);
+  area.innerHTML=missions.map(mission=>{
+    const completed=game.completedMissions.includes(mission.id);
 
     return `
       <div class="mission-card">
         <div>
-          <h3>${completed ? "✅ " : "🎯 "}${mission.title}</h3>
+          <h3>${completed?"✅ ":"🎯 "}${mission.title}</h3>
           <p>${mission.description}</p>
           <small>Reward: ⭐ ${mission.reward} XP</small>
         </div>
-        <button ${completed ? "disabled" : ""}
+        <button ${completed?"disabled":""}
           onclick="claimMission('${mission.id}')">
-          ${completed ? "Completed" : "View Mission"}
+          ${completed?"Completed":"View Mission"}
         </button>
       </div>
     `;
@@ -727,46 +775,44 @@ function renderMissions() {
 }
 
 function completeMission(id) {
-  if (!game.completedMissions.includes(id)) {
-    game.completedMissions.push(id);
-    renderMissions();
-    saveGame();
+  if(game.completedMissions.includes(id)) return;
+
+  game.completedMissions.push(id);
+
+  const mission=missions.find(m=>m.id===id);
+
+  if(mission) {
+    addXP(mission.reward,"Mission reward!");
   }
+
+  renderMissions();
+  saveGame();
 }
 
 function claimMission(id) {
-  const conditions = {
-    cook:game.cookedRecipes.length > 0,
-    create:game.recipesCreated > 0,
+  const conditions={
+    cook:game.cookedRecipes.length>0,
+    create:game.recipesCreated>0,
     quiz:game.completedMissions.includes("quiz"),
     memory:game.completedMissions.includes("memory"),
     order:game.completedMissions.includes("order")
   };
 
-  if (!conditions[id]) {
+  if(!conditions[id]) {
     showToast("Complete the challenge first!");
     return;
   }
 
-  showToast("Mission already rewarded or completed!");
+  showToast("This mission has already been completed!");
 }
 
-// =====================================
-// ACHIEVEMENTS
-// =====================================
-
-const achievements = [
-  {id:"first",name:"First Steps",icon:"🌱",description:"Reach Level 2",check:()=>game.level>=2},
-  {id:"chef",name:"Master Chef",icon:"👩‍🍳",description:"Reach Level 5",check:()=>game.level>=5},
-  {id:"creator",name:"Creative Mind",icon:"🎨",description:"Create a recipe",check:()=>game.recipesCreated>=1},
-  {id:"cook",name:"Cooking Star",icon:"🍳",description:"Complete 3 recipes",check:()=>game.cookedRecipes.length>=3},
-  {id:"puzzle",name:"Puzzle Genius",icon:"🧩",description:"Complete a puzzle",check:()=>game.puzzlesWon>=1},
-  {id:"legend",name:"Legendary Chef",icon:"👑",description:"Reach Level 10",check:()=>game.level>=10}
-];
+// =============================================
+// ACHIEVEMENT SYSTEM
+// =============================================
 
 function checkAchievements() {
-  achievements.forEach(item => {
-    if (item.check() && !game.achievements.includes(item.id)) {
+  achievements.forEach(item=>{
+    if(item.check()&&!game.achievements.includes(item.id)) {
       game.achievements.push(item.id);
       showToast("🏆 New Achievement: "+item.name);
     }
@@ -777,36 +823,30 @@ function checkAchievements() {
 }
 
 function renderAchievements() {
-  const area = document.getElementById("achievementList");
+  const area=document.getElementById("achievementList");
 
-  area.innerHTML = achievements.map(item => {
-    const unlocked = game.achievements.includes(item.id);
+  area.innerHTML=achievements.map(item=>{
+    const unlocked=game.achievements.includes(item.id);
 
     return `
-      <div class="achievement-item ${unlocked ? "" : "locked"}">
+      <div class="achievement-item ${unlocked?"":"locked"}">
         <span>${item.icon}</span>
         <h3>${item.name}</h3>
         <p>${item.description}</p>
-        <small>${unlocked ? "Unlocked ✓" : "Locked 🔒"}</small>
+        <small>${unlocked?"Unlocked ✓":"Locked 🔒"}</small>
       </div>
     `;
   }).join("");
 }
 
-// =====================================
-// SECURITY AND SAVE
-// =====================================
-
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, char => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
-  })[char]);
-}
+// =============================================
+// AUTO SAVE
+// =============================================
 
 window.addEventListener("beforeunload",saveGame);
 
 initializeGame();
+
+// =============================================
+// END OF FRESHOPIA GAME ENGINE
+// =============================================
