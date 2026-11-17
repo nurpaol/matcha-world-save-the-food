@@ -1,1394 +1,873 @@
-/* ============================================================
-   FRESHOPIA ULTIMATE GAME ENGINE 6.0
-   COMPLETE ALL-IN-ONE EDITION
-   Anime RPG | Cooking | Sustainability | Rewards
-   NO QUIZ SYSTEM
-============================================================ */
+// ========================================
+// FRESHOPIA - ANIME COOKING ADVENTURE
+// ========================================
 
-"use strict";
+const $ = (id) => document.getElementById(id);
 
-/* ============================================================
-   1. CONFIGURATION
-============================================================ */
-
-const GAME_KEY = "freshopiaUltimate6Save";
-
-const CONFIG = {
-    maxLevel: 30,
-    startCoins: 150,
-    startXP: 0,
-    maxIngredients: 6,
-    orderDuration: 180,
-    autosave: 10000,
-    dailyReward: 100
+let player = {
+  level: 1,
+  xp: 0,
+  coins: 100,
+  reputation: 0,
+  happyCustomers: 0,
+  completedOrders: 0
 };
 
-/* ============================================================
-   2. GAME DATA
-============================================================ */
+let currentOrder = null;
+let selectedItems = [];
+let restaurantOpen = false;
+let orderTime = 60;
+let orderTimerInterval = null;
+let cookingReady = false;
+let voiceEnabled = true;
+let mikaStep = 0;
+let currentPuzzleAnswer = null;
 
-const INGREDIENTS = [
-    {id:"tomato",name:"Tomato",emoji:"🍅",type:"vegetable"},
-    {id:"lettuce",name:"Lettuce",emoji:"🥬",type:"vegetable"},
-    {id:"carrot",name:"Carrot",emoji:"🥕",type:"vegetable"},
-    {id:"avocado",name:"Avocado",emoji:"🥑",type:"vegetable"},
-    {id:"broccoli",name:"Broccoli",emoji:"🥦",type:"vegetable"},
-    {id:"mushroom",name:"Mushroom",emoji:"🍄",type:"vegetable"},
-    {id:"corn",name:"Corn",emoji:"🌽",type:"vegetable"},
-    {id:"pepper",name:"Pepper",emoji:"🫑",type:"vegetable"},
-    {id:"apple",name:"Apple",emoji:"🍎",type:"fruit"},
-    {id:"strawberry",name:"Strawberry",emoji:"🍓",type:"fruit"},
-    {id:"lemon",name:"Lemon",emoji:"🍋",type:"fruit"},
-    {id:"banana",name:"Banana",emoji:"🍌",type:"fruit"},
-    {id:"rice",name:"Rice",emoji:"🍚",type:"grain"},
-    {id:"bread",name:"Wholegrain Bread",emoji:"🍞",type:"grain"},
-    {id:"pasta",name:"Pasta",emoji:"🍝",type:"grain"},
-    {id:"egg",name:"Egg",emoji:"🥚",type:"protein"},
-    {id:"beans",name:"Beans",emoji:"🫘",type:"protein"},
-    {id:"milk",name:"Milk",emoji:"🥛",type:"dairy"},
-    {id:"cheese",name:"Cheese",emoji:"🧀",type:"dairy"},
-    {id:"oliveoil",name:"Olive Oil",emoji:"🫒",type:"fat"}
+const ingredients = [
+  {
+    id: "bread",
+    name: "Burger Bun",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300"
+  },
+  {
+    id: "beef",
+    name: "Beef Patty",
+    image: "https://images.unsplash.com/photo-1558030006-450675393462?w=300"
+  },
+  {
+    id: "cheese",
+    name: "Cheese",
+    image: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=300"
+  },
+  {
+    id: "lettuce",
+    name: "Lettuce",
+    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300"
+  },
+  {
+    id: "tomato",
+    name: "Tomato",
+    image: "https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=300"
+  },
+  {
+    id: "pasta",
+    name: "Pasta",
+    image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=300"
+  },
+  {
+    id: "basil",
+    name: "Fresh Basil",
+    image: "https://images.unsplash.com/photo-1618375569909-3c8616cf7733?w=300"
+  },
+  {
+    id: "cream",
+    name: "Cream",
+    image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300"
+  },
+  {
+    id: "chicken",
+    name: "Chicken",
+    image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=300"
+  },
+  {
+    id: "rice",
+    name: "Rice",
+    image: "https://images.unsplash.com/photo-1516684732162-798a0062be99?w=300"
+  },
+  {
+    id: "carrot",
+    name: "Carrot",
+    image: "https://images.unsplash.com/photo-1445282768818-728615cc910a?w=300"
+  },
+  {
+    id: "potato",
+    name: "Potato",
+    image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300"
+  }
 ];
 
-const RECIPES = [
-    {
-        id:"rainbow",
-        name:"Rainbow Salad",
-        emoji:"🥗",
-        ingredients:["tomato","lettuce","carrot","avocado"],
-        level:1,xp:100,coins:35,eco:20,
-        difficulty:"Easy"
-    },
-    {
-        id:"greenbowl",
-        name:"Green Energy Bowl",
-        emoji:"🥑",
-        ingredients:["avocado","broccoli","rice","lemon"],
-        level:2,xp:130,coins:40,eco:30,
-        difficulty:"Easy"
-    },
-    {
-        id:"gardenpasta",
-        name:"Garden Pasta",
-        emoji:"🍝",
-        ingredients:["pasta","tomato","mushroom","oliveoil"],
-        level:3,xp:160,coins:50,eco:25,
-        difficulty:"Medium"
-    },
-    {
-        id:"protein",
-        name:"Protein Toast",
-        emoji:"🍞",
-        ingredients:["bread","egg","avocado","cheese"],
-        level:4,xp:180,coins:55,eco:25,
-        difficulty:"Medium"
-    },
-    {
-        id:"fruit",
-        name:"Fresh Fruit Dessert",
-        emoji:"🍓",
-        ingredients:["strawberry","banana","apple","milk"],
-        level:5,xp:200,coins:65,eco:40,
-        difficulty:"Medium"
-    },
-    {
-        id:"rice",
-        name:"Eco Vegetable Rice",
-        emoji:"🍚",
-        ingredients:["rice","carrot","corn","beans"],
-        level:7,xp:250,coins:75,eco:50,
-        difficulty:"Hard"
-    },
-    {
-        id:"deluxe",
-        name:"Deluxe Chef Plate",
-        emoji:"🍽️",
-        ingredients:["pasta","tomato","cheese","mushroom","oliveoil"],
-        level:10,xp:300,coins:100,eco:45,
-        difficulty:"Hard"
-    },
-    {
-        id:"legend",
-        name:"Legendary Garden Feast",
-        emoji:"👑",
-        ingredients:["broccoli","avocado","rice","beans","carrot"],
-        level:15,xp:450,coins:150,eco:80,
-        difficulty:"Expert"
-    },
-    {
-        id:"champion",
-        name:"Freshopia Champion Dish",
-        emoji:"🏆",
-        ingredients:["tomato","avocado","pasta","egg","broccoli"],
-        level:20,xp:600,coins:200,eco:100,
-        difficulty:"Legendary"
-    }
+const recipes = [
+  {
+    id: "burger",
+    name: "Classic Burger",
+    description: "A juicy burger with cheese and fresh vegetables.",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500",
+    ingredients: ["bread", "beef", "cheese", "lettuce", "tomato"],
+    reward: 35
+  },
+  {
+    id: "pasta",
+    name: "Creamy Basil Pasta",
+    description: "Creamy pasta with fresh basil.",
+    image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=500",
+    ingredients: ["pasta", "basil", "cream"],
+    reward: 40
+  },
+  {
+    id: "chicken",
+    name: "Chicken Rice Bowl",
+    description: "Chicken served with rice and carrots.",
+    image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=500",
+    ingredients: ["chicken", "rice", "carrot"],
+    reward: 45
+  }
 ];
 
-/* ============================================================
-   3. PLAYER SYSTEM
-============================================================ */
-
-function newPlayer(){
-    return {
-        nickname:"Chef",
-        level:1,
-        xp:0,
-        coins:CONFIG.startCoins,
-        ecoScore:0,
-
-        completedOrders:0,
-        failedOrders:0,
-        perfectOrders:0,
-        wastePrevented:0,
-
-        totalPlayTime:0,
-        sessionTime:0,
-
-        badges:[],
-        unlockedFeatures:[],
-        ownedItems:["default"],
-        selectedOutfit:"default",
-
-        dailyCompleted:[],
-        dailyDate:"",
-        dailyRewardClaimed:false,
-
-        musicEnabled:true,
-        soundEnabled:true,
-        voiceEnabled:true,
-
-        avatar:"👩‍🍳",
-        started:false
-    };
-}
-
-function loadPlayer(){
-    try{
-        const data=JSON.parse(localStorage.getItem(GAME_KEY));
-        return data ? {...newPlayer(),...data} : newPlayer();
-    }catch(e){
-        return newPlayer();
-    }
-}
-
-let player=loadPlayer();
-
-/* ============================================================
-   4. GAME STATE
-============================================================ */
-
-let currentRecipe=null;
-let selectedIngredients=[];
-let remainingTime=CONFIG.orderDuration;
-
-let gameTimer=null;
-let sessionTimer=null;
-
-let audioContext=null;
-let musicInterval=null;
-let musicNodes=[];
-let musicStarted=false;
-
-/* ============================================================
-   5. LEVEL SYSTEM
-============================================================ */
-
-function requiredXP(level){
-    return 250+(level-1)*150;
-}
-
-const LEVEL_REWARDS=[
-    {level:2,name:"Kitchen Tools",description:"New cooking tools unlocked."},
-    {level:3,name:"Recipe Collection",description:"More recipes unlocked."},
-    {level:4,name:"Eco Kitchen",description:"Special eco missions unlocked."},
-    {level:5,name:"Mika Pink Outfit",description:"A special character outfit unlocked."},
-    {level:7,name:"Restaurant Expansion",description:"New restaurant missions unlocked."},
-    {level:10,name:"Master Chef",description:"Master Chef challenges unlocked."},
-    {level:12,name:"Golden Kitchen",description:"Premium kitchen features unlocked."},
-    {level:15,name:"Legendary Recipes",description:"Legendary recipes unlocked."},
-    {level:20,name:"Champion Restaurant",description:"Champion restaurant unlocked."},
-    {level:25,name:"Royal Chef",description:"Royal character outfit unlocked."},
-    {level:30,name:"Freshopia Legend",description:"Ultimate achievement unlocked."}
+const customers = [
+  { name: "Emma", avatar: "👩🏻", mood: "😊", message: "I'm hungry! Can you cook for me?" },
+  { name: "Oliver", avatar: "👨🏻", mood: "😋", message: "I can't wait to taste your food!" },
+  { name: "Luna", avatar: "👧🏻", mood: "🥰", message: "I love this little restaurant!" },
+  { name: "Mia", avatar: "👩🏽", mood: "🤩", message: "Surprise me with something delicious!" },
+  { name: "Noah", avatar: "🧑🏻", mood: "🙂", message: "I hope my order is ready soon!" }
 ];
 
-function addXP(amount){
-    player.xp+=amount;
+const mikaMessages = [
+  {
+    title: "Welcome, Chef! 🌸",
+    message: "Hi! I'm Mika, your cooking guide. Welcome to Freshopia! Let's build the cutest restaurant together!"
+  },
+  {
+    title: "Your first mission 🍓",
+    message: "Your mission is simple: choose ingredients, prepare a delicious meal and serve your customer!"
+  },
+  {
+    title: "Choose ingredients 🥬",
+    message: "Tap the ingredients you need. Try to match the customer's recipe!"
+  },
+  {
+    title: "Let's cook! 🍳",
+    message: "When your ingredients are ready, press Prepare Meal. Then serve your delicious creation!"
+  },
+  {
+    title: "Let's begin! 💗",
+    message: "You're ready, Chef! Open your restaurant and let's welcome our first customer!"
+  }
+];
 
-    while(
-        player.xp>=requiredXP(player.level)&&
-        player.level<CONFIG.maxLevel
-    ){
-        player.xp-=requiredXP(player.level);
-        player.level++;
-        levelUp();
-    }
+const missions = [
+  { id: 1, title: "Serve your first customer", target: 1, progress: 0, reward: 30 },
+  { id: 2, title: "Prepare 3 delicious meals", target: 3, progress: 0, reward: 60 },
+  { id: 3, title: "Earn 100 coins", target: 100, progress: 0, reward: 50 }
+];
 
-    updateStats();
+const achievements = [
+  { id: 1, title: "First Customer", description: "Serve your first customer.", unlocked: false },
+  { id: 2, title: "Little Chef", description: "Complete 5 orders.", unlocked: false },
+  { id: 3, title: "Rising Star", description: "Reach level 3.", unlocked: false }
+];
+
+// ========================================
+// INITIALIZATION
+// ========================================
+
+document.addEventListener("DOMContentLoaded", initializeGame);
+
+function initializeGame() {
+  loadPlayer();
+  updatePlayerDisplay();
+  renderIngredients();
+  renderRecipes();
+  renderCharacters();
+  renderMissions();
+  renderAchievements();
+  renderPuzzle();
+  updateCustomerArea();
+  startMikaIntroduction();
+  showToast("Welcome to Freshopia! 🌸");
 }
 
-function levelUp(){
-    const bonus=player.level*30;
-    player.coins+=bonus;
-
-    const reward=LEVEL_REWARDS.find(r=>r.level===player.level);
-
-    if(reward&&!player.unlockedFeatures.includes(reward.name)){
-        player.unlockedFeatures.push(reward.name);
+function loadPlayer() {
+  try {
+    const saved = localStorage.getItem("freshopiaPlayer");
+    if (saved) {
+      const data = JSON.parse(saved);
+      player = { ...player, ...data };
     }
-
-    showLevelUp(player.level,bonus,reward);
-
-    checkBadges();
-    renderAll();
+  } catch (error) {
+    console.log("Starting a new Freshopia game.");
+  }
 }
 
-function showLevelUp(level,bonus,reward){
-    const modal=document.getElementById("levelModal");
-
-    if(modal){
-        modal.hidden=false;
-        modal.classList.add("active");
-
-        const title=modal.querySelector("h2");
-        const text=modal.querySelector("p");
-
-        if(title)title.textContent=`LEVEL ${level}!`;
-        if(text)text.textContent=
-            `Mika is proud of you! +${bonus} Coins! ${
-                reward?reward.description:"New level achieved!"
-            }`;
-    }
-
-    mikaSpeak(`Amazing! You reached level ${level}!`);
-    soundEffect("level");
+function savePlayer() {
+  try {
+    localStorage.setItem("freshopiaPlayer", JSON.stringify(player));
+  } catch (error) {
+    console.log("Progress could not be saved.");
+  }
 }
 
-/* ============================================================
-   6. ANIME CHARACTER MIKA
-============================================================ */
+// ========================================
+// NAVIGATION
+// ========================================
 
-const MIKA_MESSAGES={
-    welcome:[
-        "Welcome back, Chef! Let's make Freshopia amazing!",
-        "Ready for a new cooking adventure?",
-        "Let's cook, earn rewards and save food!"
-    ],
-    success:[
-        "Perfect! You're an amazing chef!",
-        "That looks delicious!",
-        "Wonderful work! I'm proud of you!",
-        "Another beautiful dish completed!"
-    ],
-    failure:[
-        "Don't worry! Let's try again!",
-        "Every great chef makes mistakes!",
-        "We can do better together!"
-    ],
-    eco:[
-        "Amazing! You're protecting our planet!",
-        "Less waste, more happiness!",
-        "You're a true Eco Hero!"
-    ]
-};
+function showSection(sectionId) {
+  document.querySelectorAll(".game-section").forEach(section => {
+    section.classList.remove("active");
+  });
 
-function mikaMessage(message){
-    const el=document.getElementById("mikaMessage");
-    if(el)el.textContent=message;
+  document.querySelectorAll(".nav-btn").forEach(button => {
+    button.classList.remove("active");
+  });
 
-    const avatar=document.getElementById("mikaCharacter");
+  const target = $(sectionId);
+  if (target) target.classList.add("active");
 
-    if(avatar){
-        avatar.classList.remove("mika-excited");
-        void avatar.offsetWidth;
-        avatar.classList.add("mika-excited");
+  const buttons = document.querySelectorAll(".nav-btn");
+  buttons.forEach(button => {
+    if (button.getAttribute("onclick")?.includes(sectionId)) {
+      button.classList.add("active");
     }
+  });
+
+  if (sectionId === "restaurant" && !restaurantOpen) {
+    guideSay("Ready to cook? Press Open Restaurant to welcome your first customer!", "Mika's Tip 💗");
+  }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function mikaSpeak(message){
-    mikaMessage(message);
+// ========================================
+// PLAYER AND LEVEL SYSTEM
+// ========================================
 
-    if(
-        !player.voiceEnabled||
-        !("speechSynthesis" in window)
-    )return;
+function updatePlayerDisplay() {
+  setText("playerLevel", player.level);
+  setText("homeLevel", player.level);
+  setText("playerCoins", player.coins);
+  setText("homeCoins", player.coins);
+  setText("restaurantCoins", player.coins);
+  setText("restaurantReputation", player.reputation);
+  setText("happyCustomers", player.happyCustomers);
 
+  const xpNeeded = player.level * 100;
+  const percent = Math.min(100, (player.xp / xpNeeded) * 100);
+
+  if ($("xpProgress")) $("xpProgress").style.width = percent + "%";
+  setText("xpText", `${player.xp} / ${xpNeeded} XP`);
+
+  savePlayer();
+}
+
+function setText(id, value) {
+  const element = $(id);
+  if (element) element.textContent = value;
+}
+
+function addXP(amount) {
+  player.xp += amount;
+
+  while (player.xp >= player.level * 100) {
+    player.xp -= player.level * 100;
+    player.level++;
+    showLevelUp();
+  }
+
+  updatePlayerDisplay();
+  checkAchievements();
+}
+
+function addCoins(amount) {
+  player.coins += amount;
+  updatePlayerDisplay();
+  updateMissionProgress(3, amount);
+}
+
+function showLevelUp() {
+  setText("levelMessage", `You reached Level ${player.level}! New adventures are waiting!`);
+
+  if ($("levelModal")) $("levelModal").classList.add("show");
+
+  mikaDance();
+  guideSay(`Amazing! You reached level ${player.level}! I'm so proud of you, Chef! Let's dance!`, "LEVEL UP! 🎉");
+  speakMika(`Amazing! You reached level ${player.level}! Congratulations, Chef!`);
+}
+
+function closeLevelModal() {
+  if ($("levelModal")) $("levelModal").classList.remove("show");
+  stopMikaDance();
+}
+
+function mikaDance() {
+  if ($("mikaAssistant")) {
+    $("mikaAssistant").classList.add("mika-dancing");
+    setTimeout(stopMikaDance, 3500);
+  }
+}
+
+function stopMikaDance() {
+  if ($("mikaAssistant")) {
+    $("mikaAssistant").classList.remove("mika-dancing");
+  }
+}
+
+// ========================================
+// MIKA ASSISTANT
+// ========================================
+
+function startMikaIntroduction() {
+  mikaStep = 0;
+  showMikaMessage();
+  if ($("mikaBubble")) $("mikaBubble").classList.add("show");
+}
+
+function showMikaMessage() {
+  const item = mikaMessages[mikaStep];
+  if (!item) return;
+
+  setText("mikaTitle", item.title);
+  setText("mikaMessage", item.message);
+  setText("mikaNextButton", mikaStep === mikaMessages.length - 1 ? "Let's Go! →" : "Next →");
+}
+
+function mikaNext() {
+  if (mikaStep < mikaMessages.length - 1) {
+    mikaStep++;
+    showMikaMessage();
+    const item = mikaMessages[mikaStep];
+    speakMika(item.message);
+  } else {
+    closeMika();
+    showSection("restaurant");
+    guideSay("Let's open your restaurant and welcome our first customer!", "Ready, Chef? 🌸");
+  }
+}
+
+function guideSay(message, title = "Mika 💗") {
+  setText("mikaTitle", title);
+  setText("mikaMessage", message);
+
+  if ($("mikaBubble")) $("mikaBubble").classList.add("show");
+
+  if (voiceEnabled) speakMika(message);
+}
+
+function closeMika() {
+  if ($("mikaBubble")) $("mikaBubble").classList.remove("show");
+}
+
+function toggleMika() {
+  if (!$("mikaBubble")) return;
+  $("mikaBubble").classList.toggle("show");
+
+  if ($("mikaBubble").classList.contains("show")) {
+    speakMika($("mikaMessage")?.textContent || "Hello, Chef!");
+  }
+}
+
+function toggleMikaVoice() {
+  voiceEnabled = !voiceEnabled;
+
+  if (!voiceEnabled && "speechSynthesis" in window) {
     speechSynthesis.cancel();
+  }
 
-    const speech=new SpeechSynthesisUtterance(message);
-    speech.lang="en-US";
-    speech.pitch=1.4;
-    speech.rate=1;
-    speech.volume=0.9;
+  showToast(voiceEnabled ? "Mika voice is ON 🔊" : "Mika voice is OFF 🔇");
 
-    const voice=speechSynthesis.getVoices()
-        .find(v=>v.lang.startsWith("en"));
-
-    if(voice)speech.voice=voice;
-
-    speechSynthesis.speak(speech);
+  if (voiceEnabled) {
+    speakMika("Hello, Chef! My voice is on!");
+  }
 }
 
-function randomMika(type){
-    const messages=MIKA_MESSAGES[type];
-    if(messages)mikaSpeak(messages[Math.floor(Math.random()*messages.length)]);
+function speakMika(message) {
+  if (!voiceEnabled || !("speechSynthesis" in window)) return;
+
+  speechSynthesis.cancel();
+
+  const speech = new SpeechSynthesisUtterance(message);
+  speech.lang = "en-US";
+  speech.rate = 0.95;
+  speech.pitch = 1.25;
+  speech.volume = 1;
+
+  speechSynthesis.speak(speech);
 }
 
-function changeAvatar(avatar){
-    player.avatar=avatar;
+// ========================================
+// RESTAURANT AND CUSTOMERS
+// ========================================
 
-    const el=document.getElementById("mikaCharacter");
-    if(el)el.textContent=avatar;
+function openRestaurant() {
+  if (restaurantOpen) {
+    showToast("Your restaurant is already open!");
+    return;
+  }
 
-    saveGame();
+  restaurantOpen = true;
+
+  const button = $("openRestaurantBtn");
+  if (button) {
+    button.textContent = "Restaurant Open ✓";
+    button.disabled = true;
+  }
+
+  guideSay("Your restaurant is open! Look, our first customer is here!", "Welcome! 🌸");
+  startNextOrder();
 }
 
-function repeatMika(){
-    const el=document.getElementById("mikaMessage");
-    mikaSpeak(el?.textContent||"Welcome to Freshopia!");
+function startNextOrder() {
+  clearInterval(orderTimerInterval);
+
+  const recipe = recipes[Math.floor(Math.random() * recipes.length)];
+  const customer = customers[Math.floor(Math.random() * customers.length)];
+
+  currentOrder = {
+    recipe,
+    customer,
+    completed: false
+  };
+
+  selectedItems = [];
+  cookingReady = false;
+  orderTime = 60;
+
+  setText("orderName", recipe.name);
+  setText("orderDescription", recipe.description);
+  setText("orderTimer", orderTime);
+  setText("customerMood", "😊 Waiting");
+  setText("orderFeedback", "");
+
+  const image = $("orderImage");
+  if (image) {
+    image.src = recipe.image;
+    image.alt = recipe.name;
+  }
+
+  if ($("prepareMealBtn")) $("prepareMealBtn").disabled = false;
+  if ($("serveMealBtn")) $("serveMealBtn").disabled = true;
+
+  setText("cookingSteps", "Choose the ingredients for this recipe.");
+  setText("cookingContent", "");
+
+  updateCustomerArea();
+  renderIngredients();
+  renderSelectedIngredients();
+
+  orderTimerInterval = setInterval(() => {
+    orderTime--;
+    setText("orderTimer", orderTime);
+
+    if (orderTime <= 20) {
+      setText("customerMood", "😟 Getting impatient...");
+    }
+
+    if (orderTime <= 0) {
+      clearInterval(orderTimerInterval);
+      setText("customerMood", "😢 Customer left");
+      setText("orderFeedback", "Oh no! The customer ran out of patience.");
+      if ($("prepareMealBtn")) $("prepareMealBtn").disabled = true;
+      if ($("serveMealBtn")) $("serveMealBtn").disabled = true;
+      showToast("Customer left. Try again with the next order!");
+      setTimeout(startNextOrder, 2500);
+    }
+  }, 1000);
 }
 
-/* ============================================================
-   7. SOUND SYSTEM
-============================================================ */
+function updateCustomerArea() {
+  const area = $("customerArea");
+  if (!area) return;
 
-function initializeAudio(){
-    if(musicStarted)return;
+  if (!currentOrder) {
+    area.innerHTML = `
+      <h2>Waiting for customers...</h2>
+      <p>Open your restaurant to welcome your first guest!</p>
+    `;
+    return;
+  }
 
-    const AC=window.AudioContext||window.webkitAudioContext;
-    if(!AC)return;
-
-    audioContext=new AC();
-    musicStarted=true;
-
-    if(audioContext.state==="suspended")audioContext.resume();
-
-    if(player.musicEnabled)startMusic();
+  area.innerHTML = `
+    <div class="customer-avatar">${currentOrder.customer.avatar}</div>
+    <h2>${currentOrder.customer.name} is here!</h2>
+    <p>${currentOrder.customer.message}</p>
+  `;
 }
 
-function soundEffect(type="click"){
-    if(!player.soundEnabled||!audioContext)return;
+// ========================================
+// INGREDIENT SELECTION
+// ========================================
 
-    const patterns={
-        click:[440],
-        success:[523,659,784],
-        level:[523,659,784,1046],
-        reward:[659,784,988],
-        error:[220,180]
-    };
+function renderIngredients() {
+  const grid = $("ingredientGrid");
+  if (!grid) return;
 
-    const notes=patterns[type]||patterns.click;
+  grid.innerHTML = "";
 
-    notes.forEach((frequency,index)=>{
-        setTimeout(()=>{
-            if(!audioContext)return;
+  ingredients.forEach(ingredient => {
+    const selected = selectedItems.includes(ingredient.id);
 
-            const osc=audioContext.createOscillator();
-            const gain=audioContext.createGain();
+    const card = document.createElement("div");
+    card.className = "ingredient-card" + (selected ? " selected" : "");
+    card.innerHTML = `
+      <img src="${ingredient.image}" alt="${ingredient.name}" loading="lazy">
+      <strong>${ingredient.name}</strong>
+      <small>${selected ? "Selected ✓" : "Tap to select"}</small>
+    `;
 
-            osc.frequency.value=frequency;
-            osc.type="sine";
+    card.addEventListener("click", () => toggleIngredient(ingredient.id));
+    grid.appendChild(card);
+  });
+}
 
-            gain.gain.setValueAtTime(.08,audioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(
-                .001,audioContext.currentTime+.2
-            );
+function toggleIngredient(id) {
+  if (cookingReady || !currentOrder) return;
 
-            osc.connect(gain);
-            gain.connect(audioContext.destination);
+  if (selectedItems.includes(id)) {
+    selectedItems = selectedItems.filter(item => item !== id);
+  } else {
+    selectedItems.push(id);
+  }
 
-            osc.start();
-            osc.stop(audioContext.currentTime+.2);
-        },index*120);
+  renderIngredients();
+  renderSelectedIngredients();
+}
+
+function renderSelectedIngredients() {
+  const area = $("selectedIngredients");
+  if (!area) return;
+
+  area.className = "selected-list";
+
+  if (selectedItems.length === 0) {
+    area.textContent = "No ingredients selected yet.";
+    return;
+  }
+
+  area.innerHTML = "";
+
+  selectedItems.forEach(id => {
+    const ingredient = ingredients.find(item => item.id === id);
+    if (!ingredient) return;
+
+    const chip = document.createElement("span");
+    chip.className = "selected-chip";
+    chip.textContent = ingredient.name;
+    area.appendChild(chip);
+  });
+}
+
+// ========================================
+// COOKING
+// ========================================
+
+function prepareMeal() {
+  if (!currentOrder || cookingReady) return;
+
+  if (selectedItems.length === 0) {
+    showToast("Choose some ingredients first!");
+    guideSay("Choose the ingredients shown in the recipe, Chef!", "A little hint 💡");
+    return;
+  }
+
+  const required = currentOrder.recipe.ingredients;
+  const missing = required.filter(id => !selectedItems.includes(id));
+  const extra = selectedItems.filter(id => !required.includes(id));
+
+  if (missing.length > 0 || extra.length > 0) {
+    setText("cookingSteps", "Not quite right! Check the recipe and try again.");
+    setText("cookingContent", "You need the correct ingredients to prepare this dish.");
+    setText("orderFeedback", "Some ingredients are missing or incorrect.");
+    guideSay("Oops! Check the recipe again. You can remove ingredients by tapping them.", "Let's try again! 💗");
+    return;
+  }
+
+  cookingReady = true;
+
+  if ($("prepareMealBtn")) $("prepareMealBtn").disabled = true;
+
+  setText("cookingSteps", "Step 1: Ingredients collected ✓");
+  setText("cookingContent", "Step 2: Mixing and cooking your ingredients...");
+
+  guideSay("Perfect ingredient selection! Your meal is cooking. Great job!", "Cooking time! 🍳");
+
+  setTimeout(() => {
+    if (!currentOrder || currentOrder.completed) return;
+
+    setText("cookingSteps", "Step 3: Your dish is ready! ✓");
+    setText("cookingContent", "Beautifully prepared! Now serve it to your customer.");
+    if ($("serveMealBtn")) $("serveMealBtn").disabled = false;
+  }, 1800);
+}
+
+function serveMeal() {
+  if (!currentOrder || !cookingReady || currentOrder.completed) return;
+
+  currentOrder.completed = true;
+  clearInterval(orderTimerInterval);
+
+  const recipe = currentOrder.recipe;
+  const speedBonus = orderTime >= 40 ? 15 : orderTime >= 20 ? 8 : 0;
+  const reward = recipe.reward + speedBonus;
+
+  player.completedOrders++;
+  player.happyCustomers++;
+  player.reputation += 10;
+
+  addCoins(reward);
+  addXP(35);
+
+  updateMissionProgress(1, 1);
+  updateMissionProgress(2, 1);
+
+  setText("customerMood", "😍 Very happy!");
+  setText("orderFeedback", `Amazing! You earned ${reward} coins and 35 XP!`);
+  setText("cookingContent", "Your customer loved the meal! 🎉");
+
+  if ($("serveMealBtn")) $("serveMealBtn").disabled = true;
+
+  addOrderHistory(recipe.name, reward);
+
+  showToast(`Order completed! +${reward} coins and +35 XP`);
+
+  guideSay("Wonderful work! Your customer is happy. Keep cooking to become a Freshopia star!", "Fantastic, Chef! 🌟");
+
+  checkAchievements();
+  updatePlayerDisplay();
+
+  setTimeout(() => {
+    if (restaurantOpen) startNextOrder();
+  }, 3500);
+}
+
+function addOrderHistory(name, reward) {
+  const history = $("orderHistory");
+  if (!history) return;
+
+  const item = document.createElement("p");
+  item.textContent = `✓ ${name} — ${reward} coins earned`;
+  history.prepend(item);
+}
+
+// ========================================
+// RECIPES
+// ========================================
+
+function renderRecipes() {
+  const grid = $("recipeGrid");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+
+  recipes.forEach(recipe => {
+    const card = document.createElement("div");
+    card.className = "recipe-card";
+
+    card.innerHTML = `
+      <img src="${recipe.image}" alt="${recipe.name}" loading="lazy">
+      <h3>${recipe.name}</h3>
+      <p>${recipe.description}</p>
+      <p>🪙 Reward: ${recipe.reward} coins</p>
+      <button type="button">View ingredients</button>
+    `;
+
+    card.querySelector("button").addEventListener("click", () => {
+      const names = recipe.ingredients.map(id =>
+        ingredients.find(item => item.id === id)?.name
+      ).filter(Boolean);
+
+      showToast(names.join(" • "));
     });
+
+    grid.appendChild(card);
+  });
 }
 
-function startMusic(){
-    if(!audioContext||musicNodes.length)return;
-
-    const notes=[261.63,329.63,392,440,392,329.63];
-
-    notes.forEach(freq=>{
-        const osc=audioContext.createOscillator();
-        const gain=audioContext.createGain();
-
-        osc.type="sine";
-        osc.frequency.value=freq;
-        gain.gain.value=.004;
-
-        osc.connect(gain);
-        gain.connect(audioContext.destination);
-
-        osc.start();
-        musicNodes.push({osc,gain});
-    });
-
-    let index=0;
-
-    musicInterval=setInterval(()=>{
-        if(!player.musicEnabled||!audioContext)return;
-
-        musicNodes.forEach(node=>{
-            node.gain.gain.setTargetAtTime(
-                .002,audioContext.currentTime,.1
-            );
-        });
-
-        const selected=musicNodes[index%musicNodes.length];
-
-        selected.gain.gain.setTargetAtTime(
-            .018,audioContext.currentTime,.1
-        );
-
-        index++;
-    },450);
-}
-
-function stopMusic(){
-    clearInterval(musicInterval);
-    musicInterval=null;
-
-    musicNodes.forEach(node=>{
-        try{node.osc.stop();}catch(e){}
-    });
-
-    musicNodes=[];
-}
-
-function toggleMusic(){
-    player.musicEnabled=!player.musicEnabled;
-
-    if(player.musicEnabled){
-        initializeAudio();
-        startMusic();
-    }else{
-        stopMusic();
-    }
-
-    updateSettings();
-    saveGame();
-}
-
-function toggleSound(){
-    player.soundEnabled=!player.soundEnabled;
-    updateSettings();
-    saveGame();
-}
-
-function toggleVoice(){
-    player.voiceEnabled=!player.voiceEnabled;
-
-    if(!player.voiceEnabled&&"speechSynthesis"in window){
-        speechSynthesis.cancel();
-    }
-
-    updateSettings();
-    saveGame();
-}
-
-/* ============================================================
-   8. INGREDIENT SYSTEM
-============================================================ */
-
-function renderIngredients(){
-    const grid=document.getElementById("ingredientGrid");
-    if(!grid)return;
-
-    grid.innerHTML="";
-
-    INGREDIENTS.forEach(item=>{
-        const btn=document.createElement("button");
-
-        btn.type="button";
-        btn.className="ingredient-card";
-
-        if(selectedIngredients.includes(item.id)){
-            btn.classList.add("selected");
-        }
-
-        btn.innerHTML=`
-            <span class="ingredient-emoji">${item.emoji}</span>
-            <span>${item.name}</span>
-        `;
-
-        btn.addEventListener("click",()=>selectIngredient(item.id));
-
-        grid.appendChild(btn);
-    });
-}
-
-function selectIngredient(id){
-    if(!player.started||!currentRecipe){
-        setText("feedback","Start the game first!");
-        return;
-    }
-
-    if(selectedIngredients.includes(id)){
-        selectedIngredients=selectedIngredients.filter(x=>x!==id);
-    }else if(selectedIngredients.length<CONFIG.maxIngredients){
-        selectedIngredients.push(id);
-    }else{
-        setText("feedback","Maximum ingredient limit reached!");
-    }
-
-    renderIngredients();
-    soundEffect("click");
-}
-
-function clearIngredients(){
-    selectedIngredients=[];
-    renderIngredients();
-    setText("feedback","Ingredients cleared!");
-}
-
-function giveHint(){
-    if(!currentRecipe)return;
-
-    if(player.coins<15){
-        setText("feedback","Not enough coins!");
-        return;
-    }
-
-    player.coins-=15;
-
-    const missing=currentRecipe.ingredients.filter(
-        x=>!selectedIngredients.includes(x)
-    );
-
-    const ingredient=INGREDIENTS.find(x=>x.id===missing[0]);
-
-    setText(
-        "feedback",
-        ingredient
-            ?`Mika's Hint: Try ${ingredient.emoji} ${ingredient.name}!`
-            :"All ingredients are selected!"
-    );
-
-    updateStats();
-    saveGame();
-}
-
-/* ============================================================
-   9. ORDER AND CUSTOMER SYSTEM
-============================================================ */
-
-const CUSTOMERS=[
-    {name:"Luna",avatar:"👩🏻",message:"I'd love something fresh!"},
-    {name:"Aiko",avatar:"👧🏻",message:"Can you prepare a healthy meal?"},
-    {name:"Oliver",avatar:"🧑🏻",message:"Surprise me with your best dish!"},
-    {name:"Mia",avatar:"👩🏽",message:"Something delicious and sustainable, please!"},
-    {name:"Noah",avatar:"🧑🏼",message:"I'm hungry! Let's order!"},
-    {name:"Emma",avatar:"👩🏼",message:"I love colorful food!"}
-];
-
-let currentCustomer=null;
-
-function startGame(){
-    initializeAudio();
-
-    if(gameTimer)return;
-
-    player.started=true;
-
-    const btn=document.getElementById("startButton");
-
-    if(btn){
-        btn.disabled=true;
-        btn.textContent="Order Running";
-    }
-
-    if(!sessionTimer){
-        sessionTimer=setInterval(()=>{
-            player.totalPlayTime++;
-            player.sessionTime++;
-
-            checkTimeUnlocks();
-            checkBadges();
-
-            if(player.totalPlayTime%30===0)saveGame();
-        },1000);
-    }
-
-    generateOrder();
-    randomMika("welcome");
-    saveGame();
-}
-
-function generateOrder(){
-    stopOrderTimer();
-
-    const available=RECIPES.filter(
-        recipe=>player.level>=recipe.level
-    );
-
-    currentRecipe=available[
-        Math.floor(Math.random()*available.length)
-    ];
-
-    currentCustomer=CUSTOMERS[
-        Math.floor(Math.random()*CUSTOMERS.length)
-    ];
-
-    selectedIngredients=[];
-    remainingTime=CONFIG.orderDuration;
-
-    setText("timer",formatTime(remainingTime));
-    setText("recipeName",currentRecipe.name);
-    setText("currentRecipeName",currentRecipe.name);
-    setText("recipeEmoji",currentRecipe.emoji);
-    setText("customerName",currentCustomer.name);
-    setText("customerMessage",currentCustomer.message);
-    setText("customerAvatar",currentCustomer.avatar);
-    setText("feedback","");
-
-    renderIngredients();
-
-    gameTimer=setInterval(()=>{
-        remainingTime--;
-
-        setText("timer",formatTime(remainingTime));
-
-        if(remainingTime<=30){
-            const timer=document.getElementById("timer");
-            if(timer)timer.classList.add("timer-danger");
-        }
-
-        if(remainingTime<=0)orderFailed();
-    },1000);
-}
-
-function formatTime(seconds){
-    const m=Math.floor(seconds/60);
-    const s=seconds%60;
-
-    return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-}
-
-function stopOrderTimer(){
-    clearInterval(gameTimer);
-    gameTimer=null;
-}
-
-function serveOrder(){
-    if(!currentRecipe||!player.started){
-        setText("feedback","Start your restaurant first!");
-        return;
-    }
-
-    const required=currentRecipe.ingredients;
-
-    const missing=required.filter(
-        x=>!selectedIngredients.includes(x)
-    );
-
-    const extra=selectedIngredients.filter(
-        x=>!required.includes(x)
-    );
-
-    if(missing.length===0&&extra.length===0){
-        completeOrder();
-    }else{
-        player.failedOrders++;
-
-        setText(
-            "feedback",
-            `Order needs improvement! Missing: ${missing.length}, Extra: ${extra.length}.`
-        );
-
-        randomMika("failure");
-        soundEffect("error");
-
-        saveGame();
-    }
-}
-
-function completeOrder(){
-    stopOrderTimer();
-
-    player.completedOrders++;
-    player.perfectOrders++;
-
-    const bonus=Math.floor(remainingTime/10);
-
-    const xp=currentRecipe.xp+bonus;
-    const coins=currentRecipe.coins+Math.floor(bonus/2);
-
-    addXP(xp);
-
-    player.coins+=coins;
-    player.ecoScore+=currentRecipe.eco;
-    player.wastePrevented++;
-
-    setText(
-        "feedback",
-        `Perfect! +${xp} XP | +${coins} Coins | +${currentRecipe.eco} Eco Points`
-    );
-
-    randomMika("success");
-    soundEffect("success");
-
-    showResult(
-        "ORDER COMPLETED!",
-        `${currentRecipe.emoji} ${currentRecipe.name}`,
-        `+${xp} XP • +${coins} Coins • +${currentRecipe.eco} Eco Points`
-    );
-
-    checkBadges();
-    checkDailyMissions();
-    updateStats();
-
-    saveGame();
-    enableNextOrder();
-}
-
-function orderFailed(){
-    stopOrderTimer();
-
-    player.failedOrders++;
-
-    setText("feedback","Time is up! Try again!");
-
-    randomMika("failure");
-
-    enableNextOrder();
-    saveGame();
-}
-
-function enableNextOrder(){
-    const btn=document.getElementById("startButton");
-
-    if(btn){
-        btn.disabled=false;
-        btn.textContent="Next Order";
-    }
-}
-
-/* ============================================================
-   10. BADGE SYSTEM
-============================================================ */
-
-const BADGES=[
+// ========================================
+// CHARACTERS
+// ========================================
+
+function renderCharacters() {
+  const grid = $("characterGrid");
+  if (!grid) return;
+
+  const team = [
     {
-        id:"first",
-        name:"First Order",
-        emoji:"🍽️",
-        description:"Complete your first order.",
-        test:p=>p.completedOrders>=1
+      name: "Mika",
+      role: "Your cooking guide",
+      image: "mika.png"
     },
     {
-        id:"eco",
-        name:"Eco Beginner",
-        emoji:"🌱",
-        description:"Earn 50 Eco Points.",
-        test:p=>p.ecoScore>=50
+      name: "Emma",
+      role: "A friendly customer",
+      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400"
     },
     {
-        id:"chef",
-        name:"Professional Chef",
-        emoji:"👩‍🍳",
-        description:"Complete 10 orders.",
-        test:p=>p.completedOrders>=10
-    },
-    {
-        id:"perfect",
-        name:"Perfectionist",
-        emoji:"💎",
-        description:"Complete 10 perfect orders.",
-        test:p=>p.perfectOrders>=10
-    },
-    {
-        id:"master",
-        name:"Master Chef",
-        emoji:"⭐",
-        description:"Reach level 10.",
-        test:p=>p.level>=10
-    },
-    {
-        id:"ecoMaster",
-        name:"Eco Master",
-        emoji:"🌍",
-        description:"Reach 500 Eco Points.",
-        test:p=>p.ecoScore>=500
-    },
-    {
-        id:"legend",
-        name:"Freshopia Legend",
-        emoji:"👑",
-        description:"Reach level 30.",
-        test:p=>p.level>=30
-    },
-    {
-        id:"dedicated",
-        name:"Dedicated Player",
-        emoji:"⏰",
-        description:"Play for 30 minutes.",
-        test:p=>p.totalPlayTime>=1800
-    },
-    {
-        id:"collector",
-        name:"Fashion Collector",
-        emoji:"👗",
-        description:"Own 4 outfits.",
-        test:p=>p.ownedItems.length>=4
+      name: "Oliver",
+      role: "A food lover",
+      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400"
     }
-];
+  ];
 
-function checkBadges(){
-    BADGES.forEach(badge=>{
-        if(!player.badges.includes(badge.id)&&badge.test(player)){
-            player.badges.push(badge.id);
-            player.coins+=75;
+  grid.innerHTML = "";
 
-            showResult(
-                "NEW BADGE UNLOCKED!",
-                `${badge.emoji} ${badge.name}`,
-                `${badge.description} +75 Coins!`
-            );
-
-            soundEffect("reward");
-            renderBadges();
-        }
-    });
-
-    updateStats();
+  team.forEach(character => {
+    const card = document.createElement("div");
+    card.className = "character-card";
+    card.innerHTML = `
+      <img src="${character.image}" alt="${character.name}" loading="lazy">
+      <h3>${character.name}</h3>
+      <p>${character.role}</p>
+    `;
+    grid.appendChild(card);
+  });
 }
 
-function renderBadges(){
-    const list=document.getElementById("badgeList");
-    if(!list)return;
+// ========================================
+// MISSIONS
+// ========================================
 
-    list.innerHTML="";
+function renderMissions() {
+  const list = $("missionList");
+  if (!list) return;
 
-    BADGES.forEach(badge=>{
-        const unlocked=player.badges.includes(badge.id);
+  list.innerHTML = "";
 
-        const item=document.createElement("div");
+  missions.forEach(mission => {
+    const completed = mission.progress >= mission.target;
+    const card = document.createElement("div");
+    card.className = "mission-card" + (completed ? " completed" : "");
 
-        item.className=`badge-item ${unlocked?"unlocked":"locked"}`;
+    card.innerHTML = `
+      <h3>${completed ? "✅" : "🎯"} ${mission.title}</h3>
+      <p>Progress: ${Math.min(mission.progress, mission.target)} / ${mission.target}</p>
+      <p>Reward: ${mission.reward} coins</p>
+      ${completed ? "<strong>Mission completed!</strong>" : ""}
+    `;
 
-        item.innerHTML=`
-            <span>${badge.emoji}</span>
-            <strong>${badge.name}</strong>
-            <small>${unlocked?"UNLOCKED":"LOCKED"}</small>
-            <p>${badge.description}</p>
-        `;
-
-        list.appendChild(item);
-    });
+    list.appendChild(card);
+  });
 }
 
-/* ============================================================
-   11. TIME-BASED UNLOCK SYSTEM
-============================================================ */
+function updateMissionProgress(id, amount) {
+  const mission = missions.find(item => item.id === id);
+  if (!mission) return;
 
-const TIME_REWARDS=[
-    {time:60,id:"quick",name:"Quick Challenges"},
-    {time:180,id:"special",name:"Special Missions"},
-    {time:300,id:"bonus",name:"Bonus Rewards"},
-    {time:600,id:"advanced",name:"Advanced Kitchen"},
-    {time:900,id:"expert",name:"Expert Missions"},
-    {time:1800,id:"legendary",name:"Legendary Challenges"}
-];
+  const wasCompleted = mission.progress >= mission.target;
+  mission.progress += amount;
 
-function checkTimeUnlocks(){
-    TIME_REWARDS.forEach(reward=>{
-        if(
-            player.sessionTime>=reward.time&&
-            !player.unlockedFeatures.includes(reward.id)
-        ){
-            player.unlockedFeatures.push(reward.id);
+  if (!wasCompleted && mission.progress >= mission.target) {
+    player.coins += mission.reward;
+    showToast(`Mission completed! +${mission.reward} coins 🎯`);
+    updatePlayerDisplay();
+  }
 
-            showResult(
-                "NEW FEATURE!",
-                `🔓 ${reward.name}`,
-                "Your dedication unlocked a new feature!"
-            );
-
-            mikaSpeak(`Amazing! You unlocked ${reward.name}!`);
-
-            saveGame();
-        }
-    });
+  renderMissions();
 }
 
-/* ============================================================
-   12. DAILY MISSIONS
-============================================================ */
+// ========================================
+// ACHIEVEMENTS
+// ========================================
 
-function dailyReset(){
-    const today=new Date().toLocaleDateString("en-CA");
+function renderAchievements() {
+  const list = $("achievementList");
+  if (!list) return;
 
-    if(player.dailyDate!==today){
-        player.dailyDate=today;
-        player.dailyCompleted=[];
-        player.dailyRewardClaimed=false;
-        saveGame();
+  list.innerHTML = "";
+
+  achievements.forEach(achievement => {
+    const card = document.createElement("div");
+    card.className = "achievement-card" + (achievement.unlocked ? " unlocked" : "");
+
+    card.innerHTML = `
+      <h3>${achievement.unlocked ? "🏆" : "🔒"} ${achievement.title}</h3>
+      <p>${achievement.description}</p>
+      <small>${achievement.unlocked ? "Unlocked!" : "Not unlocked yet"}</small>
+    `;
+
+    list.appendChild(card);
+  });
+}
+
+function checkAchievements() {
+  const checks = [
+    player.completedOrders >= 1,
+    player.completedOrders >= 5,
+    player.level >= 3
+  ];
+
+  achievements.forEach((achievement, index) => {
+    if (checks[index] && !achievement.unlocked) {
+      achievement.unlocked = true;
+      showToast(`Achievement unlocked: ${achievement.title} 🏆`);
+      addXP(10);
     }
+  });
+
+  renderAchievements();
 }
 
-function dailyMissions(){
-    return [
-        {
-            id:"orders",
-            name:"Complete 3 Orders",
-            reward:100,
-            condition:()=>player.completedOrders>=3
-        },
-        {
-            id:"perfect",
-            name:"Complete 2 Perfect Dishes",
-            reward:100,
-            condition:()=>player.perfectOrders>=2
-        },
-        {
-            id:"eco",
-            name:"Earn 50 Eco Points",
-            reward:100,
-            condition:()=>player.ecoScore>=50
-        }
-    ];
-}
+// ========================================
+// FOOD KNOWLEDGE PUZZLE
+// ========================================
 
-function checkDailyMissions(){
-    dailyMissions().forEach(mission=>{
-        if(
-            mission.condition()&&
-            !player.dailyCompleted.includes(mission.id)
-        ){
-            player.dailyCompleted.push(mission.id);
-            player.coins+=mission.reward;
+function renderPuzzle() {
+  const area = $("puzzleGame");
+  if (!area) return;
 
-            showResult(
-                "DAILY MISSION COMPLETE!",
-                mission.name,
-                `+${mission.reward} Coins`
-            );
-        }
-    });
-
-    saveGame();
-}
-
-function renderDailyMissions(){
-    const list=document.getElementById("dailyMissionList");
-    if(!list)return;
-
-    list.innerHTML="";
-
-    dailyMissions().forEach(mission=>{
-        const done=player.dailyCompleted.includes(mission.id);
-
-        const item=document.createElement("div");
-
-        item.className="mission-item";
-
-        item.innerHTML=`
-            <strong>${done?"✅":"🎯"} ${mission.name}</strong>
-            <span>${done?"Completed":`Reward: ${mission.reward} Coins`}</span>
-        `;
-
-        list.appendChild(item);
-    });
-}
-
-function claimDailyReward(){
-    dailyReset();
-
-    if(player.dailyRewardClaimed){
-        setText("feedback","Daily reward already claimed!");
-        return;
-    }
-
-    player.dailyRewardClaimed=true;
-    player.coins+=CONFIG.dailyReward;
-
-    showResult(
-        "DAILY LOGIN REWARD!",
-        "🎁 Welcome back!",
-        `You earned ${CONFIG.dailyReward} Coins!`
-    );
-
-    updateStats();
-    saveGame();
-}
-
-/* ============================================================
-   13. SHOP SYSTEM
-============================================================ */
-
-const SHOP_ITEMS=[
+  const questions = [
     {
-        id:"default",
-        name:"Classic Mika",
-        emoji:"👩‍🍳",
-        price:0,
-        level:1
+      question: "Which ingredient is commonly used to make pesto?",
+      options: ["Fresh basil", "Chocolate", "Potato"],
+      answer: "Fresh basil"
     },
     {
-        id:"pink",
-        name:"Pink Mika",
-        emoji:"👩🏻‍🎤",
-        price:250,
-        level:5
+      question: "Which food is a good source of protein?",
+      options: ["Chicken", "Sugar", "Soft drink"],
+      answer: "Chicken"
     },
     {
-        id:"chef",
-        name:"Master Chef Mika",
-        emoji:"👩🏻‍🍳",
-        price:400,
-        level:10
-    },
-    {
-        id:"royal",
-        name:"Royal Mika",
-        emoji:"👸🏻",
-        price:800,
-        level:25
-    },
-    {
-        id:"star",
-        name:"Star Mika",
-        emoji:"🌟",
-        price:600,
-        level:15
+      question: "Which ingredient is used to make pasta?",
+      options: ["Pasta", "Lettuce", "Apple"],
+      answer: "Pasta"
     }
-];
+  ];
 
-function renderShop(){
-    const shop=document.getElementById("shopList");
-    if(!shop)return;
+  const question = questions[Math.floor(Math.random() * questions.length)];
+  currentPuzzleAnswer = question.answer;
 
-    shop.innerHTML="";
+  area.innerHTML = `
+    <div class="puzzle-card">
+      <h2>🧠 Food Quiz</h2>
+      <p>${question.question}</p>
+      <div id="puzzleOptions"></div>
+      <p id="puzzleFeedback"></p>
+      <button onclick="renderPuzzle()">Next Question ↻</button>
+    </div>
+  `;
 
-    SHOP_ITEMS.forEach(item=>{
-        const owned=player.ownedItems.includes(item.id);
+  const options = $("puzzleOptions");
 
-        const card=document.createElement("div");
-        card.className="shop-item";
-
-        card.innerHTML=`
-            <div>${item.emoji}</div>
-            <strong>${item.name}</strong>
-            <p>Level ${item.level}</p>
-            <p>${owned?"Owned":`${item.price} Coins`}</p>
-            <button type="button" ${owned||player.level<item.level?"disabled":""}>
-                ${owned?"Owned":"Purchase"}
-            </button>
-        `;
-
-        card.querySelector("button").addEventListener("click",()=>{
-            purchaseItem(item.id);
-        });
-
-        shop.appendChild(card);
-    });
+  question.options.forEach(option => {
+    const button = document.createElement("button");
+    button.textContent = option;
+    button.addEventListener("click", () => answerPuzzle(option));
+    options.appendChild(button);
+  });
 }
 
-function purchaseItem(id){
-    const item=SHOP_ITEMS.find(x=>x.id===id);
+function answerPuzzle(answer) {
+  const feedback = $("puzzleFeedback");
+  if (!feedback) return;
 
-    if(!item)return;
-    if(player.ownedItems.includes(id))return;
-
-    if(player.level<item.level){
-        setText("feedback","Level requirement not reached!");
-        return;
-    }
-
-    if(player.coins<item.price){
-        setText("feedback","Not enough coins!");
-        return;
-    }
-
-    player.coins-=item.price;
-    player.ownedItems.push(id);
-
-    checkBadges();
-
-    showResult(
-        "ITEM PURCHASED!",
-        item.emoji+" "+item.name,
-        "Your new outfit is ready!"
-    );
-
-    renderShop();
-    updateStats();
-    saveGame();
+  if (answer === currentPuzzleAnswer) {
+    feedback.textContent = "Correct! Great job! +10 XP 🎉";
+    addXP(10);
+  } else {
+    feedback.textContent = "Not quite! Try another question.";
+  }
 }
 
-function equipOutfit(id){
-    if(!player.ownedItems.includes(id))return;
+// ========================================
+// GENERAL MESSAGE
+// ========================================
 
-    player.selectedOutfit=id;
+function showToast(message) {
+  const toast = $("toast");
+  if (!toast) return;
 
-    const item=SHOP_ITEMS.find(x=>x.id===id);
+  toast.textContent = message;
+  toast.classList.add("show");
 
-    if(item)changeAvatar(item.emoji);
-
-    saveGame();
+  clearTimeout(showToast.timeout);
+  showToast.timeout = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2600);
 }
-
-/* ============================================================
-   14. RESULT WINDOW
-============================================================ */
-
-function showResult(title,subtitle,description){
-    const modal=document.getElementById("resultModal");
-
-    if(modal){
-        const h2=modal.querySelector("h2");
-        const h3=modal.querySelector("h3");
-        const p=modal.querySelector("p");
-
-        if(h2)h2.textContent=title;
-        if(h3)h3.textContent=subtitle;
-        if(p)p.textContent=description;
-
-        modal.hidden=false;
-        modal.classList.add("active");
-
-        return;
-    }
-
-    const notification=document.createElement("div");
-
-    notification.className="freshopia-notification";
-
-    const heading=document.createElement("strong");
-    const subtitleText=document.createElement("p");
-    const descriptionText=document.createElement("small");
-
-    heading.textContent=title;
-    subtitleText.textContent=subtitle;
-    descriptionText.textContent=description;
-
-    notification.append(heading,subtitleText,descriptionText);
-    document.body.appendChild(notification);
-
-    setTimeout(()=>notification.remove(),4000);
-}
-
-function closeResult(){
-    const modal=document.getElementById("resultModal");
-
-    if(modal){
-        modal.hidden=true;
-        modal.classList.remove("active");
-    }
-}
-
-function closeLevelModal(){
-    const modal=document.getElementById("levelModal");
-
-    if(modal){
-        modal.hidden=true;
-        modal.classList.remove("active");
-    }
-}
-
-/* ============================================================
-   15. PLAYER STATISTICS
-============================================================ */
-
-function updateStats(){
-    setText("levelValue",player.level);
-    setText("xpValue",player.xp);
-    setText("coinValue",player.coins);
-    setText("ecoValue",player.ecoScore);
-    setText("badgeCount",player.badges.length);
-    setText("orderCount",player.completedOrders);
-
-    const required=requiredXP(player.level);
-    const progress=Math.min(100,player.xp/required*100);
-
-    const fill=document.getElementById("xpFill");
-
-    if(fill)fill.style.width=progress+"%";
-
-    setText("levelProgressText",`${player.xp} / ${required} XP`);
-}
-
-function showProgressReport(){
-    showResult(
-        "PLAYER REPORT",
-        `${player.nickname} | Level ${player.level}`,
-        `XP: ${player.xp} | Coins: ${player.coins} | Eco Points: ${player.ecoScore} | Orders: ${player.completedOrders} | Badges: ${player.badges.length} | Play Time: ${formatTime(player.totalPlayTime)}`
-    );
-}
-
-/* ============================================================
-   16. INTERFACE HELPERS
-============================================================ */
-
-function setText(id,value){
-    const el=document.getElementById(id);
-    if(el)el.textContent=value;
-}
-
-function updateSettings(){
-    const music=document.getElementById("musicToggle");
-    const sound=document.getElementById("soundToggle");
-    const voice=document.getElementById("voiceToggle");
-
-    if(music)music.checked=player.musicEnabled;
-    if(sound)sound.checked=player.soundEnabled;
-    if(voice)voice.checked=player.voiceEnabled;
-}
-
-function renderUnlocks(){
-    const list=document.getElementById("unlockList");
-    if(!list)return;
-
-    list.innerHTML="";
-
-    LEVEL_REWARDS.forEach(reward=>{
-        const unlocked=player.level>=reward.level;
-
-        const item=document.createElement("div");
-
-        item.className=`unlock-item ${unlocked?"unlocked":"locked"}`;
-
-        item.innerHTML=`
-            <strong>${unlocked?"🔓":"🔒"} ${reward.name}</strong>
-            <small>Level ${reward.level}</small>
-            <p>${reward.description}</p>
-        `;
-
-        list.appendChild(item);
-    });
-}
-
-function renderAll(){
-    updateStats();
-    updateSettings();
-    renderIngredients();
-    renderBadges();
-    renderUnlocks();
-    renderDailyMissions();
-    renderShop();
-
-    const avatar=document.getElementById("mikaCharacter");
-    if(avatar)avatar.textContent=player.avatar;
-}
-
-/* ============================================================
-   17. PLAYER PROFILE
-============================================================ */
-
-function setNickname(name){
-    name=String(name).trim().slice(0,20);
-
-    if(!name)return;
-
-    player.nickname=name;
-    saveGame();
-
-    mikaSpeak(`Welcome to Freshopia, ${name}!`);
-}
-
-function resetGame(){
-    if(!confirm("Reset all Freshopia progress?"))return;
-
-    stopOrderTimer();
-
-    clearInterval(sessionTimer);
-    sessionTimer=null;
-
-    stopMusic();
-
-    localStorage.removeItem(GAME_KEY);
-
-    player=newPlayer();
-    selectedIngredients=[];
-    currentRecipe=null;
-
-    renderAll();
-    mikaSpeak("A brand new adventure begins!");
-}
-
-/* ============================================================
-   18. SAVE SYSTEM
-============================================================ */
-
-function saveGame(){
-    try{
-        localStorage.setItem(GAME_KEY,JSON.stringify(player));
-    }catch(error){
-        console.error("Save failed:",error);
-    }
-}
-
-function initializeSave(){
-    dailyReset();
-
-    setInterval(saveGame,CONFIG.autosave);
-
-    window.addEventListener("beforeunload",saveGame);
-
-    document.addEventListener("visibilitychange",()=>{
-        if(document.hidden)saveGame();
-    });
-}
-
-/* ============================================================
-   19. EVENT SYSTEM
-============================================================ */
-
-function bindEvents(){
-    const events=[
-        ["startButton","click",startGame],
-        ["serveButton","click",serveOrder],
-        ["clearButton","click",clearIngredients],
-        ["hintButton","click",giveHint],
-        ["musicToggle","change",toggleMusic],
-        ["soundToggle","change",toggleSound],
-        ["voiceToggle","change",toggleVoice],
-        ["repeatMika","click",repeatMika],
-        ["closeResult","click",closeResult],
-        ["closeLevelModal","click",closeLevelModal],
-        ["reportButton","click",showProgressReport],
-        ["resetButton","click",resetGame],
-        ["dailyRewardButton","click",claimDailyReward]
-    ];
-
-    events.forEach(([id,event,callback])=>{
-        const el=document.getElementById(id);
-
-        if(el){
-            el.addEventListener(event,callback);
-        }
-    });
-}
-
-/* ============================================================
-   20. GAME INITIALIZATION
-============================================================ */
-
-function initializeFreshopia(){
-    console.log("Freshopia Ultimate 6.0 Ready!");
-
-    bindEvents();
-    initializeSave();
-
-    renderAll();
-
-    mikaMessage(
-        `Welcome back, ${player.nickname}! Your adventure continues!`
-    );
-
-    console.log("Game loaded successfully.");
-    console.log("Player:",player);
-}
-
-if(document.readyState==="loading"){
-    document.addEventListener(
-        "DOMContentLoaded",
-        initializeFreshopia
-    );
-}else{
-    initializeFreshopia();
-}
-
-/* ============================================================
-   END OF FRESHOPIA ULTIMATE 6.0
-============================================================ */
