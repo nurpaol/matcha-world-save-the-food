@@ -10,6 +10,53 @@
 
 <body>
 
+<!-- PINK AND MINT RESTAURANT BACKGROUND -->
+<div class="cafe-background">
+
+  <div class="cafe-window">
+    🌸 🌿 🌸
+  </div>
+
+  <div class="cafe-lights">
+    ✨　💡　✨
+  </div>
+
+  <div class="cafe-counter">
+    <span>🍰 🧁 🍓</span>
+    <h2>Freshopia</h2>
+    <p>Sweet moments, delicious meals!</p>
+  </div>
+
+  <div class="cafe-table table-one">🍓</div>
+  <div class="cafe-table table-two">🍵</div>
+
+  <div class="cafe-chair chair-one">🎀</div>
+  <div class="cafe-chair chair-two">🎀</div>
+  <div class="cafe-chair chair-three">🎀</div>
+
+  <div class="cafe-waiter">
+    👩🏻‍🍳
+    <span>🍰</span>
+  </div>
+
+  <div class="cafe-plants">
+    🪴　🌷　🪴
+  </div>
+
+</div>
+
+<!-- GAME RULES -->
+<aside id="freshopiaRules">
+  <h3>📖 GAME RULES</h3>
+  <p>🥕 Choose the correct ingredients.</p>
+  <p>🍳 Prepare meals using recipes.</p>
+  <p>🍽️ Serve customers on time.</p>
+  <p>⭐ Earn coins and XP.</p>
+  <p>🔓 Unlock new recipes and levels.</p>
+  <p>💗 Keep customers happy!</p>
+  <strong>Good luck, Chef! 🌸</strong>
+</aside>
+
 <!-- PLAYER HEADER -->
 <header class="top-bar">
   <div class="player-info">
@@ -40,17 +87,22 @@
   <button class="nav-btn" onclick="showSection('puzzles')">🧩 Puzzles</button>
 </nav>
 
+<!-- MAIN GAME -->
 <main>
 
   <!-- HOME -->
   <section id="home" class="game-section active">
+
     <div class="welcome-card">
       <h1>Welcome to Freshopia! 🌸</h1>
       <p>Cook delicious meals, serve customers and build your dream restaurant!</p>
-      <button onclick="showSection('restaurant')">Start Cooking 🍓</button>
+      <button onclick="showSection('restaurant')">
+        Start Cooking 🍓
+      </button>
     </div>
 
     <div class="home-stats">
+
       <div class="stat-card">
         <h3>⭐ Level</h3>
         <p id="homeLevel">1</p>
@@ -65,11 +117,13 @@
         <h3>😊 Happy Customers</h3>
         <p id="happyCustomers">0</p>
       </div>
+
     </div>
   </section>
 
   <!-- RESTAURANT -->
   <section id="restaurant" class="game-section">
+
     <h1>🍳 Freshopia Restaurant</h1>
 
     <div class="restaurant-stats">
@@ -86,25 +140,36 @@
     </div>
 
     <div class="order-card">
+
       <h2>Customer Order</h2>
 
-      <img id="orderImage"
+      <img
+        id="orderImage"
         src="https://images.unsplash.com/photo-1568901346375-23c9450c58bd?w=500"
         alt="Burger">
 
       <h3 id="orderName">Classic Burger</h3>
-      <p id="orderDescription">Prepare a delicious burger for your customer.</p>
+
+      <p id="orderDescription">
+        Prepare a delicious burger for your customer.
+      </p>
+
       <p>Patience: <span id="orderTimer">60</span></p>
+
       <p id="customerMood">😊 Waiting</p>
+
       <p id="orderFeedback"></p>
+
     </div>
 
     <div class="cooking-area">
+
       <h2>🥬 Choose Your Ingredients</h2>
 
       <div id="ingredientGrid" class="ingredient-grid"></div>
 
       <h3>Selected Ingredients</h3>
+
       <div id="selectedIngredients"></div>
 
       <button id="prepareMealBtn" onclick="prepareMeal()">
@@ -112,46 +177,69 @@
       </button>
 
       <div id="cookingSteps"></div>
+
       <div id="cookingContent"></div>
 
-      <button id="serveMealBtn" onclick="serveMeal()" disabled>
+      <button
+        id="serveMealBtn"
+        onclick="serveMeal()"
+        disabled>
         Serve Customer 🍽️
       </button>
+
     </div>
 
     <h2>Order History</h2>
+
     <div id="orderHistory"></div>
+
   </section>
 
   <!-- RECIPES -->
   <section id="recipes" class="game-section">
+
     <h1>📖 Recipe Book</h1>
+
     <p>Discover new recipes and unlock delicious meals!</p>
+
     <div id="recipeGrid" class="recipe-grid"></div>
+
   </section>
 
   <!-- CHARACTERS -->
   <section id="characters" class="game-section">
+
     <h1>🌸 Your Anime Team</h1>
+
     <div id="characterGrid" class="character-grid"></div>
+
   </section>
 
   <!-- MISSIONS -->
   <section id="missions" class="game-section">
+
     <h1>🎯 Daily Missions</h1>
+
     <div id="missionList"></div>
+
   </section>
 
   <!-- AWARDS -->
   <section id="awards" class="game-section">
+
     <h1>🏆 Achievements</h1>
+
     <div id="achievementList"></div>
+
   </section>
 
   <!-- PUZZLES -->
   <section id="puzzles" class="game-section">
+
     <h1>🧩 Food Knowledge Games</h1>
+
     <div id="puzzleGame"></div>
+
   </section>
 
 </main>
@@ -160,9 +248,9 @@
 <div id="mikaAssistant" class="mika-assistant">
 
   <div id="mikaBubble" class="mika-bubble">
+
     <div class="mika-bubble-header">
       <strong id="mikaTitle">Welcome, Chef! 💗</strong>
-      <button onclick="closeMika()" aria-label="Close">×</button>
     </div>
 
     <p id="mikaMessage">
@@ -171,6 +259,7 @@
     </p>
 
     <div class="mika-controls">
+
       <button id="mikaNextButton" onclick="mikaNext()">
         Next →
       </button>
@@ -178,35 +267,25 @@
       <button onclick="toggleMikaVoice()">
         🔊 Voice
       </button>
+
     </div>
+
   </div>
 
-  <button class="mika-character-button"
+  <button
+    class="mika-character-button"
     onclick="toggleMika()"
     aria-label="Talk to Mika">
 
-    <img id="mikaCharacterImage"
-      src="mika.png"
-      alt="Mika - Freshopia cooking guide">
+    👩🏻‍🍳
+
   </button>
 
 </div>
 
-<!-- LEVEL UP -->
-<div id="levelModal" class="level-modal">
-  <div class="level-modal-content">
-    <h1>🎉 LEVEL UP! 🎉</h1>
-    <h2>Congratulations, Chef!</h2>
-    <p id="levelMessage">You reached a new level!</p>
-    <button onclick="closeLevelModal()">Amazing! 💗</button>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div id="toast" class="toast"></div>
-
-<!-- MIKA CSS CHARACTER -->
+<!-- CSS MIKA CHARACTER -->
 <div class="mika-art" id="mika-art">
+
   <div class="mika-hair-back"></div>
 
   <div class="mika-body">
@@ -225,51 +304,40 @@
   </div>
 
   <div class="mika-bow">🎀</div>
+
 </div>
 
-<!-- ALWAYS VISIBLE GAME RULES -->
-<aside id="freshopiaRules">
-  <h3>📖 GAME RULES</h3>
+<!-- LEVEL UP -->
+<div id="levelModal" class="level-modal">
 
-  <p>🥕 Choose the correct ingredients.</p>
-  <p>🍳 Prepare meals using recipes.</p>
-  <p>🍽️ Serve customers on time.</p>
-  <p>⭐ Earn coins and XP.</p>
-  <p>🔓 Unlock new recipes and levels.</p>
-  <p>💗 Keep customers happy!</p>
+  <div class="level-modal-content">
 
-  <strong>Good luck, Chef! 🌸</strong>
-</aside>
+    <h1>🎉 LEVEL UP! 🎉</h1>
 
+    <h2>Congratulations, Chef!</h2>
+
+    <p id="levelMessage">
+      You reached a new level!
+    </p>
+
+    <button onclick="closeLevelModal()">
+      Amazing! 💗
+    </button>
+
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- FOOTER -->
 <footer>
-  <p>Freshopia ©️ 2026 | Cook • Serve • Grow 🌸</p>
+  <p>Freshopia © 2026 | Cook • Serve • Grow 🌸</p>
 </footer>
 
+<!-- GAME SCRIPT -->
 <script src="script.js"></script>
 
 </body>
-  <!-- FRESHOPIA RESTAURANT BACKGROUND -->
-<div class="cafe-background">
-  <div class="cafe-window">🌸 🌿 🌸</div>
-  <div class="cafe-lights">✨　💡　✨</div>
-
-  <div class="cafe-counter">
-    <span>🍰 🧁 🍓</span>
-    <h2>Freshopia</h2>
-  </div>
-
-  <div class="cafe-table table-one">🍓</div>
-  <div class="cafe-table table-two">🍵</div>
-
-  <div class="cafe-chair chair-one">🎀</div>
-  <div class="cafe-chair chair-two">🎀</div>
-  <div class="cafe-chair chair-three">🎀</div>
-
-  <div class="cafe-waiter">
-    👩🏻‍🍳
-    <span>🍰</span>
-  </div>
-
-  <div class="cafe-plants">🪴　🌷　🪴</div>
-</div>
 </html>
