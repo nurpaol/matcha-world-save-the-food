@@ -3,170 +3,189 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#ffe5f2">
-  <meta name="description" content="Freshopia - Anime Cooking and Food Sustainability Adventure">
-  <title>Freshopia - Anime Cooking Adventure</title>
+  <meta name="theme-color" content="#fff0f6">
+  <meta name="description" content="Freshopia - Anime Cooking Adventure">
+  <title>Freshopia | Cooking Adventure</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="game-shell">
+<header class="topbar">
+  <a class="logo" href="#">🌸 Freshopia</a>
+  <div class="player-info">
+    <span id="playerName">Chef</span>
+    <span class="level-pill">LV <b id="level">1</b></span>
+    <span class="xp-pill">⭐ <b id="xp">0</b> XP</span>
+  </div>
+</header>
 
-  <header class="topbar">
-    <a class="logo" href="#">🌸 Freshopia</a>
-    <div class="top-stats">
-      <span>🪙 <b id="coins">100</b></span>
-      <span>⭐ <b id="xp">0</b> XP</span>
-      <button id="soundButton" class="icon-button">🔊</button>
+<main>
+  <section class="hero">
+    <div class="hero-content">
+      <span class="eyebrow">YOUR MAGICAL COOKING WORLD</span>
+      <h1>Welcome to Freshopia!</h1>
+      <p>Cook, learn, play and become a legendary chef!</p>
+      <div class="hero-buttons">
+        <button class="primary-btn" onclick="showSection('recipes')">Start Cooking 🍳</button>
+        <button class="secondary-btn" onclick="showSection('puzzles')">Play Puzzles 🧩</button>
+      </div>
+      <div class="xp-area">
+        <div class="xp-label">
+          <span>Level Progress</span>
+          <span id="xpProgressText">0 / 100 XP</span>
+        </div>
+        <div class="progress-track">
+          <div id="xpProgress" class="progress-fill"></div>
+        </div>
+      </div>
     </div>
-  </header>
+    <div class="hero-character" id="heroCharacter">👩🏻‍🍳</div>
+  </section>
 
-  <main>
-    <section class="hero">
-      <div class="hero-content">
-        <div class="eyebrow">✨ YOUR CULINARY ADVENTURE</div>
-        <h1>Welcome to<br><span>Freshopia!</span></h1>
-        <p>Cook delicious meals, help customers and become a master chef!</p>
-        <button class="primary-button" id="startButton">Start Cooking 🍓</button>
-      </div>
+  <nav class="menu">
+    <button onclick="showSection('home')">🏠 Home</button>
+    <button onclick="showSection('characters')">👩 Characters</button>
+    <button onclick="showSection('recipes')">🍝 Recipes</button>
+    <button onclick="showSection('creator')">🥗 Recipe Creator</button>
+    <button onclick="showSection('puzzles')">🧩 Puzzles</button>
+    <button onclick="showSection('missions')">🎯 Missions</button>
+    <button onclick="showSection('achievements')">🏆 Awards</button>
+  </nav>
 
-      <div class="anime-area">
-        <div class="sparkle sparkle-one">✦</div>
-        <div class="anime-character" id="heroCharacter">👩🏻‍🍳</div>
-        <div class="character-name">Mika ♡</div>
-        <div class="speech-bubble" id="characterMessage">
-          Hi chef! Let's make something delicious!
-        </div>
-      </div>
-    </section>
-
-    <section class="player-panel">
-      <div class="player-avatar" id="playerAvatar">👩🏻‍🍳</div>
-      <div class="player-info">
-        <div class="player-name" id="playerName">Chef</div>
-        <div class="level-text">Level <span id="level">1</span> · Beginner Chef</div>
-        <div class="xp-track"><div id="xpBar"></div></div>
-        <small id="xpProgress">0 / 100 XP</small>
-      </div>
-      <button class="secondary-button" id="profileButton">Edit Profile</button>
-    </section>
-
-    <section class="section" id="kitchen">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">LET'S GET CREATIVE</span>
-          <h2>🍳 Cooking Kitchen</h2>
-        </div>
-        <span class="pill">Fresh ingredients</span>
-      </div>
-
-      <div class="recipe-grid" id="recipeGrid"></div>
-
-      <div class="cooking-panel" id="cookingPanel">
-        <div class="empty-kitchen">
-          <span>🍓</span>
-          <h3>Choose a recipe!</h3>
-          <p>Select a dish above to see its ingredients and cooking instructions.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">FRESH FOOD MARKET</span>
-          <h2>🥑 Ingredients</h2>
-        </div>
-        <span class="pill">Real food collection</span>
-      </div>
-      <div class="ingredient-grid" id="ingredientGrid"></div>
-    </section>
-
-    <section class="section">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">LEARN WHILE PLAYING</span>
-          <h2>🌱 Food Academy</h2>
-        </div>
-      </div>
-      <div class="academy-grid">
-        <article class="academy-card">
-          <span>🥦</span>
-          <h3>Healthy Nutrition</h3>
-          <p>Discover balanced meals, vitamins and healthy eating.</p>
-          <button class="small-button" data-lesson="nutrition">Learn More</button>
-        </article>
-        <article class="academy-card">
-          <span>♻️</span>
-          <h3>Food Sustainability</h3>
-          <p>Reduce food waste and protect our planet.</p>
-          <button class="small-button" data-lesson="sustainability">Learn More</button>
-        </article>
-        <article class="academy-card">
-          <span>🧼</span>
-          <h3>Food Safety</h3>
-          <p>Learn hygiene, safe storage and kitchen practices.</p>
-          <button class="small-button" data-lesson="safety">Learn More</button>
-        </article>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">YOUR ACHIEVEMENTS</span>
-          <h2>🏆 Badges & Rewards</h2>
-        </div>
-      </div>
-      <div class="badge-grid" id="badgeGrid"></div>
-    </section>
-
-    <section class="section">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">DAILY CHALLENGES</span>
-          <h2>🎯 Chef Missions</h2>
-        </div>
-      </div>
-      <div class="mission-card" id="missionCard"></div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="footer-logo">🌸 Freshopia</div>
-    <p>Cook with love. Eat with care. Save our planet. ♡</p>
-    <small>Anime Cooking Adventure · Educational Game</small>
-  </footer>
-</div>
-
-<!-- Profile Modal -->
-<div class="modal hidden" id="profileModal">
-  <div class="modal-box">
-    <button class="close-button" data-close="profileModal">×</button>
-    <h2>🌸 Create Your Chef Profile</h2>
-    <label for="nickname">Your chef name</label>
-    <input id="nickname" maxlength="18" placeholder="Enter your name">
-    <p>Choose your avatar:</p>
-    <div class="avatar-options">
-      <button class="avatar-option">👩🏻‍🍳</button>
-      <button class="avatar-option">👨🏻‍🍳</button>
-      <button class="avatar-option">👩🏽‍🍳</button>
-      <button class="avatar-option">👨🏽‍🍳</button>
-      <button class="avatar-option">🧑🏻‍🍳</button>
+  <section id="home" class="game-section active">
+    <h2>✨ Your Cooking Adventure</h2>
+    <div class="dashboard-grid">
+      <article class="dashboard-card">
+        <span class="big-icon">🍳</span>
+        <h3>Cooking Studio</h3>
+        <p>Create delicious recipes and earn XP.</p>
+        <button onclick="showSection('recipes')">Explore</button>
+      </article>
+      <article class="dashboard-card">
+        <span class="big-icon">🧩</span>
+        <h3>Puzzle World</h3>
+        <p>Train your memory and cooking knowledge.</p>
+        <button onclick="showSection('puzzles')">Play Now</button>
+      </article>
+      <article class="dashboard-card">
+        <span class="big-icon">👑</span>
+        <h3>Character World</h3>
+        <p>Choose your favorite chef avatar.</p>
+        <button onclick="showSection('characters')">Choose</button>
+      </article>
+      <article class="dashboard-card">
+        <span class="big-icon">🎯</span>
+        <h3>Daily Missions</h3>
+        <p>Complete challenges and collect rewards.</p>
+        <button onclick="showSection('missions')">View Tasks</button>
+      </article>
     </div>
-    <button class="primary-button" id="saveProfile">Save Profile</button>
+
+    <div class="welcome-panel">
+      <div>
+        <h3>🌷 Today's Message</h3>
+        <p id="characterMessage">Let's make something delicious today!</p>
+      </div>
+      <span class="message-icon">💗</span>
+    </div>
+  </section>
+
+  <section id="characters" class="game-section">
+    <h2>👑 Choose Your Anime Chef</h2>
+    <p class="section-description">Select your favorite character and start your adventure.</p>
+    <div id="characterGrid" class="character-grid"></div>
+  </section>
+
+  <section id="recipes" class="game-section">
+    <h2>🍽️ Cooking Academy</h2>
+    <p class="section-description">Discover real dishes and learn how to prepare them.</p>
+    <div id="recipeGrid" class="recipe-grid"></div>
+    <div id="recipeDetails" class="recipe-details hidden"></div>
+  </section>
+
+  <section id="creator" class="game-section">
+    <h2>🥗 Create Your Own Recipe</h2>
+    <p class="section-description">Choose ingredients and invent your own dish!</p>
+
+    <div class="creator-panel">
+      <label for="dishName">Your recipe name</label>
+      <input id="dishName" type="text" placeholder="Example: My Special Pasta">
+
+      <h3>Choose your ingredients</h3>
+      <div id="ingredientGrid" class="ingredient-grid"></div>
+
+      <h3>Choose your cooking method</h3>
+      <select id="cookingMethod">
+        <option value="">Select a method</option>
+        <option value="Boiling">Boiling</option>
+        <option value="Baking">Baking</option>
+        <option value="Frying">Frying</option>
+        <option value="Grilling">Grilling</option>
+        <option value="Steaming">Steaming</option>
+        <option value="Sautéing">Sautéing</option>
+      </select>
+
+      <button class="primary-btn" onclick="createRecipe()">Create My Recipe ✨</button>
+      <div id="createdRecipe" class="created-recipe"></div>
+    </div>
+  </section>
+
+  <section id="puzzles" class="game-section">
+    <h2>🧩 Puzzle World</h2>
+    <p class="section-description">Learn through fun cooking challenges!</p>
+
+    <div class="puzzle-grid">
+      <article class="puzzle-card">
+        <span class="big-icon">🥕</span>
+        <h3>Ingredient Quiz</h3>
+        <p>Test your food knowledge.</p>
+        <button onclick="startQuiz()">Play Quiz</button>
+      </article>
+      <article class="puzzle-card">
+        <span class="big-icon">🧠</span>
+        <h3>Food Memory</h3>
+        <p>Remember and match food pairs.</p>
+        <button onclick="startMemory()">Play Memory</button>
+      </article>
+      <article class="puzzle-card">
+        <span class="big-icon">📋</span>
+        <h3>Recipe Order</h3>
+        <p>Arrange cooking steps correctly.</p>
+        <button onclick="startOrder()">Play Challenge</button>
+      </article>
+    </div>
+    <div id="puzzleGame" class="puzzle-game hidden"></div>
+  </section>
+
+  <section id="missions" class="game-section">
+    <h2>🎯 Daily Missions</h2>
+    <p class="section-description">Complete tasks and earn experience points.</p>
+    <div id="missionList" class="mission-list"></div>
+  </section>
+
+  <section id="achievements" class="game-section">
+    <h2>🏆 Achievement Collection</h2>
+    <div id="achievementList" class="achievement-list"></div>
+  </section>
+</main>
+
+<div id="levelModal" class="level-modal hidden">
+  <div class="level-box">
+    <div id="danceCharacter" class="dance-character">👩🏻‍🍳</div>
+    <h1>LEVEL UP!</h1>
+    <h2>You're Amazing!</h2>
+    <p id="levelMessage">Your cooking skills are growing!</p>
+    <div class="confetti">✨ 🎉 🌸 ⭐ 🎊</div>
+    <button class="primary-btn" onclick="closeLevelModal()">Continue Adventure</button>
   </div>
 </div>
 
-<!-- General Modal -->
-<div class="modal hidden" id="infoModal">
-  <div class="modal-box">
-    <button class="close-button" data-close="infoModal">×</button>
-    <div id="infoContent"></div>
-  </div>
-</div>
+<div id="toast" class="toast"></div>
 
-<div class="toast" id="toast"></div>
+<footer>
+  <p>🌸 Freshopia – Cook, Learn & Grow!</p>
+  <small>Anime Cooking Adventure Game</small>
+</footer>
 
 <script src="script.js"></script>
 </body>
