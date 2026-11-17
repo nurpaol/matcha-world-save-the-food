@@ -632,3 +632,46 @@ footer {
   0%,100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
 }
+/* MIKA ANIMATIONS */
+
+.mika-art {
+  transform-origin: bottom center;
+  transition: transform .3s ease;
+}
+
+.mika-art.mika-wave {
+  animation: mikaWave .7s ease-in-out 3;
+}
+
+@keyframes mikaWave {
+  0%,100% { transform: rotate(0deg); }
+  25% { transform: rotate(-12deg) translateY(-5px); }
+  75% { transform: rotate(12deg) translateY(-5px); }
+}
+
+.mika-art.mika-dance {
+  animation: mikaDance .45s ease-in-out infinite alternate;
+}
+
+@keyframes mikaDance {
+  0% { transform: rotate(-12deg) translateY(-5px); }
+  100% { transform: rotate(12deg) translateY(-13px); }
+}
+
+.mika-art.mika-talking .mika-smile {
+  animation: mikaMouth .25s ease-in-out infinite alternate;
+}
+
+@keyframes mikaMouth {
+  from { transform: scaleY(1); }
+  to { transform: scaleY(2.5); }
+}
+
+.mika-art.mika-happy {
+  animation: mikaHappy .35s ease-in-out 4;
+}
+
+@keyframes mikaHappy {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-16px) scale(1.05); }
+}
