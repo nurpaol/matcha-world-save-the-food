@@ -1,1359 +1,511 @@
-/* =========================================================
-   FRESHOPIA — THE HEALTHY FOOD ADVENTURE
-   Premium Game Interface | Style System 1.0
-========================================================= */
-
-/* -------------------------
-   1. ROOT & RESET
-------------------------- */
-
 :root {
-    --green-950: #173d32;
-    --green-900: #205342;
-    --green-800: #286b52;
-    --green-700: #398568;
-    --green-600: #55a77e;
-    --green-400: #8fcda2;
-    --green-200: #d5edda;
-    --green-100: #eaf6eb;
-
-    --cream: #fffaf0;
-    --cream-dark: #f5eddd;
-    --white: #ffffff;
-
-    --pink: #f7c9d5;
-    --pink-dark: #e99aaf;
-    --yellow: #ffdf91;
-    --orange: #f5ad72;
-    --purple: #cbb9ec;
-    --blue: #b9d9ee;
-
-    --text: #294438;
-    --muted: #84958a;
-
-    --shadow-sm: 0 4px 12px rgba(36, 83, 62, 0.08);
-    --shadow-md: 0 12px 30px rgba(36, 83, 62, 0.12);
-    --shadow-lg: 0 20px 55px rgba(36, 83, 62, 0.17);
-
-    --radius-sm: 12px;
-    --radius-md: 20px;
-    --radius-lg: 28px;
-    --radius-xl: 36px;
-
-    --transition: 0.25s ease;
+  --pink: #f49bc5;
+  --pink-light: #fff0f7;
+  --purple: #b9a4ed;
+  --purple-dark: #70518b;
+  --green: #a8d8b0;
+  --cream: #fffaf4;
+  --text: #624b65;
+  --white: #ffffff;
+  --shadow: 0 8px 25px rgba(111, 76, 112, .12);
 }
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html {
-    scroll-behavior: smooth;
+  box-sizing: border-box;
 }
 
 body {
-    min-height: 100vh;
-    font-family: "Nunito", sans-serif;
-    color: var(--text);
-    background:
-        radial-gradient(circle at 10% 10%, #e3f3dc 0, transparent 30%),
-        radial-gradient(circle at 90% 20%, #fce6e9 0, transparent 28%),
-        linear-gradient(135deg, #fffaf0, #f0f7e9);
-    overflow-x: hidden;
-}
-
-button,
-input {
-    font: inherit;
+  margin: 0;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  background: linear-gradient(145deg, #fff4f8, #f5efff);
+  color: var(--text);
 }
 
 button {
-    border: none;
-    cursor: pointer;
-    transition: transform var(--transition),
-                box-shadow var(--transition),
-                background var(--transition);
+  border: 0;
+  border-radius: 15px;
+  padding: 12px 19px;
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s;
 }
 
-button:focus-visible,
-input:focus-visible {
-    outline: 3px solid var(--green-600);
-    outline-offset: 4px;
+button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
 }
 
-img {
-    max-width: 100%;
-    display: block;
+button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.hidden {
-    display: none !important;
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 5%;
+  background: white;
+  box-shadow: var(--shadow);
 }
 
-/* -------------------------
-   2. BACKGROUND DECORATION
-------------------------- */
-
-body::before,
-body::after {
-    content: "";
-    position: fixed;
-    z-index: -1;
-    border-radius: 50%;
-    pointer-events: none;
+.player-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-body::before {
-    width: 280px;
-    height: 280px;
-    top: -100px;
-    right: -90px;
-    background: rgba(247, 201, 213, 0.24);
+.player-avatar {
+  display: grid;
+  place-items: center;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: var(--pink-light);
+  font-size: 28px;
 }
 
-body::after {
-    width: 350px;
-    height: 350px;
-    bottom: -180px;
-    left: -130px;
-    background: rgba(143, 205, 162, 0.22);
+.player-info h3 {
+  margin: 0 0 4px;
 }
 
-/* -------------------------
-   3. HEADER
-------------------------- */
-
-.topbar {
-    width: min(1200px, 94%);
-    margin: 22px auto;
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    background: rgba(255, 255, 255, 0.82);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    backdrop-filter: blur(14px);
+.xp-bar {
+  width: 160px;
+  height: 9px;
+  margin: 5px 0;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #eee4f2;
 }
 
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    color: var(--green-950);
-    font-size: 1.35rem;
-    font-weight: 1000;
-    letter-spacing: -0.5px;
+#xpProgress {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #f39ac4, #b9a4ed);
+  transition: width .3s;
 }
 
-.brand-icon {
-    width: 43px;
-    height: 43px;
-    display: grid;
-    place-items: center;
-    background: var(--green-100);
-    border-radius: 15px;
-    font-size: 1.55rem;
+.currency {
+  padding: 11px 17px;
+  border-radius: 20px;
+  background: #fff3d8;
+  font-weight: bold;
 }
 
-.header-controls {
-    display: flex;
-    align-items: center;
-    gap: 9px;
+.navigation {
+  display: flex;
+  gap: 8px;
+  padding: 13px 5%;
+  overflow-x: auto;
+  background: rgba(255,255,255,.75);
 }
 
-.header-controls button {
-    width: 43px;
-    height: 43px;
-    border-radius: 14px;
-    background: var(--cream);
-    color: var(--green-900);
-    font-size: 1.15rem;
-    box-shadow: var(--shadow-sm);
+.nav-btn {
+  flex-shrink: 0;
+  background: white;
+  color: var(--purple-dark);
+  border: 1px solid #f0dced;
 }
 
-.header-controls button:hover {
-    transform: translateY(-3px);
-    background: var(--green-100);
+.nav-btn.active {
+  color: white;
+  background: var(--purple);
 }
-
-/* -------------------------
-   4. GENERAL LAYOUT
-------------------------- */
 
 main {
-    width: min(1200px, 94%);
-    margin: 0 auto 50px;
+  width: min(1150px, 94%);
+  min-height: 65vh;
+  margin: 25px auto;
 }
 
-.screen {
-    animation: fadeIn 0.5s ease both;
+.game-section {
+  display: none;
+  animation: appear .35s ease;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(15px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.game-section.active {
+  display: block;
 }
 
-.section-title {
-    color: var(--green-950);
-    font-size: clamp(1.5rem, 4vw, 2.2rem);
-    font-weight: 1000;
-    line-height: 1.2;
+@keyframes appear {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.section-subtitle {
-    color: var(--muted);
-    margin-top: 7px;
-    line-height: 1.6;
-}
-
-/* -------------------------
-   5. WELCOME SCREEN
-------------------------- */
-
-#welcomeScreen {
-    min-height: 75vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+h1 {
+  color: var(--purple-dark);
 }
 
 .welcome-card {
-    width: min(950px, 100%);
-    padding: clamp(25px, 5vw, 55px);
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    align-items: center;
-    gap: 35px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid white;
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-lg);
+  padding: 45px 25px;
+  border-radius: 28px;
+  text-align: center;
+  background: linear-gradient(135deg, #ffe0ef, #e8ddff);
+  box-shadow: var(--shadow);
 }
 
-.welcome-content {
-    position: relative;
-    z-index: 1;
+.welcome-card h1 {
+  font-size: clamp(27px, 5vw, 42px);
 }
 
-.eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 15px;
-    border-radius: 50px;
-    background: var(--green-100);
-    color: var(--green-800);
-    font-size: 0.78rem;
-    font-weight: 900;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+.welcome-card p {
+  line-height: 1.7;
 }
 
-.welcome-title {
-    margin: 20px 0 12px;
-    color: var(--green-950);
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    font-weight: 1000;
-    letter-spacing: -2px;
-    line-height: 1.05;
+.home-stats,
+.restaurant-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 20px 0;
 }
 
-.welcome-title span {
-    color: var(--green-600);
-}
-
-.welcome-description {
-    max-width: 480px;
-    color: #718478;
-    font-size: 1.05rem;
-    line-height: 1.8;
-}
-
-.welcome-features {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 9px;
-    margin: 22px 0;
-}
-
-.feature-pill {
-    padding: 9px 13px;
-    border-radius: 50px;
-    background: var(--cream);
-    color: var(--green-900);
-    font-size: 0.8rem;
-    font-weight: 800;
-}
-
-.name-input {
-    width: 100%;
-    max-width: 340px;
-    padding: 15px 18px;
-    border: 2px solid #e2eddf;
-    border-radius: 15px;
-    background: #fbfdf9;
-    color: var(--text);
-    outline: none;
-    font-size: 1rem;
-    transition: var(--transition);
-}
-
-.name-input:focus {
-    border-color: var(--green-600);
-    box-shadow: 0 0 0 4px rgba(85, 167, 126, 0.12);
-}
-
-.primary-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 15px 25px;
-    margin-top: 14px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, var(--green-700), var(--green-600));
-    color: white;
-    font-size: 1rem;
-    font-weight: 1000;
-    box-shadow: 0 8px 18px rgba(57, 133, 104, 0.23);
-}
-
-.primary-button:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(57, 133, 104, 0.3);
-}
-
-.primary-button:active {
-    transform: scale(0.97);
-}
-
-.welcome-art {
-    min-height: 330px;
-    display: grid;
-    place-items: center;
-    position: relative;
-    border-radius: var(--radius-xl);
-    background: linear-gradient(145deg, #e4f4e4, #fce9ec);
-    overflow: hidden;
-}
-
-.welcome-art::before,
-.welcome-art::after {
-    content: "✿";
-    position: absolute;
-    color: rgba(57, 133, 104, 0.25);
-    font-size: 5rem;
-}
-
-.welcome-art::before {
-    top: 20px;
-    left: 25px;
-}
-
-.welcome-art::after {
-    bottom: 20px;
-    right: 25px;
-}
-
-.hero-character {
-    font-size: clamp(8rem, 18vw, 13rem);
-    filter: drop-shadow(0 15px 10px rgba(45, 90, 65, 0.14));
-    animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0) rotate(-3deg);
-    }
-
-    50% {
-        transform: translateY(-14px) rotate(3deg);
-    }
-}
-
-/* -------------------------
-   6. GAME DASHBOARD
-------------------------- */
-
-.dashboard {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-    margin: 22px 0;
+.stat-card,
+.order-card,
+.cooking-area,
+.customer-area,
+.recipe-card,
+.character-card,
+.mission-card,
+.achievement-card,
+.puzzle-card {
+  padding: 20px;
+  border: 1px solid #f2e4ef;
+  border-radius: 22px;
+  background: white;
+  box-shadow: var(--shadow);
 }
 
 .stat-card {
-    padding: 17px;
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    background: white;
-    border: 1px solid #edf3e9;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
+  text-align: center;
 }
 
-.stat-icon {
-    width: 47px;
-    height: 47px;
-    flex-shrink: 0;
-    display: grid;
-    place-items: center;
-    border-radius: 15px;
-    background: var(--green-100);
-    font-size: 1.45rem;
+.stat-card p {
+  font-size: 25px;
+  font-weight: bold;
+  color: var(--purple-dark);
 }
 
-.stat-card:nth-child(2) .stat-icon {
-    background: #fff1d5;
-}
-
-.stat-card:nth-child(3) .stat-icon {
-    background: #fce7ee;
-}
-
-.stat-card:nth-child(4) .stat-icon {
-    background: #e5effc;
-}
-
-.stat-label {
-    display: block;
-    color: var(--muted);
-    font-size: 0.75rem;
-    font-weight: 800;
-}
-
-.stat-value {
-    display: block;
-    margin-top: 3px;
-    color: var(--green-950);
-    font-size: 1.1rem;
-    font-weight: 1000;
-}
-
-.level-card {
-    grid-column: 1 / -1;
-    padding: 18px 22px;
-    background: white;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
-}
-
-.level-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 11px;
-}
-
-.level-heading strong {
-    color: var(--green-900);
-    font-weight: 1000;
-}
-
-.level-heading span {
-    color: var(--muted);
-    font-size: 0.83rem;
-    font-weight: 800;
-}
-
-.progress-track {
-    width: 100%;
-    height: 12px;
-    background: #eaf1e8;
-    border-radius: 50px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    width: 0%;
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, #6dbd85, #a9d978);
-    transition: width 0.6s ease;
-}
-
-/* -------------------------
-   7. GAME GRID
-------------------------- */
-
-.game-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1.65fr) minmax(270px, 0.85fr);
-    gap: 20px;
-    align-items: start;
-}
-
-.game-panel,
-.side-panel {
-    padding: 23px;
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid white;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-}
-
-.panel-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 18px;
-}
-
-.panel-heading h2 {
-    color: var(--green-950);
-    font-size: 1.25rem;
-    font-weight: 1000;
-}
-
-/* -------------------------
-   8. CUSTOMER ORDER
-------------------------- */
-
-.customer-card {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 17px;
-    padding: 20px;
-    margin-bottom: 20px;
-    background: linear-gradient(120deg, #f0f8eb, #fff0f3);
-    border: 1px solid #e9f0e4;
-    border-radius: var(--radius-md);
+.customer-area {
+  margin: 18px 0;
+  text-align: center;
+  background: #fff8fc;
 }
 
 .customer-avatar {
-    width: 72px;
-    height: 72px;
-    flex-shrink: 0;
-    display: grid;
-    place-items: center;
-    border-radius: 22px;
-    background: white;
-    font-size: 2.5rem;
-    box-shadow: var(--shadow-sm);
+  font-size: 55px;
 }
 
-.customer-info {
-    flex: 1;
-    min-width: 0;
+.order-card {
+  display: grid;
+  grid-template-columns: minmax(110px, 190px) 1fr;
+  align-items: center;
+  gap: 15px;
+  margin: 18px 0;
 }
 
-.customer-info h3 {
-    color: var(--green-950);
-    font-size: 1.05rem;
-    font-weight: 1000;
+.order-card h2 {
+  grid-column: 1 / -1;
 }
 
-.customer-info p {
-    margin-top: 5px;
-    color: #748579;
-    font-size: 0.9rem;
-    line-height: 1.5;
+.order-card img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 17px;
 }
 
-.order-tag {
-    display: inline-block;
-    padding: 6px 10px;
-    margin-top: 9px;
-    border-radius: 50px;
-    background: white;
-    color: var(--green-700);
-    font-size: 0.73rem;
-    font-weight: 900;
+.order-card p {
+  line-height: 1.5;
 }
 
-.order-reward {
-    padding: 9px 12px;
-    border-radius: 13px;
-    background: #fff2d4;
-    color: #95651b;
-    font-size: 0.85rem;
-    font-weight: 1000;
-    white-space: nowrap;
+.cooking-area {
+  margin-top: 20px;
 }
 
-.timer {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border-radius: 50px;
-    background: #fff0e6;
-    color: #c36b37;
-    font-size: 0.85rem;
-    font-weight: 1000;
-}
-
-/* -------------------------
-   9. INGREDIENT SELECTION
-------------------------- */
-
-.ingredient-section {
-    margin-top: 20px;
-}
-
-.ingredient-section h3 {
-    margin-bottom: 13px;
-    color: var(--green-950);
-    font-size: 1rem;
-    font-weight: 1000;
-}
-
-.ingredient-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 11px;
+.ingredient-grid,
+.recipe-grid,
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
 }
 
 .ingredient-card {
-    min-height: 105px;
-    padding: 13px 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    border: 2px solid #edf2e9;
-    border-radius: 17px;
-    background: #fbfdf9;
-    color: var(--text);
+  padding: 10px;
+  border: 2px solid #f1e5f0;
+  border-radius: 17px;
+  background: #fffafd;
+  text-align: center;
+  cursor: pointer;
+  transition: .2s;
 }
 
-.ingredient-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--green-400);
-    background: var(--green-100);
+.ingredient-card img {
+  width: 100%;
+  height: 95px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.ingredient-card strong {
+  display: block;
+  margin: 8px 0;
 }
 
 .ingredient-card.selected {
-    border-color: var(--green-600);
-    background: #e8f6e9;
-    box-shadow: 0 0 0 3px rgba(85, 167, 126, 0.13);
-    transform: translateY(-3px);
+  border-color: #e98bb9;
+  background: #ffeaf4;
+  transform: translateY(-3px);
 }
 
-.ingredient-card .ingredient-emoji {
-    font-size: 2.15rem;
+.selected-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 35px;
+  margin: 12px 0;
 }
 
-.ingredient-card .ingredient-name {
-    font-size: 0.75rem;
-    font-weight: 900;
-    text-align: center;
+.selected-chip {
+  padding: 8px 12px;
+  border-radius: 20px;
+  background: #f4e9ff;
 }
 
-.ingredient-card:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-    filter: grayscale(0.5);
-    transform: none;
+#cookingSteps,
+#cookingContent,
+#orderFeedback {
+  margin: 15px 0;
+  line-height: 1.7;
 }
 
-.ingredient-counter {
-    padding: 8px 12px;
-    border-radius: 50px;
-    background: var(--green-100);
-    color: var(--green-800);
-    font-size: 0.78rem;
-    font-weight: 900;
+.recipe-card img,
+.character-card img {
+  width: 100%;
+  height: 145px;
+  object-fit: cover;
+  border-radius: 15px;
 }
 
-/* -------------------------
-   10. GAME ACTIONS
-------------------------- */
-
-.game-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
+.recipe-card h3,
+.character-card h3 {
+  color: var(--purple-dark);
 }
 
-.game-actions button {
-    flex: 1;
-    min-width: 110px;
-    padding: 13px 16px;
-    border-radius: 14px;
-    font-weight: 1000;
+.recipe-card p,
+.character-card p {
+  line-height: 1.5;
 }
 
-.serve-button {
-    background: var(--green-700);
-    color: white;
-    box-shadow: 0 6px 15px rgba(57, 133, 104, 0.2);
+.mission-card,
+.achievement-card {
+  margin: 12px 0;
 }
 
-.serve-button:hover {
-    background: var(--green-800);
-    transform: translateY(-3px);
+.mission-card.completed,
+.achievement-card.unlocked {
+  border-color: #a8d8b0;
+  background: #f1fff4;
 }
 
-.secondary-button {
-    background: var(--cream);
-    color: var(--green-800);
-    border: 1px solid #eee6d5;
+.puzzle-card {
+  text-align: center;
 }
 
-.secondary-button:hover {
-    background: var(--green-100);
-    transform: translateY(-3px);
+.puzzle-card button {
+  margin: 6px;
 }
 
-.selection-text {
-    min-height: 24px;
-    margin-top: 12px;
-    color: var(--muted);
-    font-size: 0.83rem;
-    font-weight: 700;
+.mika-assistant {
+  position: fixed;
+  right: 18px;
+  bottom: 15px;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
 }
 
-/* -------------------------
-   11. FEEDBACK
-------------------------- */
-
-.feedback {
-    min-height: 48px;
-    margin-top: 15px;
-    padding: 12px 15px;
-    border-radius: 14px;
-    background: #f0f6ec;
-    color: var(--green-800);
-    font-size: 0.9rem;
-    font-weight: 800;
-    line-height: 1.5;
+.mika-character-button {
+  width: 125px;
+  height: 170px;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+  pointer-events: auto;
+  filter: drop-shadow(0 5px 8px rgba(90,50,90,.15));
+  animation: mikaFloat 3s ease-in-out infinite;
 }
 
-.feedback.success {
-    background: #e3f6e7;
-    color: #267246;
-}
-
-.feedback.error {
-    background: #fff0ee;
-    color: #bc594c;
-}
-
-.feedback.warning {
-    background: #fff5dc;
-    color: #9b7628;
-}
-
-/* -------------------------
-   12. MIKA ANIME GUIDE
-------------------------- */
-
-.mika-card {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    padding: 16px;
-    margin-bottom: 20px;
-    border: 2px solid #f4dce4;
-    border-radius: var(--radius-md);
-    background: linear-gradient(135deg, #fff0f4, #fffaf0);
-    overflow: hidden;
-}
-
-.mika-character {
-    width: 75px;
-    height: 90px;
-    flex-shrink: 0;
-    display: grid;
-    place-items: center;
-    border-radius: 20px;
-    background: #f9dfe7;
-    font-size: 3.4rem;
-    animation: mikaFloat 3s ease-in-out infinite;
+.mika-character-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom;
 }
 
 @keyframes mikaFloat {
-    0%, 100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-5px);
-    }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
 }
 
-.mika-content {
-    flex: 1;
-    min-width: 0;
+.mika-bubble {
+  display: none;
+  width: min(290px, 65vw);
+  padding: 15px;
+  border: 2px solid #f2c8df;
+  border-radius: 20px 20px 5px 20px;
+  background: white;
+  box-shadow: var(--shadow);
+  pointer-events: auto;
 }
 
-.mika-content h3 {
-    color: #b65d7b;
-    font-size: 1rem;
-    font-weight: 1000;
+.mika-bubble.show {
+  display: block;
+  animation: appear .25s ease;
 }
 
-.mika-content p {
-    margin-top: 5px;
-    color: #806b73;
-    font-size: 0.84rem;
-    line-height: 1.6;
+.mika-bubble-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  color: var(--purple-dark);
 }
 
-.mika-card button {
-    margin-top: 8px;
-    padding: 7px 11px;
-    border-radius: 10px;
-    background: #f8dce6;
-    color: #9e526d;
-    font-size: 0.76rem;
-    font-weight: 900;
+.mika-bubble-header button {
+  padding: 4px 10px;
+  background: #f7eaf3;
+  color: var(--text);
 }
 
-.mika-card button:hover {
-    background: var(--pink);
+.mika-bubble p {
+  line-height: 1.5;
 }
 
-/* -------------------------
-   13. ECO MISSION
-------------------------- */
-
-.mission-card {
-    padding: 18px;
-    margin-bottom: 20px;
-    border-radius: var(--radius-md);
-    background: linear-gradient(135deg, #e7f5e6, #f4f9e9);
+.mika-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
 }
 
-.mission-card h3 {
-    color: var(--green-900);
-    font-size: 1rem;
-    font-weight: 1000;
+.mika-controls button {
+  padding: 9px 12px;
+  font-size: 12px;
 }
 
-.mission-card p {
-    margin: 8px 0 13px;
-    color: #718478;
-    font-size: 0.84rem;
-    line-height: 1.5;
+.mika-dancing .mika-character-button {
+  animation: mikaDance .55s ease-in-out infinite alternate;
 }
 
-.mission-progress {
-    height: 10px;
-    border-radius: 50px;
-    background: rgba(57, 133, 104, 0.13);
-    overflow: hidden;
+@keyframes mikaDance {
+  0% { transform: rotate(-12deg) translateY(0); }
+  50% { transform: rotate(12deg) translateY(-13px); }
+  100% { transform: rotate(-8deg) translateY(-3px); }
 }
 
-.mission-progress-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, #55a77e, #a6d67f);
-    transition: width 0.6s ease;
+.level-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(50,30,60,.55);
 }
 
-.mission-progress-text {
-    display: block;
-    margin-top: 9px;
-    color: var(--green-800);
-    font-size: 0.75rem;
-    font-weight: 900;
+.level-modal.show {
+  display: flex;
 }
 
-/* -------------------------
-   14. BADGES
-------------------------- */
-
-.badge-section,
-.unlock-section {
-    margin-top: 20px;
+.level-modal-content {
+  width: min(420px, 100%);
+  padding: 30px;
+  border-radius: 25px;
+  background: white;
+  text-align: center;
+  box-shadow: var(--shadow);
+  animation: appear .3s ease;
 }
 
-.badge-section h3,
-.unlock-section h3 {
-    margin-bottom: 13px;
-    color: var(--green-950);
-    font-size: 1rem;
-    font-weight: 1000;
+.level-modal-content h1 {
+  color: #e58ab8;
 }
-
-.badge-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 9px;
-}
-
-.badge-item {
-    min-height: 90px;
-    padding: 10px 5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    border-radius: 15px;
-    background: #fff8e8;
-    border: 1px solid #f2e8ce;
-    text-align: center;
-}
-
-.badge-item .badge-icon {
-    font-size: 1.7rem;
-}
-
-.badge-item .badge-name {
-    color: #8a713e;
-    font-size: 0.68rem;
-    font-weight: 900;
-}
-
-.badge-item.locked {
-    opacity: 0.42;
-    filter: grayscale(1);
-    background: #f0f0ed;
-}
-
-.badge-count {
-    color: var(--muted);
-    font-size: 0.75rem;
-    font-weight: 800;
-}
-
-.unlock-list {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-}
-
-.unlock-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 11px;
-    border-radius: 13px;
-    background: #f8faf5;
-    color: var(--green-800);
-    font-size: 0.82rem;
-    font-weight: 800;
-}
-
-.unlock-item.locked {
-    color: #a2aaa0;
-    background: #f2f3ef;
-}
-
-/* -------------------------
-   15. TOAST NOTIFICATION
-------------------------- */
 
 .toast {
-    position: fixed;
-    z-index: 1000;
-    left: 50%;
-    bottom: 25px;
-    max-width: min(90%, 420px);
-    padding: 14px 20px;
-    border-radius: 15px;
-    background: var(--green-950);
-    color: white;
-    font-weight: 900;
-    text-align: center;
-    box-shadow: var(--shadow-lg);
-    transform: translate(-50%, 30px);
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.3s ease;
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  z-index: 300;
+  padding: 12px 20px;
+  border-radius: 25px;
+  color: white;
+  background: var(--purple-dark);
+  opacity: 0;
+  transform: translate(-50%, 20px);
+  transition: .25s;
+  pointer-events: none;
 }
 
 .toast.show {
-    transform: translate(-50%, 0);
-    opacity: 1;
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
-/* -------------------------
-   16. MODALS
-------------------------- */
-
-.modal {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(23, 61, 50, 0.55);
-    backdrop-filter: blur(8px);
-    animation: fadeIn 0.25s ease;
+footer {
+  padding: 25px;
+  color: #8b7592;
+  text-align: center;
 }
 
-.modal-content {
-    position: relative;
-    width: min(460px, 100%);
-    padding: 35px 25px;
-    border: 3px solid white;
-    border-radius: var(--radius-xl);
-    background: linear-gradient(145deg, white, #f7fbf1);
-    box-shadow: var(--shadow-lg);
-    text-align: center;
-    animation: modalPop 0.4s cubic-bezier(.2, 1.4, .4, 1);
-}
+@media (max-width: 650px) {
+  .top-bar {
+    padding: 12px;
+  }
 
-@keyframes modalPop {
-    from {
-        opacity: 0;
-        transform: scale(0.75);
-    }
+  .navigation {
+    padding: 10px;
+  }
 
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
+  main {
+    width: 94%;
+    margin: 18px auto;
+  }
 
-.modal-emoji {
-    display: block;
-    margin-bottom: 12px;
-    font-size: 4rem;
-    animation: float 2.5s ease-in-out infinite;
-}
+  .home-stats {
+    grid-template-columns: 1fr;
+  }
 
-.modal-content h2 {
-    color: var(--green-950);
-    font-size: 1.8rem;
-    font-weight: 1000;
-}
+  .order-card {
+    grid-template-columns: 105px 1fr;
+    padding: 13px;
+  }
 
-.modal-content p {
-    margin: 12px 0;
-    color: #718478;
-    line-height: 1.7;
-}
+  .order-card img {
+    grid-row: span 2;
+  }
 
-.modal-level {
-    display: inline-block;
-    margin: 13px 0;
-    padding: 10px 22px;
-    border-radius: 50px;
-    background: var(--yellow);
-    color: #795a19;
-    font-size: 1.3rem;
-    font-weight: 1000;
-}
+  .mika-assistant {
+    right: 8px;
+    bottom: 8px;
+    gap: 5px;
+  }
 
-.modal-actions {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
-}
+  .mika-character-button {
+    width: 90px;
+    height: 125px;
+  }
 
-.modal-actions button {
-    padding: 13px 20px;
-    border-radius: 14px;
-    font-weight: 1000;
-}
-
-.modal-close {
-    position: absolute;
-    top: 14px;
-    right: 15px;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    background: #f4eee6;
-    color: var(--green-900);
-    font-size: 1.1rem;
-}
-
-/* -------------------------
-   17. RESULT MODAL
-------------------------- */
-
-.result-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 9px;
-    margin: 20px 0;
-}
-
-.result-stat {
-    padding: 13px 7px;
-    border-radius: 15px;
-    background: var(--green-100);
-}
-
-.result-stat strong {
-    display: block;
-    color: var(--green-900);
-    font-size: 1.25rem;
-    font-weight: 1000;
-}
-
-.result-stat span {
-    display: block;
-    margin-top: 5px;
-    color: var(--muted);
-    font-size: 0.7rem;
-    font-weight: 800;
-}
-
-/* -------------------------
-   18. RESPONSIVE TABLET
-------------------------- */
-
-@media (max-width: 900px) {
-    .welcome-card {
-        grid-template-columns: 1fr 0.8fr;
-        gap: 20px;
-    }
-
-    .dashboard {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .game-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .side-panel {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 16px;
-    }
-
-    .mika-card,
-    .mission-card,
-    .badge-section,
-    .unlock-section {
-        margin: 0;
-    }
-
-    .badge-section,
-    .unlock-section {
-        min-width: 0;
-    }
-}
-
-/* -------------------------
-   19. RESPONSIVE MOBILE
-------------------------- */
-
-@media (max-width: 600px) {
-    .topbar {
-        width: 94%;
-        margin: 12px auto;
-        padding: 11px 13px;
-        border-radius: 18px;
-    }
-
-    .brand {
-        font-size: 1.1rem;
-    }
-
-    .brand-icon {
-        width: 37px;
-        height: 37px;
-        font-size: 1.3rem;
-    }
-
-    .header-controls {
-        gap: 5px;
-    }
-
-    .header-controls button {
-        width: 36px;
-        height: 36px;
-        border-radius: 11px;
-        font-size: 1rem;
-    }
-
-    main {
-        width: 94%;
-    }
-
-    .welcome-card {
-        grid-template-columns: 1fr;
-        padding: 23px;
-        gap: 22px;
-        border-radius: 25px;
-    }
-
-    .welcome-title {
-        font-size: 2.8rem;
-    }
-
-    .welcome-art {
-        min-height: 210px;
-    }
-
-    .hero-character {
-        font-size: 8rem;
-    }
-
-    .dashboard {
-        gap: 9px;
-        margin: 14px 0;
-    }
-
-    .stat-card {
-        padding: 12px 9px;
-        gap: 8px;
-        border-radius: 15px;
-    }
-
-    .stat-icon {
-        width: 37px;
-        height: 37px;
-        border-radius: 12px;
-        font-size: 1.15rem;
-    }
-
-    .stat-label {
-        font-size: 0.67rem;
-    }
-
-    .stat-value {
-        font-size: 0.95rem;
-    }
-
-    .level-card {
-        padding: 15px;
-    }
-
-    .game-panel,
-    .side-panel {
-        padding: 16px;
-        border-radius: 21px;
-    }
-
-    .customer-card {
-        flex-wrap: wrap;
-        padding: 14px;
-        gap: 11px;
-    }
-
-    .customer-avatar {
-        width: 57px;
-        height: 57px;
-        font-size: 2rem;
-    }
-
-    .customer-info {
-        flex: 1 1 60%;
-    }
-
-    .order-reward {
-        margin-left: auto;
-    }
-
-    .ingredient-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
-    }
-
-    .ingredient-card {
-        min-height: 90px;
-        padding: 9px 4px;
-    }
-
-    .ingredient-card .ingredient-emoji {
-        font-size: 1.8rem;
-    }
-
-    .ingredient-card .ingredient-name {
-        font-size: 0.68rem;
-    }
-
-    .game-actions {
-        gap: 8px;
-    }
-
-    .game-actions button {
-        padding: 12px 9px;
-        font-size: 0.83rem;
-    }
-
-    .side-panel {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .mika-card {
-        padding: 12px;
-    }
-
-    .mika-character {
-        width: 62px;
-        height: 75px;
-        font-size: 2.7rem;
-    }
-
-    .badge-list {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    .modal-content {
-        padding: 30px 18px;
-    }
-
-    .modal-content h2 {
-        font-size: 1.5rem;
-    }
-}
-
-/* -------------------------
-   20. SMALL PHONE
-------------------------- */
-
-@media (max-width: 360px) {
-    .brand {
-        font-size: 0.95rem;
-    }
-
-    .header-controls button {
-        width: 32px;
-        height: 32px;
-    }
-
-    .ingredient-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .welcome-title {
-        font-size: 2.3rem;
-    }
-
-    .stat-card {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-
-/* -------------------------
-   21. ACCESSIBILITY
-------------------------- */
-
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        scroll-behavior: auto !important;
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
+  .mika-bubble {
+    width: min(250px, 65vw);
+    padding: 11px;
+  }
 }
