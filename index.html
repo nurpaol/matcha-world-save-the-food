@@ -1,191 +1,338 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#fff0f6">
-  <meta name="description" content="Freshopia - Anime Cooking Adventure">
-  <title>Freshopia | Cooking Adventure</title>
+  <meta name="theme-color" content="#f9e5f2">
+  <meta name="description" content="Freshopia - Anime Cooking and Restaurant Adventure">
+  <title>Freshopia | Anime Cooking Adventure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+<div class="app">
 
-<header class="topbar">
-  <a class="logo" href="#">🌸 Freshopia</a>
-  <div class="player-info">
-    <span id="playerName">Chef</span>
-    <span class="level-pill">LV <b id="level">1</b></span>
-    <span class="xp-pill">⭐ <b id="xp">0</b> XP</span>
-  </div>
-</header>
-
-<main>
-  <section class="hero">
-    <div class="hero-content">
-      <span class="eyebrow">YOUR MAGICAL COOKING WORLD</span>
-      <h1>Welcome to Freshopia!</h1>
-      <p>Cook, learn, play and become a legendary chef!</p>
-      <div class="hero-buttons">
-        <button class="primary-btn" onclick="showSection('recipes')">Start Cooking 🍳</button>
-        <button class="secondary-btn" onclick="showSection('puzzles')">Play Puzzles 🧩</button>
-      </div>
-      <div class="xp-area">
-        <div class="xp-label">
-          <span>Level Progress</span>
-          <span id="xpProgressText">0 / 100 XP</span>
-        </div>
-        <div class="progress-track">
-          <div id="xpProgress" class="progress-fill"></div>
-        </div>
+  <header class="top-header">
+    <div class="brand">
+      <span class="brand-icon">🍓</span>
+      <div>
+        <h1>Freshopia</h1>
+        <p>Anime Cooking Adventure</p>
       </div>
     </div>
-    <div class="hero-character" id="heroCharacter">👩🏻‍🍳</div>
+
+    <div class="player-info">
+      <span>⭐ Level <b id="playerLevel">1</b></span>
+      <span>💰 <b id="playerCoins">100</b></span>
+    </div>
+  </header>
+
+  <section class="welcome-card">
+    <div>
+      <p class="eyebrow">WELCOME BACK, CHEF!</p>
+      <h2>Let's cook something wonderful!</h2>
+      <p>Your restaurant adventure starts here.</p>
+      <div class="xp-track">
+        <div id="xpProgress"></div>
+      </div>
+      <small id="xpText">0 / 100 XP</small>
+    </div>
+    <div class="welcome-character" id="homeCharacter">👩🏻‍🍳</div>
   </section>
 
-  <nav class="menu">
-    <button onclick="showSection('home')">🏠 Home</button>
-    <button onclick="showSection('characters')">👩 Characters</button>
-    <button onclick="showSection('recipes')">🍝 Recipes</button>
-    <button onclick="showSection('creator')">🥗 Recipe Creator</button>
-    <button onclick="showSection('puzzles')">🧩 Puzzles</button>
-    <button onclick="showSection('missions')">🎯 Missions</button>
-    <button onclick="showSection('achievements')">🏆 Awards</button>
+  <nav class="main-nav">
+    <button class="nav-btn active" onclick="showSection('home')">🏠 Home</button>
+    <button class="nav-btn" onclick="showSection('restaurant')">🍽️ Restaurant</button>
+    <button class="nav-btn" onclick="showSection('recipes')">📖 Recipes</button>
+    <button class="nav-btn" onclick="showSection('characters')">🌸 Characters</button>
+    <button class="nav-btn" onclick="showSection('missions')">🎯 Missions</button>
+    <button class="nav-btn" onclick="showSection('awards')">🏆 Awards</button>
+    <button class="nav-btn" onclick="showSection('puzzles')">🧩 Puzzles</button>
   </nav>
 
-  <section id="home" class="game-section active">
-    <h2>✨ Your Cooking Adventure</h2>
-    <div class="dashboard-grid">
-      <article class="dashboard-card">
-        <span class="big-icon">🍳</span>
-        <h3>Cooking Studio</h3>
-        <p>Create delicious recipes and earn XP.</p>
-        <button onclick="showSection('recipes')">Explore</button>
-      </article>
-      <article class="dashboard-card">
-        <span class="big-icon">🧩</span>
-        <h3>Puzzle World</h3>
-        <p>Train your memory and cooking knowledge.</p>
-        <button onclick="showSection('puzzles')">Play Now</button>
-      </article>
-      <article class="dashboard-card">
-        <span class="big-icon">👑</span>
-        <h3>Character World</h3>
-        <p>Choose your favorite chef avatar.</p>
-        <button onclick="showSection('characters')">Choose</button>
-      </article>
-      <article class="dashboard-card">
-        <span class="big-icon">🎯</span>
-        <h3>Daily Missions</h3>
-        <p>Complete challenges and collect rewards.</p>
-        <button onclick="showSection('missions')">View Tasks</button>
-      </article>
-    </div>
+  <main>
 
-    <div class="welcome-panel">
-      <div>
-        <h3>🌷 Today's Message</h3>
-        <p id="characterMessage">Let's make something delicious today!</p>
+    <!-- HOME -->
+    <section id="home" class="game-section active">
+      <div class="section-heading">
+        <p class="eyebrow">YOUR COOKING JOURNEY</p>
+        <h2>✨ Chef's Dashboard</h2>
       </div>
-      <span class="message-icon">💗</span>
-    </div>
-  </section>
 
-  <section id="characters" class="game-section">
-    <h2>👑 Choose Your Anime Chef</h2>
-    <p class="section-description">Select your favorite character and start your adventure.</p>
-    <div id="characterGrid" class="character-grid"></div>
-  </section>
+      <div class="dashboard-grid">
+        <div class="dashboard-card">
+          <span>🍳</span>
+          <h3>Restaurant</h3>
+          <p>Serve your first customers.</p>
+          <button onclick="showSection('restaurant')">Enter Restaurant</button>
+        </div>
 
-  <section id="recipes" class="game-section">
-    <h2>🍽️ Cooking Academy</h2>
-    <p class="section-description">Discover real dishes and learn how to prepare them.</p>
-    <div id="recipeGrid" class="recipe-grid"></div>
-    <div id="recipeDetails" class="recipe-details hidden"></div>
-  </section>
+        <div class="dashboard-card">
+          <span>📚</span>
+          <h3>Recipe Academy</h3>
+          <p>Discover delicious recipes.</p>
+          <button onclick="showSection('recipes')">Explore Recipes</button>
+        </div>
 
-  <section id="creator" class="game-section">
-    <h2>🥗 Create Your Own Recipe</h2>
-    <p class="section-description">Choose ingredients and invent your own dish!</p>
+        <div class="dashboard-card">
+          <span>🧩</span>
+          <h3>Food Challenges</h3>
+          <p>Test your cooking knowledge.</p>
+          <button onclick="showSection('puzzles')">Play Now</button>
+        </div>
 
-    <div class="creator-panel">
-      <label for="dishName">Your recipe name</label>
-      <input id="dishName" type="text" placeholder="Example: My Special Pasta">
+        <div class="dashboard-card">
+          <span>🌸</span>
+          <h3>Anime Friends</h3>
+          <p>Meet your cooking companions.</p>
+          <button onclick="showSection('characters')">Meet Characters</button>
+        </div>
+      </div>
 
-      <h3>Choose your ingredients</h3>
-      <div id="ingredientGrid" class="ingredient-grid"></div>
+      <div class="home-panel">
+        <h3>🌟 Today's Special</h3>
+        <div class="special-content">
+          <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=700" alt="Fresh pasta">
+          <div>
+            <h3>Italian Tomato Pasta</h3>
+            <p>Fresh tomatoes, basil and delicious pasta.</p>
+            <button onclick="showSection('restaurant')">Cook Today's Special</button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      <h3>Choose your cooking method</h3>
-      <select id="cookingMethod">
-        <option value="">Select a method</option>
-        <option value="Boiling">Boiling</option>
-        <option value="Baking">Baking</option>
-        <option value="Frying">Frying</option>
-        <option value="Grilling">Grilling</option>
-        <option value="Steaming">Steaming</option>
-        <option value="Sautéing">Sautéing</option>
-      </select>
+    <!-- RESTAURANT -->
+    <section id="restaurant" class="game-section">
+      <div class="section-heading">
+        <p class="eyebrow">YOUR OWN FOOD BUSINESS</p>
+        <h2>🍽️ Freshopia Restaurant</h2>
+        <p>Welcome your customers, prepare delicious meals and grow your restaurant!</p>
+      </div>
 
-      <button class="primary-btn" onclick="createRecipe()">Create My Recipe ✨</button>
-      <div id="createdRecipe" class="created-recipe"></div>
-    </div>
-  </section>
+      <div class="restaurant-stats">
+        <div class="stat-card">
+          <span>💰</span>
+          <p>Restaurant Coins</p>
+          <h3 id="restaurantCoins">100</h3>
+        </div>
+        <div class="stat-card">
+          <span>⭐</span>
+          <p>Reputation</p>
+          <h3 id="restaurantReputation">0</h3>
+        </div>
+        <div class="stat-card">
+          <span>😊</span>
+          <p>Happy Customers</p>
+          <h3 id="happyCustomers">0</h3>
+        </div>
+      </div>
 
-  <section id="puzzles" class="game-section">
-    <h2>🧩 Puzzle World</h2>
-    <p class="section-description">Learn through fun cooking challenges!</p>
+      <div class="restaurant-scene">
+        <div class="restaurant-scene-heading">
+          <div>
+            <h3>🏡 Your Restaurant</h3>
+            <p>Make your customers feel at home!</p>
+          </div>
+          <span class="live-badge">● LIVE RESTAURANT</span>
+        </div>
 
-    <div class="puzzle-grid">
-      <article class="puzzle-card">
-        <span class="big-icon">🥕</span>
-        <h3>Ingredient Quiz</h3>
-        <p>Test your food knowledge.</p>
-        <button onclick="startQuiz()">Play Quiz</button>
-      </article>
-      <article class="puzzle-card">
-        <span class="big-icon">🧠</span>
-        <h3>Food Memory</h3>
-        <p>Remember and match food pairs.</p>
-        <button onclick="startMemory()">Play Memory</button>
-      </article>
-      <article class="puzzle-card">
-        <span class="big-icon">📋</span>
-        <h3>Recipe Order</h3>
-        <p>Arrange cooking steps correctly.</p>
-        <button onclick="startOrder()">Play Challenge</button>
-      </article>
-    </div>
-    <div id="puzzleGame" class="puzzle-game hidden"></div>
-  </section>
+        <div class="restaurant-image">
+          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200" alt="Restaurant interior">
+        </div>
 
-  <section id="missions" class="game-section">
-    <h2>🎯 Daily Missions</h2>
-    <p class="section-description">Complete tasks and earn experience points.</p>
-    <div id="missionList" class="mission-list"></div>
-  </section>
+        <div id="customerArea" class="customer-area">
+          <div class="empty-state">
+            <span>🪑</span>
+            <h3>Your restaurant is waiting!</h3>
+            <p>Open your restaurant to welcome your first customer.</p>
+          </div>
+        </div>
 
-  <section id="achievements" class="game-section">
-    <h2>🏆 Achievement Collection</h2>
-    <div id="achievementList" class="achievement-list"></div>
-  </section>
-</main>
+        <button id="openRestaurantBtn" class="primary-btn" onclick="openRestaurant()">
+          🍽️ Open Restaurant
+        </button>
+      </div>
 
-<div id="levelModal" class="level-modal hidden">
-  <div class="level-box">
+      <div class="customer-order-card">
+        <div class="card-heading">
+          <h3>💌 Customer Order</h3>
+          <span class="live-badge">LIVE ORDER</span>
+        </div>
+
+        <div id="currentCustomer" class="current-customer">
+          <div class="customer-avatar">👩🏻</div>
+          <div>
+            <h3>Waiting for a customer...</h3>
+            <p>Your next customer will appear here.</p>
+          </div>
+        </div>
+
+        <div id="currentOrder" class="current-order">
+          <p class="eyebrow">CURRENT RECIPE</p>
+          <div class="recipe-preview">
+            <img id="orderImage" src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=500" alt="Customer meal">
+            <div>
+              <h3 id="orderName">Waiting for order</h3>
+              <p id="orderDescription">A delicious meal is coming soon.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="timer-panel">
+          <p>⏱️ TIME REMAINING</p>
+          <h2 id="orderTimer">--:--</h2>
+          <p id="customerMood">Customer is waiting patiently.</p>
+        </div>
+
+        <div id="orderFeedback" class="feedback-message">
+          Your restaurant is ready for business!
+        </div>
+      </div>
+
+      <div class="ingredient-kitchen">
+        <div class="card-heading">
+          <div>
+            <h3>🥑 Ingredient Kitchen</h3>
+            <p>Select the correct ingredients for the order.</p>
+          </div>
+          <span class="mode-badge">COOKING MODE</span>
+        </div>
+
+        <div id="ingredientGrid" class="ingredient-grid">
+          <p>Open your restaurant to start cooking.</p>
+        </div>
+
+        <div class="selected-ingredients">
+          <h3>🧺 Selected Ingredients</h3>
+          <div id="selectedIngredients">
+            No ingredients selected yet.
+          </div>
+        </div>
+
+        <button id="prepareMealBtn" class="primary-btn" onclick="prepareMeal()" disabled>
+          👩🏻‍🍳 Prepare Meal
+        </button>
+      </div>
+
+      <div class="cooking-process">
+        <h3>🔥 Cooking Process</h3>
+        <div id="cookingSteps" class="cooking-steps">
+          <div class="cooking-step">1. Select ingredients</div>
+          <div class="cooking-step">2. Prepare your meal</div>
+          <div class="cooking-step">3. Cook the recipe</div>
+          <div class="cooking-step">4. Serve your customer</div>
+        </div>
+        <div id="cookingContent">
+          <p>Your kitchen is ready!</p>
+        </div>
+        <button id="serveMealBtn" class="primary-btn" onclick="serveMeal()" disabled>
+          🍽️ Serve Customer
+        </button>
+      </div>
+
+      <div class="order-history">
+        <h3>📋 Recent Orders</h3>
+        <div id="orderHistory">
+          <p>No completed orders yet.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECIPES -->
+    <section id="recipes" class="game-section">
+      <div class="section-heading">
+        <p class="eyebrow">LEARN AND DISCOVER</p>
+        <h2>📖 Recipe Academy</h2>
+        <p>Explore delicious meals from around the world.</p>
+      </div>
+      <div id="recipeGrid" class="recipe-grid"></div>
+    </section>
+
+    <!-- CHARACTERS -->
+    <section id="characters" class="game-section">
+      <div class="section-heading">
+        <p class="eyebrow">YOUR COOKING TEAM</p>
+        <h2>🌸 Anime Characters</h2>
+        <p>Choose your favourite cooking companion!</p>
+      </div>
+      <div id="characterGrid" class="character-grid"></div>
+    </section>
+
+    <!-- MISSIONS -->
+    <section id="missions" class="game-section">
+      <div class="section-heading">
+        <p class="eyebrow">DAILY ADVENTURE</p>
+        <h2>🎯 Daily Missions</h2>
+      </div>
+      <div id="missionList"></div>
+    </section>
+
+    <!-- AWARDS -->
+    <section id="awards" class="game-section">
+      <div class="section-heading">
+        <p class="eyebrow">YOUR ACHIEVEMENTS</p>
+        <h2>🏆 Awards and Badges</h2>
+      </div>
+      <div id="achievementList" class="achievement-grid"></div>
+    </section>
+
+    <!-- PUZZLES -->
+    <section id="puzzles" class="game-section">
+      <div class="section-heading">
+        <p class="eyebrow">PLAY AND LEARN</p>
+        <h2>🧩 Food Puzzle Academy</h2>
+      </div>
+
+      <div class="puzzle-grid">
+        <button class="puzzle-card" onclick="startQuiz()">
+          <span>🧠</span>
+          <h3>Food Quiz</h3>
+          <p>Test your food knowledge.</p>
+        </button>
+
+        <button class="puzzle-card" onclick="startMemory()">
+          <span>🍓</span>
+          <h3>Food Memory</h3>
+          <p>Match the ingredients.</p>
+        </button>
+
+        <button class="puzzle-card" onclick="startOrder()">
+          <span>👩🏻‍🍳</span>
+          <h3>Recipe Order</h3>
+          <p>Arrange the cooking steps.</p>
+        </button>
+      </div>
+
+      <div id="puzzleGame" class="puzzle-game">
+        <p>Choose a challenge to begin!</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="footer-logo">🍓 Freshopia</div>
+    <p>Cook • Create • Serve • Explore</p>
+    <small>© 2026 Freshopia Anime Cooking Adventure</small>
+  </footer>
+
+</div>
+
+<!-- LEVEL UP MODAL -->
+<div id="levelModal" class="modal">
+  <div class="modal-content">
     <div id="danceCharacter" class="dance-character">👩🏻‍🍳</div>
-    <h1>LEVEL UP!</h1>
-    <h2>You're Amazing!</h2>
-    <p id="levelMessage">Your cooking skills are growing!</p>
-    <div class="confetti">✨ 🎉 🌸 ⭐ 🎊</div>
-    <button class="primary-btn" onclick="closeLevelModal()">Continue Adventure</button>
+    <h2>🎉 LEVEL UP!</h2>
+    <p id="levelMessage">You are becoming a master chef!</p>
+    <button onclick="closeLevelModal()">Continue</button>
   </div>
 </div>
 
 <div id="toast" class="toast"></div>
-
-<footer>
-  <p>🌸 Freshopia – Cook, Learn & Grow!</p>
-  <small>Anime Cooking Adventure Game</small>
-</footer>
 
 <script src="script.js"></script>
 </body>
