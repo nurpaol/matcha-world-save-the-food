@@ -102,6 +102,8 @@ const missions = [
 
 /* ACHIEVEMENTS */
 
+/* ACHIEVEMENTS */
+
 const achievements = [
   {id:1,title:"First Customer",description:"Serve your first customer.",unlocked:false},
   {id:2,title:"Little Chef",description:"Complete 5 orders.",unlocked:false},
