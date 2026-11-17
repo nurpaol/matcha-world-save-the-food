@@ -2,580 +2,291 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#173d32">
-  <meta name="description" content="Freshopia - Anime-inspired sustainable restaurant and cooking adventure.">
-  <title>Freshopia | Anime Cooking Adventure</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8dce9">
+  <meta name="description" content="Freshopia - Anime Restaurant Simulator">
+  <title>Freshopia | Anime Restaurant Simulator</title>
 
   <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 
 <body>
 
-<div class="app-container" id="app">
+<div class="app-layout">
 
   <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
-
+  <aside class="sidebar">
     <div class="brand">
-      <h1>FRESHOPIA</h1>
-      <p>COOK SMART · WASTE LESS</p>
+      <h1>🌸 Freshopia</h1>
+      <span>Anime Restaurant Simulator</span>
     </div>
 
-    <div class="sidebar-section">MAIN MENU</div>
-
-    <nav>
-      <button class="active" data-nav="dashboard" onclick="showPage('dashboard')">
-        <span>🏡</span> Dashboard
-      </button>
-
-      <button data-nav="restaurant" onclick="showPage('restaurant')">
-        <span>🏪</span> My Restaurant
-      </button>
-
-      <button data-nav="kitchen" onclick="showPage('kitchen')">
-        <span>👩‍🍳</span> Kitchen
-      </button>
-
-      <button data-nav="inventory" onclick="showPage('inventory')">
-        <span>🥬</span> Inventory
-      </button>
-
-      <button data-nav="recipes" onclick="showPage('recipes')">
-        <span>📖</span> Recipe Book
-      </button>
-
-      <button data-nav="customers" onclick="showPage('customers')">
-        <span>🧑</span> Customers
-      </button>
-    </nav>
-
-    <div class="sidebar-section">BUSINESS</div>
-
-    <nav>
-      <button data-nav="suppliers" onclick="showPage('suppliers')">
-        <span>🚚</span> Suppliers
-      </button>
-
-      <button data-nav="finance" onclick="showPage('finance')">
-        <span>💰</span> Finance
-      </button>
-
-      <button data-nav="sustainability" onclick="showPage('sustainability')">
-        <span>🌱</span> Sustainability
-      </button>
-    </nav>
-
-    <div class="sidebar-section">ADVENTURE</div>
-
-    <nav>
-      <button data-nav="achievements" onclick="showPage('achievements')">
-        <span>🏆</span> Achievements
-      </button>
-
-      <button data-nav="character" onclick="showPage('character')">
-        <span>✨</span> My Character
-      </button>
+    <nav class="sidebar-nav">
+      <button data-nav="dashboard">🏡 Dashboard</button>
+      <button data-nav="restaurant">🏮 Restaurant</button>
+      <button data-nav="kitchen">👩‍🍳 Kitchen</button>
+      <button data-nav="inventory">🥕 Ingredients</button>
+      <button data-nav="recipes">📖 Recipes</button>
+      <button data-nav="customers">💗 Customers</button>
+      <button data-nav="suppliers">🚚 Suppliers</button>
+      <button data-nav="finance">💰 Finance</button>
+      <button data-nav="sustainability">🌱 Sustainability</button>
+      <button data-nav="achievements">🏆 Achievements</button>
+      <button data-nav="character">✨ Characters</button>
     </nav>
 
     <div class="sidebar-footer">
-      <p>FRESHOPIA © 2026</p>
-      <p>Grow your dream restaurant!</p>
+      <p>Made with love ♡</p>
+      <small>Freshopia Version 3.0</small>
     </div>
-
   </aside>
-
 
   <!-- MAIN CONTENT -->
   <main class="main-content">
 
-    <!-- TOP BAR -->
+    <!-- TOPBAR -->
     <header class="topbar">
-
-      <div style="display:flex;align-items:center;gap:12px;">
-
-        <button class="mobile-menu-button"
-          onclick="document.getElementById('sidebar').classList.toggle('open')">
-          ☰
-        </button>
-
-        <div>
-          <h2 class="page-title" id="page-title">Dashboard</h2>
-          <p class="page-subtitle">Welcome to your Freshopia adventure!</p>
-        </div>
-
+      <div>
+        <h2>Welcome to Freshopia!</h2>
+        <p>Your dream restaurant starts here.</p>
       </div>
 
-      <div class="topbar-actions">
-        <div class="stock-badge">🌿 Sustainable Mode</div>
-        <button class="secondary-btn" onclick="nextDay()">🌅 Next Day</button>
+      <div class="player-resources">
+        <span>🪙 <strong id="player-coins">12,450</strong></span>
+        <span>💎 <strong id="player-gems">245</strong></span>
+        <span>⭐ <strong id="player-level">Level 1</strong></span>
       </div>
-
     </header>
 
-
-    <!-- =====================================
-         1. DASHBOARD
-    ====================================== -->
-
-    <section class="page active" data-page="dashboard">
-
+    <!-- DASHBOARD -->
+    <section class="dashboard-page" data-page="dashboard">
       <div class="welcome-banner">
-
         <div>
-          <p>YOUR RESTAURANT JOURNEY STARTS HERE</p>
-          <h2>Welcome to Freshopia!</h2>
-          <p>Cook delicious meals, serve happy customers and protect our planet.</p>
-
-          <br>
-
-          <button class="secondary-btn" onclick="showPage('kitchen')">
-            Start Cooking →
-          </button>
+          <h2>Your restaurant adventure begins!</h2>
+          <p>Cook delicious meals, serve customers and save food.</p>
+          <button data-nav="kitchen">Start Cooking →</button>
         </div>
-
-        <div style="font-size:85px;">👩🏻‍🍳</div>
-
       </div>
-
 
       <div class="stats-grid">
+        <article class="stat-card">
+          <span>💰</span>
+          <h3>Daily Revenue</h3>
+          <strong id="daily-revenue">$0</strong>
+        </article>
 
-        <div class="stat-card">
-          <div class="stat-icon">💰</div>
-          <div class="stat-label">Available Money</div>
-          <div class="stat-value" id="dashboard-money">0</div>
-          <div class="stat-change">Restaurant balance</div>
-        </div>
+        <article class="stat-card">
+          <span>🍽️</span>
+          <h3>Orders Served</h3>
+          <strong id="orders-served">0</strong>
+        </article>
 
-        <div class="stat-card">
-          <div class="stat-icon">🥬</div>
-          <div class="stat-label">Inventory Items</div>
-          <div class="stat-value" id="dashboard-stock">0</div>
-          <div class="stat-change">Fresh ingredients</div>
-        </div>
+        <article class="stat-card">
+          <span>🌱</span>
+          <h3>Food Saved</h3>
+          <strong id="food-saved">0 kg</strong>
+        </article>
 
-        <div class="stat-card">
-          <div class="stat-icon">🛎️</div>
-          <div class="stat-label">Orders</div>
-          <div class="stat-value" id="dashboard-orders">0</div>
-          <div class="stat-change">Customer activity</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">⭐</div>
-          <div class="stat-label">Experience</div>
-          <div class="stat-value" id="dashboard-xp">0 XP</div>
-          <div class="stat-change">Keep leveling up!</div>
-        </div>
-
+        <article class="stat-card">
+          <span>⭐</span>
+          <h3>Experience</h3>
+          <strong id="player-xp">0 XP</strong>
+        </article>
       </div>
 
-
-      <div class="dashboard-layout">
-
-        <div class="dashboard-column">
-
-          <div class="card">
-            <h3>🏪 Your Restaurant</h3>
-            <div id="restaurant-scene" class="restaurant-scene">
-              <div class="scene-overlay">
-                <h3>Freshopia Restaurant</h3>
-                <p>Your dream restaurant is growing every day.</p>
-              </div>
-            </div>
+      <div class="dashboard-grid">
+        <article class="content-card">
+          <h3>🎯 Daily Objectives</h3>
+          <div id="daily-objectives">
+            <p>Complete your first order!</p>
           </div>
+        </article>
 
-          <div class="card">
-            <h3>📈 Restaurant Management</h3>
-            <div id="restaurant-management"></div>
+        <article class="content-card">
+          <h3>📌 Recent Activity</h3>
+          <div id="activity-list">
+            <p>Welcome to your new restaurant!</p>
           </div>
-
-          <div class="card">
-            <h3>📰 Recent Activity</h3>
-            <div id="activity-feed"></div>
-          </div>
-
-        </div>
-
-
-        <div class="dashboard-column">
-
-          <div class="card">
-            <h3>🎯 Daily Objectives</h3>
-            <div id="daily-objectives" class="objective-list"></div>
-          </div>
-
-          <div class="card">
-            <h3>✨ Chef Profile</h3>
-            <div id="character-profile"></div>
-          </div>
-
-        </div>
-
+        </article>
       </div>
-
     </section>
 
+    <!-- RESTAURANT -->
+    <section data-page="restaurant" hidden>
+      <h2>🏮 Your Restaurant</h2>
+      <p>Build and manage your dream restaurant.</p>
 
-    <!-- =====================================
-         2. RESTAURANT
-    ====================================== -->
-
-    <section class="page" data-page="restaurant">
-
-      <div class="card">
-
-        <h3>🏡 My Restaurant</h3>
-
-        <p class="page-subtitle">
-          Build your restaurant, improve your service and welcome new customers.
-        </p>
-
-        <div id="three-scene" class="restaurant-scene">
-          <div class="scene-overlay">
-            <h3>Welcome to Freshopia</h3>
-            <p>A beautiful place for delicious and sustainable food.</p>
-          </div>
+      <div class="restaurant-scene">
+        <div class="restaurant-info">
+          <h3>Freshopia Garden Restaurant</h3>
+          <p>A beautiful place for delicious food.</p>
         </div>
-
       </div>
 
-      <div class="stats-grid" style="margin-top:20px;">
-
-        <div class="stat-card">
-          <div class="stat-icon">🍽️</div>
-          <div class="stat-label">Restaurant Status</div>
-          <div class="stat-value">Active</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">🌿</div>
-          <div class="stat-label">Eco Concept</div>
-          <div class="stat-value">Green</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">👨‍👩‍👧</div>
-          <div class="stat-label">Customer Focus</div>
-          <div class="stat-value">Quality</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">⭐</div>
-          <div class="stat-label">Restaurant Goal</div>
-          <div class="stat-value">5 Stars</div>
-        </div>
-
+      <div class="content-card">
+        <h3>Restaurant Upgrades</h3>
+        <div id="restaurant-upgrades"></div>
       </div>
-
     </section>
 
+    <!-- KITCHEN -->
+    <section data-page="kitchen" hidden>
+      <h2>👩‍🍳 Professional Kitchen</h2>
+      <p>Prepare meals and complete customer orders.</p>
 
-    <!-- =====================================
-         3. KITCHEN
-    ====================================== -->
-
-    <section class="page" data-page="kitchen">
-
-      <div class="card">
-
-        <h3>👩‍🍳 Professional Kitchen</h3>
-
-        <p class="page-subtitle">
-          Select ingredients, prepare recipes and serve delicious dishes.
-        </p>
-
-        <div id="kitchen-scene" class="kitchen-workspace">
-
-          <div id="kitchen-three-scene"></div>
-
-          <div class="cooking-station" id="cooking-station">
-            <h3>Cooking Station</h3>
-            <p>Select a recipe to start cooking.</p>
-          </div>
-
+      <div class="kitchen-scene">
+        <div id="kitchen-workspace">
+          <h3>Cooking Station</h3>
+          <p>Select a recipe to begin cooking.</p>
         </div>
-
       </div>
 
-      <div class="card" style="margin-top:20px;">
-        <h3>🥬 Available Kitchen Ingredients</h3>
-        <div id="kitchen-ingredients" class="ingredient-grid"></div>
+      <div class="content-card">
+        <h3>Available Recipes</h3>
+        <div id="recipe-list"></div>
       </div>
 
+      <div class="content-card">
+        <h3>Cooking Ingredients</h3>
+        <div id="kitchen-ingredients"></div>
+      </div>
     </section>
 
+    <!-- INVENTORY -->
+    <section data-page="inventory" hidden>
+      <h2>🥕 Ingredient Inventory</h2>
+      <p>Manage your ingredients, stock and expiration dates.</p>
 
-    <!-- =====================================
-         4. INVENTORY
-    ====================================== -->
-
-    <section class="page" data-page="inventory">
-
-      <div class="card">
-
-        <h3>📦 Ingredient Inventory</h3>
-
-        <p class="page-subtitle">
-          Manage your food stock, check freshness and reduce food waste.
-        </p>
-
-        <div class="toolbar">
-
-          <input
-            type="search"
-            id="inventory-search"
-            class="search-input"
-            placeholder="Search ingredients..."
-          >
-
-          <select id="inventory-category">
-            <option value="all">All Categories</option>
-            <option value="vegetable">Vegetables</option>
-            <option value="fruit">Fruits</option>
-            <option value="dairy">Dairy</option>
-            <option value="protein">Proteins</option>
-            <option value="grain">Grains</option>
-            <option value="other">Other</option>
-          </select>
-
-          <button class="primary-btn" onclick="openAddIngredientModal()">
-            + Add Ingredient
-          </button>
-
-        </div>
-
-        <div class="stats-grid">
-
-          <div class="stat-card">
-            <div class="stat-label">Total Ingredients</div>
-            <div class="stat-value" id="inventory-total">0</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-label">Fresh Stock</div>
-            <div class="stat-value" id="inventory-fresh">—</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-label">Low Stock</div>
-            <div class="stat-value" id="inventory-low">—</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-label">Inventory Value</div>
-            <div class="stat-value" id="inventory-value">—</div>
-          </div>
-
-        </div>
-
-        <div id="inventory-summary"></div>
-
-        <div id="inventory-list" class="ingredient-grid"></div>
-
+      <div class="inventory-toolbar">
+        <input type="search" id="inventory-search"
+          placeholder="Search ingredients...">
       </div>
 
+      <div id="inventory-list" class="inventory-grid"></div>
     </section>
 
+    <!-- RECIPES -->
+    <section data-page="recipes" hidden>
+      <h2>📖 Recipe Collection</h2>
+      <p>Discover and unlock delicious recipes.</p>
 
-    <!-- =====================================
-         5. RECIPES
-    ====================================== -->
-
-    <section class="page" data-page="recipes">
-
-      <div class="card">
-
-        <h3>📖 Freshopia Recipe Book</h3>
-
-        <p class="page-subtitle">
-          Discover recipes and learn to prepare sustainable meals.
-        </p>
-
-        <div class="toolbar">
-          <input
-            type="search"
-            id="recipe-search"
-            class="search-input"
-            placeholder="Search recipes..."
-          >
-        </div>
-
-        <div id="recipe-list" class="recipe-grid"></div>
-
-      </div>
-
+      <div id="recipe-list-page" class="recipe-grid"></div>
     </section>
 
+    <!-- CUSTOMERS -->
+    <section data-page="customers" hidden>
+      <h2>💗 Customer Experience</h2>
+      <p>Meet your guests and make them happy.</p>
 
-    <!-- =====================================
-         6. CUSTOMERS
-    ====================================== -->
+      <div id="customer-area"></div>
 
-    <section class="page" data-page="customers">
-
-      <div class="card">
-
-        <h3>😊 Customer Experience</h3>
-
-        <p class="page-subtitle">
-          Meet your customers, understand their preferences and serve them well.
-        </p>
-
-        <div id="customer-area" class="customer-grid"></div>
-
-      </div>
-
-      <div class="card" style="margin-top:20px;">
-
-        <h3>🛎️ Customer Orders</h3>
-
+      <div class="content-card">
+        <h3>Current Orders</h3>
         <div id="order-list"></div>
-
       </div>
-
     </section>
 
+    <!-- SUPPLIERS -->
+    <section data-page="suppliers" hidden>
+      <h2>🚚 Suppliers</h2>
+      <p>Find fresh ingredients from trusted suppliers.</p>
 
-    <!-- =====================================
-         7. SUPPLIERS
-    ====================================== -->
-
-    <section class="page" data-page="suppliers">
-
-      <div class="card">
-
-        <h3>🚚 Supplier Network</h3>
-
-        <p class="page-subtitle">
-          Find reliable suppliers and choose fresh, local ingredients.
-        </p>
-
-        <div id="supplier-list" class="supplier-list"></div>
-
-      </div>
-
+      <div id="supplier-list"></div>
     </section>
 
+    <!-- FINANCE -->
+    <section data-page="finance" hidden>
+      <h2>💰 Restaurant Finance</h2>
+      <p>Track your restaurant's financial performance.</p>
 
-    <!-- =====================================
-         8. FINANCE
-    ====================================== -->
+      <div class="stats-grid">
+        <article class="stat-card">
+          <h3>Total Income</h3>
+          <strong id="total-income">$0</strong>
+        </article>
 
-    <section class="page" data-page="finance">
+        <article class="stat-card">
+          <h3>Total Expenses</h3>
+          <strong id="total-expenses">$0</strong>
+        </article>
 
-      <div class="card">
-
-        <h3>💰 Financial Management</h3>
-
-        <p class="page-subtitle">
-          Monitor restaurant income, expenses and financial performance.
-        </p>
-
-        <div id="finance-dashboard"></div>
-
+        <article class="stat-card">
+          <h3>Profit</h3>
+          <strong id="total-profit">$0</strong>
+        </article>
       </div>
 
+      <div id="finance-history"></div>
     </section>
 
+    <!-- SUSTAINABILITY -->
+    <section data-page="sustainability" hidden>
+      <h2>🌱 Save the Food</h2>
+      <p>Make your restaurant more sustainable.</p>
 
-    <!-- =====================================
-         9. SUSTAINABILITY
-    ====================================== -->
-
-    <section class="page" data-page="sustainability">
-
-      <div class="card">
-
-        <h3>🌱 Sustainability Center</h3>
-
-        <p class="page-subtitle">
-          Make responsible choices and build an environmentally friendly restaurant.
-        </p>
-
-        <div id="sustainability-dashboard"></div>
-
+      <div class="content-card">
+        <h3>Environmental Performance</h3>
+        <div id="sustainability-stats"></div>
       </div>
 
+      <div class="content-card">
+        <h3>Green Missions</h3>
+        <div id="sustainability-missions"></div>
+      </div>
     </section>
 
+    <!-- ACHIEVEMENTS -->
+    <section data-page="achievements" hidden>
+      <h2>🏆 Achievements & Rewards</h2>
+      <p>Complete missions and earn special rewards.</p>
 
-    <!-- =====================================
-         10. ACHIEVEMENTS
-    ====================================== -->
+      <div id="achievement-list"></div>
+    </section>
 
-    <section class="page" data-page="achievements">
-
-      <div class="card">
-
-        <h3>🏆 Achievements & Rewards</h3>
-
-        <p class="page-subtitle">
-          Complete challenges, earn rewards and become a master chef.
-        </p>
-
-        <div id="achievement-list" class="achievement-grid"></div>
-
+    <!-- CHARACTERS -->
+    <section data-page="character" hidden>
+      <div class="character-page-header">
+        <h2>✨ Meet Your Anime Chefs</h2>
+        <p>Choose your chef and unlock new characters.</p>
       </div>
 
-    </section>
-
-
-    <!-- =====================================
-         11. CHARACTER PROFILE
-    ====================================== -->
-
-    <section class="page" data-page="character">
-
-      <div class="card">
-
-        <h3>✨ My Anime Chef</h3>
-
-        <p class="page-subtitle">
-          Customize your character and follow your progress.
-        </p>
-
-        <div id="character-page-profile"></div>
-
+      <div id="character-profile">
+        <div id="active-freshopia-character"></div>
       </div>
 
+      <div class="character-collection">
+        <h3>Choose Your Chef</h3>
+        <div id="freshopia-characters"></div>
+      </div>
+
+      <div class="content-card">
+        <h3>👗 Character Outfits</h3>
+        <div id="character-outfits">
+          <p>More outfits will unlock as you level up!</p>
+        </div>
+      </div>
     </section>
-
-
-    <!-- FOOTER -->
-
-    <footer style="text-align:center;padding:35px 10px;color:#829087;font-size:11px;">
-      <strong>FRESHOPIA</strong>
-      <p>Cook Smart · Waste Less · Grow Together</p>
-      <p>© 2026 Freshopia Game Project</p>
-    </footer>
 
   </main>
-
 </div>
 
-
-<!-- =====================================
-     MODAL SYSTEM
-====================================== -->
-
-<div id="modal-container" class="modal-container">
-  <div id="modal-body" class="modal-content">
+<!-- MODALS -->
+<div id="modal-container" class="modal-container" hidden>
+  <div class="modal-content">
+    <button id="close-modal" aria-label="Close">×</button>
+    <div id="modal-body"></div>
   </div>
 </div>
 
-
 <!-- NOTIFICATIONS -->
+<div id="notification-container"></div>
 
-<div id="notification-container" class="notification-container"></div>
-
+<!-- LEVEL UP -->
+<div id="level-up-container"></div>
 
 <!-- GAME SCRIPTS -->
-
 <script src="script.js" defer></script>
+<script src="characters.js" defer></script>
 
 </body>
 </html>
