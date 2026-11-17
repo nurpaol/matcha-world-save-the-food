@@ -1,170 +1,1359 @@
+/* =========================================================
+   FRESHOPIA — THE HEALTHY FOOD ADVENTURE
+   Premium Game Interface | Style System 1.0
+========================================================= */
+
+/* -------------------------
+   1. ROOT & RESET
+------------------------- */
+
 :root {
-  --pink:#f3a8c9;
-  --pink-light:#fff0f6;
-  --pink-dark:#c96899;
-  --purple:#c7b4ee;
-  --purple-light:#f1eaff;
-  --green:#b9dfc5;
-  --dark:#49364e;
-  --muted:#928197;
-  --shadow:0 8px 28px rgba(153,105,151,.11);
+    --green-950: #173d32;
+    --green-900: #205342;
+    --green-800: #286b52;
+    --green-700: #398568;
+    --green-600: #55a77e;
+    --green-400: #8fcda2;
+    --green-200: #d5edda;
+    --green-100: #eaf6eb;
+
+    --cream: #fffaf0;
+    --cream-dark: #f5eddd;
+    --white: #ffffff;
+
+    --pink: #f7c9d5;
+    --pink-dark: #e99aaf;
+    --yellow: #ffdf91;
+    --orange: #f5ad72;
+    --purple: #cbb9ec;
+    --blue: #b9d9ee;
+
+    --text: #294438;
+    --muted: #84958a;
+
+    --shadow-sm: 0 4px 12px rgba(36, 83, 62, 0.08);
+    --shadow-md: 0 12px 30px rgba(36, 83, 62, 0.12);
+    --shadow-lg: 0 20px 55px rgba(36, 83, 62, 0.17);
+
+    --radius-sm: 12px;
+    --radius-md: 20px;
+    --radius-lg: 28px;
+    --radius-xl: 36px;
+
+    --transition: 0.25s ease;
 }
 
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nunito',sans-serif;color:var(--dark);background:linear-gradient(145deg,#fff3f8,#f2eaff,#fff7fa);min-height:100vh}
-button{font-family:inherit;border:0;cursor:pointer;transition:.2s}
-button:hover{transform:translateY(-2px)}
-.app{width:min(1100px,100%);margin:auto;padding:16px}
-
-.top-header,.panel,.dashboard-card,.home-panel,.recipe-card,.character-card,.achievement-card,.mission-card{
-  background:#fff;border-radius:23px;box-shadow:var(--shadow)
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
-.top-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;margin-bottom:18px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand-icon{font-size:35px}
-.brand h1{color:#b85d94;font-size:25px;font-weight:900}
-.brand p{font-size:12px;color:var(--muted)}
-.player-info{display:flex;gap:8px;flex-wrap:wrap}
-.player-info span{background:var(--purple-light);padding:9px 12px;border-radius:20px;font-size:13px;font-weight:800}
 
-.welcome-card{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:26px;border-radius:27px;background:linear-gradient(120deg,#f7c8dd,#dfd0ff);margin-bottom:20px}
-.welcome-card h2{font-size:clamp(22px,4vw,31px);margin:7px 0}
-.welcome-card p{color:#765b7c}
-.welcome-character{font-size:75px;animation:float 3s infinite}
-.eyebrow{font-size:11px;letter-spacing:1.3px;font-weight:900;color:var(--pink-dark)}
-.xp-track{height:10px;background:#ffffffa8;border-radius:20px;overflow:hidden;margin-top:14px;max-width:350px}
-#xpProgress{height:100%;width:0;background:#b65e9b;border-radius:20px;transition:width .4s}
-#xpText{font-size:12px}
+html {
+    scroll-behavior: smooth;
+}
 
-.main-nav{display:flex;gap:8px;overflow-x:auto;padding:8px 2px 14px;margin-bottom:10px}
-.nav-btn{flex:0 0 auto;background:white;padding:12px 16px;border-radius:16px;color:var(--dark);font-weight:800;box-shadow:var(--shadow)}
-.nav-btn.active{background:var(--pink);color:white}
-.game-section{display:none;animation:fade .3s}
-.game-section.active{display:block}
-.section-heading{margin:20px 3px}
-.section-heading h2{font-size:27px;margin:5px 0}
-.section-heading p{color:var(--muted)}
+body {
+    min-height: 100vh;
+    font-family: "Nunito", sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at 10% 10%, #e3f3dc 0, transparent 30%),
+        radial-gradient(circle at 90% 20%, #fce6e9 0, transparent 28%),
+        linear-gradient(135deg, #fffaf0, #f0f7e9);
+    overflow-x: hidden;
+}
 
-.dashboard-grid,.recipe-grid,.character-grid,.achievement-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.dashboard-card{padding:20px}
-.dashboard-card span{font-size:35px}
-.dashboard-card h3{margin:8px 0}
-.dashboard-card p,.recipe-card p,.character-card p,.achievement-card p{font-size:13px;color:var(--muted);margin-bottom:12px}
-.dashboard-card button,.primary-btn{background:linear-gradient(110deg,#ec9dc1,#b99be8);color:white;padding:12px 17px;border-radius:15px;font-weight:900}
-.restaurant-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
-.stat-card{text-align:center;background:white;padding:16px 7px;border-radius:20px;box-shadow:var(--shadow)}
-.stat-card span{font-size:27px}
-.stat-card p{font-size:12px;color:var(--muted)}
-.stat-card h3{font-size:22px;color:#b65e96}
-.panel{padding:21px;margin-bottom:18px}
-.panel h3{margin-bottom:12px}
-.wide-image{width:100%;height:210px;object-fit:cover;border-radius:18px;margin:8px 0 15px}
-.empty-state{text-align:center;background:var(--purple-light);padding:25px;border-radius:18px;margin-bottom:14px}
-.empty-state h3{margin:8px}
-.empty-state p{color:var(--muted);font-size:13px}
-#openRestaurantBtn{width:100%}
-.card-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}
-.card-heading p{font-size:12px;color:var(--muted)}
-.live-badge,.mode-badge{background:var(--pink-light);color:#b85c8e;padding:8px 12px;border-radius:20px;font-size:10px;font-weight:900}
-.customer-card,.current-customer{display:flex;align-items:center;gap:14px;background:var(--pink-light);padding:16px;border-radius:18px;margin-bottom:14px}
-.customer-avatar{font-size:45px}
-.customer-card p,.current-customer p{font-size:13px;color:var(--muted)}
-.recipe-preview{display:flex;align-items:center;gap:15px;background:var(--purple-light);padding:13px;border-radius:18px}
-.recipe-preview img{width:110px;height:100px;object-fit:cover;border-radius:14px}
-.recipe-preview p{font-size:12px;color:var(--muted)}
-.timer-panel{text-align:center;padding:18px}
-.timer-panel p{font-weight:800;color:var(--muted);font-size:13px}
-.timer-panel h2{font-size:40px;color:#d76f9f}
-.feedback-message{background:var(--pink-light);padding:13px;border-radius:15px;text-align:center;color:#976c89;font-weight:800}
-.ingredient-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:16px 0}
-.ingredient-card{border:3px solid transparent;background:#fff0f6;border-radius:17px;padding:8px;color:var(--dark);overflow:hidden}
-.ingredient-card.selected{border-color:#bd91df;background:#f0e8ff}
-.ingredient-card img{width:100%;height:90px;object-fit:cover;border-radius:12px}
-.ingredient-card h4{font-size:12px;padding:7px 2px}
-.ingredient-card small{font-size:10px;color:var(--muted)}
-.selected-ingredients{background:var(--purple-light);padding:14px;border-radius:16px;margin-bottom:14px}
-.selected-ingredients h3{font-size:15px}
-#selectedIngredients{font-size:13px;color:var(--muted)}
-.primary-btn{width:100%}
-button:disabled{opacity:.45;cursor:not-allowed;transform:none}
-.cooking-steps{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:14px 0}
-.cooking-step{padding:12px;border-radius:13px;background:var(--pink-light);font-size:12px;font-weight:800}
-.cooking-step.completed{background:var(--green);color:#356b4a}
-.cooking-content{text-align:center;background:var(--purple-light);padding:17px;border-radius:16px;margin-bottom:13px}
-.history-item{display:flex;justify-content:space-between;gap:8px;background:var(--pink-light);padding:12px;border-radius:13px;margin-top:8px;font-size:12px}
-.recipe-card,.character-card,.achievement-card{padding:13px}
-.recipe-card img{width:100%;height:140px;object-fit:cover;border-radius:15px}
-.recipe-card h3,.character-card h3{margin:8px 0}
-.recipe-card button{margin-top:8px}
-.character-card{text-align:center}
-.character-avatar{font-size:58px}
-.character-card button{width:100%;background:var(--purple-light);color:#8063a5;padding:10px;border-radius:12px;font-weight:800}
-.mission-card{padding:17px;margin-bottom:12px}
-.achievement-card{text-align:center}
-.achievement-card span{font-size:35px}
-.puzzle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.puzzle-card{background:white;border-radius:18px;padding:17px 8px;box-shadow:var(--shadow);color:var(--dark)}
-.puzzle-card h3{font-size:14px;margin:7px}
-.puzzle-card p{font-size:11px;color:var(--muted)}
-.puzzle-game{background:white;padding:20px;border-radius:20px;margin-top:15px;box-shadow:var(--shadow)}
-footer{text-align:center;padding:30px;color:var(--muted)}
-footer h3{color:#bd6b9d}
+button,
+input {
+    font: inherit;
+}
 
-/* MIKA ASSISTANT */
-.mika-assistant{position:fixed;right:17px;bottom:18px;z-index:80;display:flex;align-items:flex-end;gap:10px;max-width:min(440px,calc(100vw - 24px));pointer-events:none}
-.mika-character,.mika-bubble{pointer-events:auto}
-.mika-character{width:94px;height:112px;border-radius:48px 48px 25px 25px;background:linear-gradient(145deg,#f9c6df,#d9c9ff);box-shadow:0 8px 25px #9e77a544;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;border:3px solid white;flex-shrink:0}
-.mika-face{font-size:49px;filter:drop-shadow(0 3px 2px #a76c9b44)}
-.mika-name{font-size:10px;font-weight:900;letter-spacing:2px;color:#754b76}
-.mika-sparkle{position:absolute;right:8px;top:5px;color:white;font-size:20px;animation:twinkle 1.5s infinite}
-.mika-bubble{position:relative;background:white;border:2px solid #f4c4dc;border-radius:20px;padding:15px;width:260px;box-shadow:0 8px 25px #9e77a533;animation:pop .25s ease}
-.mika-bubble:after{content:"";position:absolute;bottom:18px;right:-10px;width:17px;height:17px;background:white;border-right:2px solid #f4c4dc;border-bottom:2px solid #f4c4dc;transform:rotate(-45deg)}
-.mika-tag{font-size:9px;letter-spacing:1.4px;font-weight:900;color:#c16e9b}
-.mika-bubble h3{font-size:17px;margin:5px 20px 5px 0;color:#754b76}
-.mika-bubble p:not(.mika-tag){font-size:12px;line-height:1.5;color:#76677c}
-.mika-next{margin-top:10px;background:#edacd0;color:#653e65;border-radius:12px;padding:9px 13px;font-weight:900;font-size:12px}
-.mika-close{position:absolute;right:9px;top:7px;background:transparent;color:#a47d9e;font-size:20px}
-.mika-assistant.hidden{display:none}
+button {
+    border: none;
+    cursor: pointer;
+    transition: transform var(--transition),
+                box-shadow var(--transition),
+                background var(--transition);
+}
 
-.modal{display:none;position:fixed;inset:0;background:#321e3788;z-index:100;justify-content:center;align-items:center;padding:20px}
-.modal.show{display:flex}
-.modal-content{background:white;text-align:center;padding:30px;border-radius:26px;width:min(350px,100%)}
-.level-dancer{font-size:75px;animation:dance .5s infinite alternate}
-.modal-content h2{color:#cf6da1;margin:12px}
-.modal-content button{background:var(--pink);color:white;padding:12px 24px;border-radius:14px;margin-top:15px;font-weight:900}
-.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,100px);background:#6b5273;color:white;padding:13px 20px;border-radius:30px;opacity:0;transition:.3s;z-index:120;text-align:center;max-width:90%}
-.toast.show{transform:translate(-50%,0);opacity:1}
+button:focus-visible,
+input:focus-visible {
+    outline: 3px solid var(--green-600);
+    outline-offset: 4px;
+}
 
-@keyframes float{50%{transform:translateY(-9px)}}
-@keyframes dance{to{transform:rotate(13deg) translateY(-10px)}}
-@keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
-@keyframes twinkle{50%{transform:scale(1.3) rotate(20deg)}}
+img {
+    max-width: 100%;
+    display: block;
+}
 
-@media(max-width:600px){
-  .app{padding:10px}
-  .top-header{padding:12px}
-  .brand h1{font-size:20px}
-  .brand-icon{font-size:27px}
-  .player-info span{font-size:10px;padding:7px}
-  .welcome-card{padding:18px}
-  .welcome-character{font-size:52px}
-  .welcome-card h2{font-size:21px}
-  .section-heading h2{font-size:23px}
-  .dashboard-grid,.recipe-grid,.character-grid,.achievement-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .restaurant-stats{gap:6px}
-  .stat-card{padding:12px 4px}
-  .stat-card p{font-size:10px}
-  .stat-card h3{font-size:18px}
-  .panel{padding:15px}
-  .wide-image{height:160px}
-  .ingredient-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .ingredient-card img{height:100px}
-  .mika-assistant{right:8px;bottom:8px;gap:6px}
-  .mika-character{width:66px;height:82px}
-  .mika-face{font-size:35px}
-  .mika-bubble{width:min(235px,calc(100vw - 100px));padding:12px}
-  .mika-bubble h3{font-size:15px}
-  .mika-bubble p:not(.mika-tag){font-size:11px}
-  .puzzle-grid{grid-template-columns:1fr}
+.hidden {
+    display: none !important;
+}
+
+/* -------------------------
+   2. BACKGROUND DECORATION
+------------------------- */
+
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    z-index: -1;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+body::before {
+    width: 280px;
+    height: 280px;
+    top: -100px;
+    right: -90px;
+    background: rgba(247, 201, 213, 0.24);
+}
+
+body::after {
+    width: 350px;
+    height: 350px;
+    bottom: -180px;
+    left: -130px;
+    background: rgba(143, 205, 162, 0.22);
+}
+
+/* -------------------------
+   3. HEADER
+------------------------- */
+
+.topbar {
+    width: min(1200px, 94%);
+    margin: 22px auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(14px);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    color: var(--green-950);
+    font-size: 1.35rem;
+    font-weight: 1000;
+    letter-spacing: -0.5px;
+}
+
+.brand-icon {
+    width: 43px;
+    height: 43px;
+    display: grid;
+    place-items: center;
+    background: var(--green-100);
+    border-radius: 15px;
+    font-size: 1.55rem;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.header-controls button {
+    width: 43px;
+    height: 43px;
+    border-radius: 14px;
+    background: var(--cream);
+    color: var(--green-900);
+    font-size: 1.15rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.header-controls button:hover {
+    transform: translateY(-3px);
+    background: var(--green-100);
+}
+
+/* -------------------------
+   4. GENERAL LAYOUT
+------------------------- */
+
+main {
+    width: min(1200px, 94%);
+    margin: 0 auto 50px;
+}
+
+.screen {
+    animation: fadeIn 0.5s ease both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section-title {
+    color: var(--green-950);
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 1000;
+    line-height: 1.2;
+}
+
+.section-subtitle {
+    color: var(--muted);
+    margin-top: 7px;
+    line-height: 1.6;
+}
+
+/* -------------------------
+   5. WELCOME SCREEN
+------------------------- */
+
+#welcomeScreen {
+    min-height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-card {
+    width: min(950px, 100%);
+    padding: clamp(25px, 5vw, 55px);
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 35px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.welcome-content {
+    position: relative;
+    z-index: 1;
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    border-radius: 50px;
+    background: var(--green-100);
+    color: var(--green-800);
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.welcome-title {
+    margin: 20px 0 12px;
+    color: var(--green-950);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 1000;
+    letter-spacing: -2px;
+    line-height: 1.05;
+}
+
+.welcome-title span {
+    color: var(--green-600);
+}
+
+.welcome-description {
+    max-width: 480px;
+    color: #718478;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.welcome-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin: 22px 0;
+}
+
+.feature-pill {
+    padding: 9px 13px;
+    border-radius: 50px;
+    background: var(--cream);
+    color: var(--green-900);
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+.name-input {
+    width: 100%;
+    max-width: 340px;
+    padding: 15px 18px;
+    border: 2px solid #e2eddf;
+    border-radius: 15px;
+    background: #fbfdf9;
+    color: var(--text);
+    outline: none;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.name-input:focus {
+    border-color: var(--green-600);
+    box-shadow: 0 0 0 4px rgba(85, 167, 126, 0.12);
+}
+
+.primary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px 25px;
+    margin-top: 14px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--green-700), var(--green-600));
+    color: white;
+    font-size: 1rem;
+    font-weight: 1000;
+    box-shadow: 0 8px 18px rgba(57, 133, 104, 0.23);
+}
+
+.primary-button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(57, 133, 104, 0.3);
+}
+
+.primary-button:active {
+    transform: scale(0.97);
+}
+
+.welcome-art {
+    min-height: 330px;
+    display: grid;
+    place-items: center;
+    position: relative;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(145deg, #e4f4e4, #fce9ec);
+    overflow: hidden;
+}
+
+.welcome-art::before,
+.welcome-art::after {
+    content: "✿";
+    position: absolute;
+    color: rgba(57, 133, 104, 0.25);
+    font-size: 5rem;
+}
+
+.welcome-art::before {
+    top: 20px;
+    left: 25px;
+}
+
+.welcome-art::after {
+    bottom: 20px;
+    right: 25px;
+}
+
+.hero-character {
+    font-size: clamp(8rem, 18vw, 13rem);
+    filter: drop-shadow(0 15px 10px rgba(45, 90, 65, 0.14));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(-3deg);
+    }
+
+    50% {
+        transform: translateY(-14px) rotate(3deg);
+    }
+}
+
+/* -------------------------
+   6. GAME DASHBOARD
+------------------------- */
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin: 22px 0;
+}
+
+.stat-card {
+    padding: 17px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    background: white;
+    border: 1px solid #edf3e9;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-icon {
+    width: 47px;
+    height: 47px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: var(--green-100);
+    font-size: 1.45rem;
+}
+
+.stat-card:nth-child(2) .stat-icon {
+    background: #fff1d5;
+}
+
+.stat-card:nth-child(3) .stat-icon {
+    background: #fce7ee;
+}
+
+.stat-card:nth-child(4) .stat-icon {
+    background: #e5effc;
+}
+
+.stat-label {
+    display: block;
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.stat-value {
+    display: block;
+    margin-top: 3px;
+    color: var(--green-950);
+    font-size: 1.1rem;
+    font-weight: 1000;
+}
+
+.level-card {
+    grid-column: 1 / -1;
+    padding: 18px 22px;
+    background: white;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.level-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 11px;
+}
+
+.level-heading strong {
+    color: var(--green-900);
+    font-weight: 1000;
+}
+
+.level-heading span {
+    color: var(--muted);
+    font-size: 0.83rem;
+    font-weight: 800;
+}
+
+.progress-track {
+    width: 100%;
+    height: 12px;
+    background: #eaf1e8;
+    border-radius: 50px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #6dbd85, #a9d978);
+    transition: width 0.6s ease;
+}
+
+/* -------------------------
+   7. GAME GRID
+------------------------- */
+
+.game-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(270px, 0.85fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.game-panel,
+.side-panel {
+    padding: 23px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.panel-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.panel-heading h2 {
+    color: var(--green-950);
+    font-size: 1.25rem;
+    font-weight: 1000;
+}
+
+/* -------------------------
+   8. CUSTOMER ORDER
+------------------------- */
+
+.customer-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background: linear-gradient(120deg, #f0f8eb, #fff0f3);
+    border: 1px solid #e9f0e4;
+    border-radius: var(--radius-md);
+}
+
+.customer-avatar {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 22px;
+    background: white;
+    font-size: 2.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.customer-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.customer-info h3 {
+    color: var(--green-950);
+    font-size: 1.05rem;
+    font-weight: 1000;
+}
+
+.customer-info p {
+    margin-top: 5px;
+    color: #748579;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.order-tag {
+    display: inline-block;
+    padding: 6px 10px;
+    margin-top: 9px;
+    border-radius: 50px;
+    background: white;
+    color: var(--green-700);
+    font-size: 0.73rem;
+    font-weight: 900;
+}
+
+.order-reward {
+    padding: 9px 12px;
+    border-radius: 13px;
+    background: #fff2d4;
+    color: #95651b;
+    font-size: 0.85rem;
+    font-weight: 1000;
+    white-space: nowrap;
+}
+
+.timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 50px;
+    background: #fff0e6;
+    color: #c36b37;
+    font-size: 0.85rem;
+    font-weight: 1000;
+}
+
+/* -------------------------
+   9. INGREDIENT SELECTION
+------------------------- */
+
+.ingredient-section {
+    margin-top: 20px;
+}
+
+.ingredient-section h3 {
+    margin-bottom: 13px;
+    color: var(--green-950);
+    font-size: 1rem;
+    font-weight: 1000;
+}
+
+.ingredient-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 11px;
+}
+
+.ingredient-card {
+    min-height: 105px;
+    padding: 13px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 2px solid #edf2e9;
+    border-radius: 17px;
+    background: #fbfdf9;
+    color: var(--text);
+}
+
+.ingredient-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--green-400);
+    background: var(--green-100);
+}
+
+.ingredient-card.selected {
+    border-color: var(--green-600);
+    background: #e8f6e9;
+    box-shadow: 0 0 0 3px rgba(85, 167, 126, 0.13);
+    transform: translateY(-3px);
+}
+
+.ingredient-card .ingredient-emoji {
+    font-size: 2.15rem;
+}
+
+.ingredient-card .ingredient-name {
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-align: center;
+}
+
+.ingredient-card:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+    transform: none;
+}
+
+.ingredient-counter {
+    padding: 8px 12px;
+    border-radius: 50px;
+    background: var(--green-100);
+    color: var(--green-800);
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+
+/* -------------------------
+   10. GAME ACTIONS
+------------------------- */
+
+.game-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.game-actions button {
+    flex: 1;
+    min-width: 110px;
+    padding: 13px 16px;
+    border-radius: 14px;
+    font-weight: 1000;
+}
+
+.serve-button {
+    background: var(--green-700);
+    color: white;
+    box-shadow: 0 6px 15px rgba(57, 133, 104, 0.2);
+}
+
+.serve-button:hover {
+    background: var(--green-800);
+    transform: translateY(-3px);
+}
+
+.secondary-button {
+    background: var(--cream);
+    color: var(--green-800);
+    border: 1px solid #eee6d5;
+}
+
+.secondary-button:hover {
+    background: var(--green-100);
+    transform: translateY(-3px);
+}
+
+.selection-text {
+    min-height: 24px;
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 0.83rem;
+    font-weight: 700;
+}
+
+/* -------------------------
+   11. FEEDBACK
+------------------------- */
+
+.feedback {
+    min-height: 48px;
+    margin-top: 15px;
+    padding: 12px 15px;
+    border-radius: 14px;
+    background: #f0f6ec;
+    color: var(--green-800);
+    font-size: 0.9rem;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.feedback.success {
+    background: #e3f6e7;
+    color: #267246;
+}
+
+.feedback.error {
+    background: #fff0ee;
+    color: #bc594c;
+}
+
+.feedback.warning {
+    background: #fff5dc;
+    color: #9b7628;
+}
+
+/* -------------------------
+   12. MIKA ANIME GUIDE
+------------------------- */
+
+.mika-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 16px;
+    margin-bottom: 20px;
+    border: 2px solid #f4dce4;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #fff0f4, #fffaf0);
+    overflow: hidden;
+}
+
+.mika-character {
+    width: 75px;
+    height: 90px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 20px;
+    background: #f9dfe7;
+    font-size: 3.4rem;
+    animation: mikaFloat 3s ease-in-out infinite;
+}
+
+@keyframes mikaFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.mika-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.mika-content h3 {
+    color: #b65d7b;
+    font-size: 1rem;
+    font-weight: 1000;
+}
+
+.mika-content p {
+    margin-top: 5px;
+    color: #806b73;
+    font-size: 0.84rem;
+    line-height: 1.6;
+}
+
+.mika-card button {
+    margin-top: 8px;
+    padding: 7px 11px;
+    border-radius: 10px;
+    background: #f8dce6;
+    color: #9e526d;
+    font-size: 0.76rem;
+    font-weight: 900;
+}
+
+.mika-card button:hover {
+    background: var(--pink);
+}
+
+/* -------------------------
+   13. ECO MISSION
+------------------------- */
+
+.mission-card {
+    padding: 18px;
+    margin-bottom: 20px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #e7f5e6, #f4f9e9);
+}
+
+.mission-card h3 {
+    color: var(--green-900);
+    font-size: 1rem;
+    font-weight: 1000;
+}
+
+.mission-card p {
+    margin: 8px 0 13px;
+    color: #718478;
+    font-size: 0.84rem;
+    line-height: 1.5;
+}
+
+.mission-progress {
+    height: 10px;
+    border-radius: 50px;
+    background: rgba(57, 133, 104, 0.13);
+    overflow: hidden;
+}
+
+.mission-progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #55a77e, #a6d67f);
+    transition: width 0.6s ease;
+}
+
+.mission-progress-text {
+    display: block;
+    margin-top: 9px;
+    color: var(--green-800);
+    font-size: 0.75rem;
+    font-weight: 900;
+}
+
+/* -------------------------
+   14. BADGES
+------------------------- */
+
+.badge-section,
+.unlock-section {
+    margin-top: 20px;
+}
+
+.badge-section h3,
+.unlock-section h3 {
+    margin-bottom: 13px;
+    color: var(--green-950);
+    font-size: 1rem;
+    font-weight: 1000;
+}
+
+.badge-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+}
+
+.badge-item {
+    min-height: 90px;
+    padding: 10px 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 15px;
+    background: #fff8e8;
+    border: 1px solid #f2e8ce;
+    text-align: center;
+}
+
+.badge-item .badge-icon {
+    font-size: 1.7rem;
+}
+
+.badge-item .badge-name {
+    color: #8a713e;
+    font-size: 0.68rem;
+    font-weight: 900;
+}
+
+.badge-item.locked {
+    opacity: 0.42;
+    filter: grayscale(1);
+    background: #f0f0ed;
+}
+
+.badge-count {
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.unlock-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.unlock-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px;
+    border-radius: 13px;
+    background: #f8faf5;
+    color: var(--green-800);
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.unlock-item.locked {
+    color: #a2aaa0;
+    background: #f2f3ef;
+}
+
+/* -------------------------
+   15. TOAST NOTIFICATION
+------------------------- */
+
+.toast {
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    bottom: 25px;
+    max-width: min(90%, 420px);
+    padding: 14px 20px;
+    border-radius: 15px;
+    background: var(--green-950);
+    color: white;
+    font-weight: 900;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    transform: translate(-50%, 30px);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s ease;
+}
+
+.toast.show {
+    transform: translate(-50%, 0);
+    opacity: 1;
+}
+
+/* -------------------------
+   16. MODALS
+------------------------- */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(23, 61, 50, 0.55);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.25s ease;
+}
+
+.modal-content {
+    position: relative;
+    width: min(460px, 100%);
+    padding: 35px 25px;
+    border: 3px solid white;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(145deg, white, #f7fbf1);
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    animation: modalPop 0.4s cubic-bezier(.2, 1.4, .4, 1);
+}
+
+@keyframes modalPop {
+    from {
+        opacity: 0;
+        transform: scale(0.75);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-emoji {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 4rem;
+    animation: float 2.5s ease-in-out infinite;
+}
+
+.modal-content h2 {
+    color: var(--green-950);
+    font-size: 1.8rem;
+    font-weight: 1000;
+}
+
+.modal-content p {
+    margin: 12px 0;
+    color: #718478;
+    line-height: 1.7;
+}
+
+.modal-level {
+    display: inline-block;
+    margin: 13px 0;
+    padding: 10px 22px;
+    border-radius: 50px;
+    background: var(--yellow);
+    color: #795a19;
+    font-size: 1.3rem;
+    font-weight: 1000;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-actions button {
+    padding: 13px 20px;
+    border-radius: 14px;
+    font-weight: 1000;
+}
+
+.modal-close {
+    position: absolute;
+    top: 14px;
+    right: 15px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #f4eee6;
+    color: var(--green-900);
+    font-size: 1.1rem;
+}
+
+/* -------------------------
+   17. RESULT MODAL
+------------------------- */
+
+.result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+    margin: 20px 0;
+}
+
+.result-stat {
+    padding: 13px 7px;
+    border-radius: 15px;
+    background: var(--green-100);
+}
+
+.result-stat strong {
+    display: block;
+    color: var(--green-900);
+    font-size: 1.25rem;
+    font-weight: 1000;
+}
+
+.result-stat span {
+    display: block;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 800;
+}
+
+/* -------------------------
+   18. RESPONSIVE TABLET
+------------------------- */
+
+@media (max-width: 900px) {
+    .welcome-card {
+        grid-template-columns: 1fr 0.8fr;
+        gap: 20px;
+    }
+
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .game-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .side-panel {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .mika-card,
+    .mission-card,
+    .badge-section,
+    .unlock-section {
+        margin: 0;
+    }
+
+    .badge-section,
+    .unlock-section {
+        min-width: 0;
+    }
+}
+
+/* -------------------------
+   19. RESPONSIVE MOBILE
+------------------------- */
+
+@media (max-width: 600px) {
+    .topbar {
+        width: 94%;
+        margin: 12px auto;
+        padding: 11px 13px;
+        border-radius: 18px;
+    }
+
+    .brand {
+        font-size: 1.1rem;
+    }
+
+    .brand-icon {
+        width: 37px;
+        height: 37px;
+        font-size: 1.3rem;
+    }
+
+    .header-controls {
+        gap: 5px;
+    }
+
+    .header-controls button {
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+        font-size: 1rem;
+    }
+
+    main {
+        width: 94%;
+    }
+
+    .welcome-card {
+        grid-template-columns: 1fr;
+        padding: 23px;
+        gap: 22px;
+        border-radius: 25px;
+    }
+
+    .welcome-title {
+        font-size: 2.8rem;
+    }
+
+    .welcome-art {
+        min-height: 210px;
+    }
+
+    .hero-character {
+        font-size: 8rem;
+    }
+
+    .dashboard {
+        gap: 9px;
+        margin: 14px 0;
+    }
+
+    .stat-card {
+        padding: 12px 9px;
+        gap: 8px;
+        border-radius: 15px;
+    }
+
+    .stat-icon {
+        width: 37px;
+        height: 37px;
+        border-radius: 12px;
+        font-size: 1.15rem;
+    }
+
+    .stat-label {
+        font-size: 0.67rem;
+    }
+
+    .stat-value {
+        font-size: 0.95rem;
+    }
+
+    .level-card {
+        padding: 15px;
+    }
+
+    .game-panel,
+    .side-panel {
+        padding: 16px;
+        border-radius: 21px;
+    }
+
+    .customer-card {
+        flex-wrap: wrap;
+        padding: 14px;
+        gap: 11px;
+    }
+
+    .customer-avatar {
+        width: 57px;
+        height: 57px;
+        font-size: 2rem;
+    }
+
+    .customer-info {
+        flex: 1 1 60%;
+    }
+
+    .order-reward {
+        margin-left: auto;
+    }
+
+    .ingredient-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .ingredient-card {
+        min-height: 90px;
+        padding: 9px 4px;
+    }
+
+    .ingredient-card .ingredient-emoji {
+        font-size: 1.8rem;
+    }
+
+    .ingredient-card .ingredient-name {
+        font-size: 0.68rem;
+    }
+
+    .game-actions {
+        gap: 8px;
+    }
+
+    .game-actions button {
+        padding: 12px 9px;
+        font-size: 0.83rem;
+    }
+
+    .side-panel {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mika-card {
+        padding: 12px;
+    }
+
+    .mika-character {
+        width: 62px;
+        height: 75px;
+        font-size: 2.7rem;
+    }
+
+    .badge-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .modal-content {
+        padding: 30px 18px;
+    }
+
+    .modal-content h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* -------------------------
+   20. SMALL PHONE
+------------------------- */
+
+@media (max-width: 360px) {
+    .brand {
+        font-size: 0.95rem;
+    }
+
+    .header-controls button {
+        width: 32px;
+        height: 32px;
+    }
+
+    .ingredient-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .welcome-title {
+        font-size: 2.3rem;
+    }
+
+    .stat-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* -------------------------
+   21. ACCESSIBILITY
+------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
