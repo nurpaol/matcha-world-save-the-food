@@ -1,292 +1,129 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f8dce9">
-  <meta name="description" content="Freshopia - Anime Restaurant Simulator">
-  <title>Freshopia | Anime Restaurant Simulator</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f8e8ed">
+  <title>Freshopia - Anime Restaurant Simulator</title>
   <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
-
 <body>
-
-<div class="app-layout">
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="brand">
-      <h1>🌸 Freshopia</h1>
-      <span>Anime Restaurant Simulator</span>
-    </div>
-
-    <nav class="sidebar-nav">
-      <button data-nav="dashboard">🏡 Dashboard</button>
-      <button data-nav="restaurant">🏮 Restaurant</button>
-      <button data-nav="kitchen">👩‍🍳 Kitchen</button>
-      <button data-nav="inventory">🥕 Ingredients</button>
-      <button data-nav="recipes">📖 Recipes</button>
-      <button data-nav="customers">💗 Customers</button>
-      <button data-nav="suppliers">🚚 Suppliers</button>
-      <button data-nav="finance">💰 Finance</button>
-      <button data-nav="sustainability">🌱 Sustainability</button>
-      <button data-nav="achievements">🏆 Achievements</button>
-      <button data-nav="character">✨ Characters</button>
-    </nav>
-
-    <div class="sidebar-footer">
-      <p>Made with love ♡</p>
-      <small>Freshopia Version 3.0</small>
-    </div>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <main class="main-content">
-
-    <!-- TOPBAR -->
+  <div class="app">
     <header class="topbar">
-      <div>
-        <h2>Welcome to Freshopia!</h2>
-        <p>Your dream restaurant starts here.</p>
-      </div>
-
-      <div class="player-resources">
-        <span>🪙 <strong id="player-coins">12,450</strong></span>
-        <span>💎 <strong id="player-gems">245</strong></span>
-        <span>⭐ <strong id="player-level">Level 1</strong></span>
+      <button class="menu-button" id="menu-toggle" aria-label="Open menu">☰</button>
+      <div class="brand">🌸 Freshopia</div>
+      <div class="player-stats">
+        <span>🪙 <b id="coins">500</b></span>
+        <span>⭐ <b id="level">1</b></span>
       </div>
     </header>
 
-    <!-- DASHBOARD -->
-    <section class="dashboard-page" data-page="dashboard">
-      <div class="welcome-banner">
-        <div>
-          <h2>Your restaurant adventure begins!</h2>
-          <p>Cook delicious meals, serve customers and save food.</p>
-          <button data-nav="kitchen">Start Cooking →</button>
-        </div>
-      </div>
+    <aside class="sidebar" id="sidebar">
+      <div class="side-brand">Freshopia 🌸</div>
+      <nav id="main-nav">
+        <button class="nav-button active" data-page="dashboard">🏡 Dashboard</button>
+        <button class="nav-button" data-page="restaurant">🏮 Restaurant</button>
+        <button class="nav-button" data-page="kitchen">👩‍🍳 Kitchen</button>
+        <button class="nav-button" data-page="inventory">🥕 Ingredients</button>
+        <button class="nav-button" data-page="recipes">📖 Recipes</button>
+        <button class="nav-button" data-page="customers">💗 Customers</button>
+        <button class="nav-button" data-page="achievements">🏆 Achievements</button>
+        <button class="nav-button" data-page="characters">✨ Characters</button>
+      </nav>
+      <p class="side-footer">Cook • Create • Save Food</p>
+    </aside>
 
-      <div class="stats-grid">
-        <article class="stat-card">
-          <span>💰</span>
-          <h3>Daily Revenue</h3>
-          <strong id="daily-revenue">$0</strong>
-        </article>
-
-        <article class="stat-card">
-          <span>🍽️</span>
-          <h3>Orders Served</h3>
-          <strong id="orders-served">0</strong>
-        </article>
-
-        <article class="stat-card">
-          <span>🌱</span>
-          <h3>Food Saved</h3>
-          <strong id="food-saved">0 kg</strong>
-        </article>
-
-        <article class="stat-card">
-          <span>⭐</span>
-          <h3>Experience</h3>
-          <strong id="player-xp">0 XP</strong>
-        </article>
-      </div>
-
-      <div class="dashboard-grid">
-        <article class="content-card">
-          <h3>🎯 Daily Objectives</h3>
-          <div id="daily-objectives">
-            <p>Complete your first order!</p>
+    <main class="main-content">
+      <section class="page active" id="dashboard">
+        <div class="hero">
+          <div>
+            <p class="eyebrow">YOUR NEW ADVENTURE</p>
+            <h1>Welcome to Freshopia!</h1>
+            <p>Build your dream restaurant, cook delicious meals and save food.</p>
+            <button class="primary-button" data-go="kitchen">Start Cooking →</button>
           </div>
-        </article>
-
-        <article class="content-card">
-          <h3>📌 Recent Activity</h3>
-          <div id="activity-list">
-            <p>Welcome to your new restaurant!</p>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- RESTAURANT -->
-    <section data-page="restaurant" hidden>
-      <h2>🏮 Your Restaurant</h2>
-      <p>Build and manage your dream restaurant.</p>
-
-      <div class="restaurant-scene">
-        <div class="restaurant-info">
-          <h3>Freshopia Garden Restaurant</h3>
-          <p>A beautiful place for delicious food.</p>
+          <div class="hero-art">🍓🥐🍵</div>
         </div>
-      </div>
 
-      <div class="content-card">
-        <h3>Restaurant Upgrades</h3>
-        <div id="restaurant-upgrades"></div>
-      </div>
-    </section>
-
-    <!-- KITCHEN -->
-    <section data-page="kitchen" hidden>
-      <h2>👩‍🍳 Professional Kitchen</h2>
-      <p>Prepare meals and complete customer orders.</p>
-
-      <div class="kitchen-scene">
-        <div id="kitchen-workspace">
-          <h3>Cooking Station</h3>
-          <p>Select a recipe to begin cooking.</p>
+        <div class="stats-grid">
+          <article class="stat-card"><span>💰</span><small>Restaurant Coins</small><strong id="dash-coins">500</strong></article>
+          <article class="stat-card"><span>⭐</span><small>Experience</small><strong id="xp">0 / 100 XP</strong></article>
+          <article class="stat-card"><span>🍽️</span><small>Orders Served</small><strong id="orders-served">0</strong></article>
+          <article class="stat-card"><span>🌱</span><small>Food Saved</small><strong id="food-saved">0 kg</strong></article>
         </div>
-      </div>
 
-      <div class="content-card">
-        <h3>Available Recipes</h3>
-        <div id="recipe-list"></div>
-      </div>
-
-      <div class="content-card">
-        <h3>Cooking Ingredients</h3>
-        <div id="kitchen-ingredients"></div>
-      </div>
-    </section>
-
-    <!-- INVENTORY -->
-    <section data-page="inventory" hidden>
-      <h2>🥕 Ingredient Inventory</h2>
-      <p>Manage your ingredients, stock and expiration dates.</p>
-
-      <div class="inventory-toolbar">
-        <input type="search" id="inventory-search"
-          placeholder="Search ingredients...">
-      </div>
-
-      <div id="inventory-list" class="inventory-grid"></div>
-    </section>
-
-    <!-- RECIPES -->
-    <section data-page="recipes" hidden>
-      <h2>📖 Recipe Collection</h2>
-      <p>Discover and unlock delicious recipes.</p>
-
-      <div id="recipe-list-page" class="recipe-grid"></div>
-    </section>
-
-    <!-- CUSTOMERS -->
-    <section data-page="customers" hidden>
-      <h2>💗 Customer Experience</h2>
-      <p>Meet your guests and make them happy.</p>
-
-      <div id="customer-area"></div>
-
-      <div class="content-card">
-        <h3>Current Orders</h3>
-        <div id="order-list"></div>
-      </div>
-    </section>
-
-    <!-- SUPPLIERS -->
-    <section data-page="suppliers" hidden>
-      <h2>🚚 Suppliers</h2>
-      <p>Find fresh ingredients from trusted suppliers.</p>
-
-      <div id="supplier-list"></div>
-    </section>
-
-    <!-- FINANCE -->
-    <section data-page="finance" hidden>
-      <h2>💰 Restaurant Finance</h2>
-      <p>Track your restaurant's financial performance.</p>
-
-      <div class="stats-grid">
-        <article class="stat-card">
-          <h3>Total Income</h3>
-          <strong id="total-income">$0</strong>
-        </article>
-
-        <article class="stat-card">
-          <h3>Total Expenses</h3>
-          <strong id="total-expenses">$0</strong>
-        </article>
-
-        <article class="stat-card">
-          <h3>Profit</h3>
-          <strong id="total-profit">$0</strong>
-        </article>
-      </div>
-
-      <div id="finance-history"></div>
-    </section>
-
-    <!-- SUSTAINABILITY -->
-    <section data-page="sustainability" hidden>
-      <h2>🌱 Save the Food</h2>
-      <p>Make your restaurant more sustainable.</p>
-
-      <div class="content-card">
-        <h3>Environmental Performance</h3>
-        <div id="sustainability-stats"></div>
-      </div>
-
-      <div class="content-card">
-        <h3>Green Missions</h3>
-        <div id="sustainability-missions"></div>
-      </div>
-    </section>
-
-    <!-- ACHIEVEMENTS -->
-    <section data-page="achievements" hidden>
-      <h2>🏆 Achievements & Rewards</h2>
-      <p>Complete missions and earn special rewards.</p>
-
-      <div id="achievement-list"></div>
-    </section>
-
-    <!-- CHARACTERS -->
-    <section data-page="character" hidden>
-      <div class="character-page-header">
-        <h2>✨ Meet Your Anime Chefs</h2>
-        <p>Choose your chef and unlock new characters.</p>
-      </div>
-
-      <div id="character-profile">
-        <div id="active-freshopia-character"></div>
-      </div>
-
-      <div class="character-collection">
-        <h3>Choose Your Chef</h3>
-        <div id="freshopia-characters"></div>
-      </div>
-
-      <div class="content-card">
-        <h3>👗 Character Outfits</h3>
-        <div id="character-outfits">
-          <p>More outfits will unlock as you level up!</p>
+        <div class="panel">
+          <h2>Daily Mission</h2>
+          <p id="mission-text">Serve your first customer!</p>
+          <div class="progress-track"><div id="mission-progress"></div></div>
         </div>
-      </div>
-    </section>
+        <div class="panel">
+          <h2>Recent Activity</h2>
+          <div id="activity">Welcome to your new restaurant!</div>
+        </div>
+      </section>
 
-  </main>
-</div>
+      <section class="page" id="restaurant">
+        <h1>🏮 My Restaurant</h1>
+        <p>Welcome to your cozy restaurant!</p>
+        <div class="restaurant-art">🌸 🍵 🍰 🌿</div>
+        <div class="panel">
+          <h2>Restaurant Upgrade</h2>
+          <p>Make your restaurant more beautiful and welcoming.</p>
+          <button class="primary-button" id="upgrade-button">Upgrade Restaurant — 100 coins</button>
+          <p id="upgrade-status">Current level: 1</p>
+        </div>
+      </section>
 
-<!-- MODALS -->
-<div id="modal-container" class="modal-container" hidden>
-  <div class="modal-content">
-    <button id="close-modal" aria-label="Close">×</button>
-    <div id="modal-body"></div>
+      <section class="page" id="kitchen">
+        <h1>👩‍🍳 Professional Kitchen</h1>
+        <p>Choose a recipe and prepare an order.</p>
+        <div id="kitchen-recipes" class="card-grid"></div>
+        <div class="panel" id="cooking-result">Your cooking station is ready!</div>
+      </section>
+
+      <section class="page" id="inventory">
+        <h1>🥕 Ingredient Inventory</h1>
+        <p>Keep track of your fresh ingredients.</p>
+        <div id="inventory-list" class="card-grid"></div>
+      </section>
+
+      <section class="page" id="recipes">
+        <h1>📖 Recipe Book</h1>
+        <p>Discover dishes and earn experience.</p>
+        <div id="recipe-list" class="card-grid"></div>
+      </section>
+
+      <section class="page" id="customers">
+        <h1>💗 Happy Customers</h1>
+        <div class="panel">
+          <div class="customer-face">👩🏻‍🍳</div>
+          <h2 id="customer-name">Mia</h2>
+          <p id="customer-request">I would love a Strawberry Cake!</p>
+          <button class="primary-button" id="serve-customer">Serve Customer</button>
+        </div>
+        <div class="panel">
+          <h2>Order History</h2>
+          <div id="order-history">No orders yet.</div>
+        </div>
+      </section>
+
+      <section class="page" id="achievements">
+        <h1>🏆 Achievements</h1>
+        <div id="achievement-list" class="card-grid"></div>
+      </section>
+
+      <section class="page" id="characters">
+        <h1>✨ Anime Chef Collection</h1>
+        <p>Choose your chef and unlock new characters!</p>
+        <div id="active-character" class="panel"></div>
+        <div id="character-list" class="card-grid"></div>
+      </section>
+    </main>
   </div>
-</div>
 
-<!-- NOTIFICATIONS -->
-<div id="notification-container"></div>
-
-<!-- LEVEL UP -->
-<div id="level-up-container"></div>
-
-<!-- GAME SCRIPTS -->
-<script src="script.js" defer></script>
-<script src="characters.js" defer></script>
-
+  <div id="toast" class="toast" role="status"></div>
 </body>
 </html>
