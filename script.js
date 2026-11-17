@@ -1,7 +1,7 @@
-/* ==========================================
-   FRESHOPIA - ANIME COOKING ADVENTURE
-   REALISTIC FOOD EDITION
-========================================== */
+/* =====================================================
+   FRESHOPIA - ULTIMATE ANIME COOKING ADVENTURE
+   REALISTIC FOOD + INTERACTIVE COOKING SYSTEM
+===================================================== */
 
 const SAVE_KEY = "freshopia_anime_realistic_v1";
 
@@ -19,7 +19,11 @@ const defaultPlayer = {
 let player = loadPlayer();
 let selectedRecipe = null;
 let selectedAvatar = player.avatar;
+let cookingStage = 0;
 let audioContext = null;
+let toastTimer = null;
+
+/* ================= PLAYER DATA ================= */
 
 function loadPlayer() {
   try {
@@ -33,6 +37,23 @@ function loadPlayer() {
 function saveGame() {
   localStorage.setItem(SAVE_KEY, JSON.stringify(player));
 }
+
+function getLevel() {
+  return Math.floor(player.xp / 100) + 1;
+}
+
+function getLevelTitle() {
+  const level = getLevel();
+
+  if (level >= 15) return "Legendary Chef";
+  if (level >= 10) return "Professional Chef";
+  if (level >= 5) return "Expert Chef";
+  if (level >= 3) return "Junior Chef";
+
+  return "Beginner Chef";
+}
+
+/* ================= RECIPES ================= */
 
 const recipes = [
   {
@@ -79,7 +100,7 @@ const recipes = [
     description: "Restaurant-style salmon with vegetables.",
     ingredients: ["Salmon", "Broccoli", "Lemon", "Potato", "Olive Oil"],
     steps: [
-      "Prepare the salmon with olive oil and seasoning.",
+      "Prepare salmon with olive oil and seasoning.",
       "Cook the salmon thoroughly.",
       "Steam the broccoli until tender.",
       "Prepare the potatoes.",
@@ -99,7 +120,7 @@ const recipes = [
       "Prepare and stretch the pizza dough.",
       "Spread tomato sauce over the dough.",
       "Add mozzarella cheese.",
-      "Bake until the crust is golden and cheese melts.",
+      "Bake until the crust is golden.",
       "Finish with fresh basil."
     ]
   },
@@ -114,7 +135,7 @@ const recipes = [
     ingredients: ["Bread", "Avocado", "Egg", "Lemon", "Tomato"],
     steps: [
       "Toast the bread until golden.",
-      "Mash the avocado with lemon juice.",
+      "Mash avocado with lemon juice.",
       "Prepare the egg safely.",
       "Spread avocado on the toast.",
       "Add egg and tomato."
@@ -133,54 +154,52 @@ const recipes = [
       "Wash the berries.",
       "Add yogurt to a serving bowl.",
       "Arrange strawberries and blueberries.",
-      "Add granola and a little honey.",
+      "Add granola and honey.",
       "Serve chilled."
     ]
   }
 ];
 
+/* ================= INGREDIENTS ================= */
+
 const ingredients = [
+  { name: "Fresh Salmon", category: "Seafood", image: "photo-1467003909585-2f8a72700288" },
+  { name: "Fresh Broccoli", category: "Vegetables", image: "photo-1459411621453-7b03977f4bfc" },
+  { name: "Strawberries", category: "Fruits", image: "photo-1464965911861-746a04b4bca6" },
+  { name: "Avocado", category: "Healthy Fats", image: "photo-1523049673857-eb18f1d7b578" },
+  { name: "Fresh Tomatoes", category: "Vegetables", image: "photo-1546094096-0df4bcaaa337" },
+  { name: "Pasta", category: "Grains", image: "photo-1551183053-bf91a1d81141" },
+  { name: "Blueberries", category: "Fruits", image: "photo-1498557850523-fd3d118b962e" },
+  { name: "Fresh Mushrooms", category: "Vegetables", image: "photo-1504545102780-26774c1bb073" }
+];
+
+/* ================= COOKING STAGES ================= */
+
+const cookingStages = [
   {
-    name: "Fresh Salmon",
-    category: "Seafood",
-    image: "photo-1467003909585-2f8a72700288"
+    title: "🔪 Preparation Stage",
+    action: "Chop Ingredients",
+    message: "Let's prepare our fresh ingredients! Cut them carefully, chef!",
+    description: "Wash and prepare the ingredients. Practice safe knife handling.",
+    image: "photo-1547592180-85f173990554"
   },
   {
-    name: "Fresh Broccoli",
-    category: "Vegetables",
-    image: "photo-1459411621453-7b03977f4bfc"
+    title: "🍳 Cooking Stage",
+    action: "Cook the Dish",
+    message: "Wonderful! Now let's cook everything to perfection!",
+    description: "Use the correct cooking method and cook ingredients safely.",
+    image: "photo-1556911220-e15b29be8c8f"
   },
   {
-    name: "Strawberries",
-    category: "Fruits",
-    image: "photo-1464965911861-746a04b4bca6"
-  },
-  {
-    name: "Avocado",
-    category: "Healthy Fats",
-    image: "photo-1523049673857-eb18f1d7b578"
-  },
-  {
-    name: "Fresh Tomatoes",
-    category: "Vegetables",
-    image: "photo-1546094096-0df4bcaaa337"
-  },
-  {
-    name: "Pasta",
-    category: "Grains",
-    image: "photo-1551183053-bf91a1d81141"
-  },
-  {
-    name: "Blueberries",
-    category: "Fruits",
-    image: "photo-1498557850523-fd3d118b962e"
-  },
-  {
-    name: "Fresh Mushrooms",
-    category: "Vegetables",
-    image: "photo-1504545102780-26774c1bb073"
+    title: "🍽️ Plating Stage",
+    action: "Plate the Food",
+    message: "Time to make our dish beautiful! Presentation matters!",
+    description: "Arrange the food neatly and create a professional presentation.",
+    image: "photo-1515003197210-e0cd718c4b3f"
   }
 ];
+
+/* ================= BADGES ================= */
 
 const badgeDefinitions = [
   { id: "first", name: "First Recipe", icon: "🍓", condition: () => player.cooked >= 1 },
@@ -192,26 +211,26 @@ const badgeDefinitions = [
   { id: "safety", name: "Safety Expert", icon: "🧼", condition: () => player.completedLessons.includes("safety") }
 ];
 
+/* ================= ACADEMY ================= */
+
 const lessons = {
   nutrition: {
-    title: "🥦 Healthy Nutrition",
     content: `
-      <h2>Healthy Nutrition</h2>
+      <h2>🥦 Healthy Nutrition</h2>
       <p>A balanced diet includes different food groups.</p>
       <ul>
-        <li>🥕 Vegetables and fruits provide vitamins and minerals.</li>
-        <li>🍞 Whole grains provide dietary fibre.</li>
-        <li>🥚 Protein supports growth and tissue repair.</li>
-        <li>🥑 Healthy fats support normal body functions.</li>
-        <li>💧 Water is essential for hydration.</li>
+        <li>Vegetables and fruits provide vitamins and minerals.</li>
+        <li>Whole grains provide dietary fibre.</li>
+        <li>Protein supports growth and tissue repair.</li>
+        <li>Healthy fats support normal body functions.</li>
+        <li>Water is essential for hydration.</li>
       </ul>
       <p><b>Chef tip:</b> Aim for variety and balance in your meals!</p>
     `
   },
   sustainability: {
-    title: "♻️ Food Sustainability",
     content: `
-      <h2>Food Sustainability</h2>
+      <h2>♻️ Food Sustainability</h2>
       <p>Sustainable food practices help protect natural resources.</p>
       <ul>
         <li>Use seasonal ingredients.</li>
@@ -224,9 +243,8 @@ const lessons = {
     `
   },
   safety: {
-    title: "🧼 Food Safety",
     content: `
-      <h2>Food Safety</h2>
+      <h2>🧼 Food Safety</h2>
       <p>Food hygiene is essential in every professional kitchen.</p>
       <ul>
         <li>Wash hands before food preparation.</li>
@@ -240,32 +258,13 @@ const lessons = {
   }
 };
 
-/* ------------------------------------------
-   IMAGE SYSTEM
------------------------------------------- */
+/* ================= IMAGE SYSTEM ================= */
 
 function foodImage(id, width = 800) {
   return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=85`;
 }
 
-/* ------------------------------------------
-   PLAYER SYSTEM
------------------------------------------- */
-
-function getLevel() {
-  return Math.floor(player.xp / 100) + 1;
-}
-
-function getLevelTitle() {
-  const level = getLevel();
-
-  if (level >= 15) return "Legendary Chef";
-  if (level >= 10) return "Professional Chef";
-  if (level >= 5) return "Expert Chef";
-  if (level >= 3) return "Junior Chef";
-
-  return "Beginner Chef";
-}
+/* ================= PLAYER DISPLAY ================= */
 
 function renderPlayer() {
   const level = getLevel();
@@ -289,40 +288,36 @@ function renderPlayer() {
     player.sound ? "🔊" : "🔇";
 }
 
-/* ------------------------------------------
-   RECIPE SYSTEM
------------------------------------------- */
+/* ================= RECIPE DISPLAY ================= */
 
 function renderRecipes() {
-  const grid = document.getElementById("recipeGrid");
+  document.getElementById("recipeGrid").innerHTML =
+    recipes.map(recipe => `
+      <article class="recipe-card"
+        data-recipe="${recipe.id}"
+        onclick="selectRecipe(${recipe.id})">
 
-  grid.innerHTML = recipes.map(recipe => `
-    <article class="recipe-card"
-      data-recipe="${recipe.id}"
-      onclick="selectRecipe(${recipe.id})">
+        <img class="food-photo"
+          src="${foodImage(recipe.image)}"
+          alt="${recipe.name}" loading="lazy">
 
-      <img
-        class="food-photo"
-        src="${foodImage(recipe.image)}"
-        alt="${recipe.name}"
-        loading="lazy"
-      >
-
-      <div class="recipe-details">
-        <h3>${recipe.name}</h3>
-        <p>${recipe.description}</p>
-
-        <div class="recipe-meta">
-          <span>⏱ ${recipe.time}</span>
-          <span>⭐ ${recipe.reward} XP</span>
+        <div class="recipe-details">
+          <h3>${recipe.name}</h3>
+          <p>${recipe.description}</p>
+          <div class="recipe-meta">
+            <span>⏱ ${recipe.time}</span>
+            <span>⭐ ${recipe.reward} XP</span>
+          </div>
         </div>
-      </div>
-    </article>
-  `).join("");
+      </article>
+    `).join("");
 }
+
+/* ================= SELECT RECIPE ================= */
 
 function selectRecipe(id) {
   selectedRecipe = recipes.find(recipe => recipe.id === id);
+  cookingStage = 0;
 
   document.querySelectorAll(".recipe-card").forEach(card => {
     card.classList.toggle(
@@ -331,37 +326,7 @@ function selectRecipe(id) {
     );
   });
 
-  const recipe = selectedRecipe;
-
-  document.getElementById("cookingPanel").innerHTML = `
-    <div class="cooking-layout">
-      <div>
-        <img src="${foodImage(recipe.image)}" alt="${recipe.name}">
-        <h3 style="margin-top:12px">${recipe.name}</h3>
-        <p>${recipe.description}</p>
-        <p style="margin-top:8px">🍽 ${recipe.category}</p>
-        <p>⏱ ${recipe.time}</p>
-      </div>
-
-      <div>
-        <h3>🛒 Required Ingredients</h3>
-        <ul class="ingredient-list">
-          ${recipe.ingredients.map(item =>
-            `<li>🥬 ${item}</li>`
-          ).join("")}
-        </ul>
-
-        <h3>👩🏻‍🍳 Cooking Instructions</h3>
-        <ol style="padding-left:20px;line-height:1.9;font-size:13px">
-          ${recipe.steps.map(step => `<li>${step}</li>`).join("")}
-        </ol>
-
-        <button class="cook-button" onclick="cookRecipe()">
-          Prepare & Serve 🍽️
-        </button>
-      </div>
-    </div>
-  `;
+  renderCookingStage();
 
   document.getElementById("cookingPanel").scrollIntoView({
     behavior: "smooth",
@@ -369,61 +334,159 @@ function selectRecipe(id) {
   });
 
   document.getElementById("characterMessage").textContent =
-    `Great choice! Let's prepare ${recipe.name}! 💗`;
+    `Let's prepare ${selectedRecipe.name} together! 💗`;
 
   playSound(600);
 }
 
-/* ------------------------------------------
-   COOKING AND REWARD SYSTEM
------------------------------------------- */
+/* ================= COOKING STUDIO ================= */
 
-function cookRecipe() {
+function renderCookingStage() {
   if (!selectedRecipe) return;
 
   const recipe = selectedRecipe;
+  const stage = cookingStages[cookingStage];
+
+  document.getElementById("cookingPanel").innerHTML = `
+    <div class="cooking-studio">
+
+      <div class="cooking-visual">
+        <span class="stage-label">${stage.title}</span>
+
+        <img src="${foodImage(stage.image, 800)}"
+          alt="${stage.title}">
+
+        <h3 style="margin-top:12px">${recipe.name}</h3>
+
+        <div class="mika-message">
+          👩🏻‍🍳 Mika says:
+          <br>${stage.message}
+        </div>
+      </div>
+
+      <div class="cooking-steps">
+        <h3>👩🏻‍🍳 Cooking Studio</h3>
+
+        <p>${stage.description}</p>
+
+        <div class="stage-progress">
+          ${cookingStages.map((item,index) => `
+            <div class="stage-dot ${
+              index <= cookingStage ? "active" : ""
+            }"></div>
+          `).join("")}
+        </div>
+
+        <h3>Ingredients</h3>
+
+        <ul class="ingredient-list">
+          ${recipe.ingredients.map(item =>
+            `<li>🥬 ${item}</li>`
+          ).join("")}
+        </ul>
+
+        <p><b>Current stage:</b> ${cookingStage + 1} / 3</p>
+
+        <button class="action-button" onclick="advanceCooking()">
+          ${stage.action} ✨
+        </button>
+
+        <button class="small-button" onclick="resetKitchen()">
+          Cancel Cooking
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function advanceCooking() {
+  if (!selectedRecipe) return;
+
+  playSound(650);
+
+  if (cookingStage < cookingStages.length - 1) {
+    cookingStage++;
+    renderCookingStage();
+
+    document.getElementById("characterMessage").textContent =
+      cookingStages[cookingStage].message;
+
+    showToast(cookingStages[cookingStage].title);
+  } else {
+    finishCooking();
+  }
+}
+
+/* ================= COMPLETE COOKING ================= */
+
+function finishCooking() {
+  if (!selectedRecipe) return;
+
+  const recipe = selectedRecipe;
+  const oldLevel = getLevel();
 
   player.cooked++;
   player.xp += recipe.reward;
   player.coins += 20;
 
   checkBadges();
+
+  const newLevel = getLevel();
+
+  if (newLevel > oldLevel) {
+    player.coins += 50;
+  }
+
   saveGame();
   renderPlayer();
   renderBadges();
   renderMission();
 
   document.getElementById("characterMessage").textContent =
-    "Amazing job, chef! Your dish looks delicious! ✨";
+    "You did it, chef! Your presentation is beautiful! 💖";
 
   document.getElementById("cookingPanel").innerHTML = `
-    <div style="text-align:center;padding:15px">
-      <div style="font-size:65px">🎉</div>
-      <h2 style="color:#a36eaa">Order Completed!</h2>
-      <img
-        src="${foodImage(recipe.image, 600)}"
-        alt="${recipe.name}"
-        style="width:100%;max-width:350px;height:190px;object-fit:cover;border-radius:18px;margin:15px auto"
-      >
+    <div class="cooking-success">
+      <div style="font-size:55px">🎉🍽️</div>
+      <h2 style="color:#a36eaa">Perfect Dish!</h2>
+
+      <img src="${foodImage(recipe.image, 900)}"
+        alt="${recipe.name}">
+
       <h3>${recipe.name}</h3>
-      <p>Customer is happy with your meal!</p>
-      <p style="margin-top:12px">⭐ +${recipe.reward} XP</p>
+      <p>All cooking stages completed successfully!</p>
+
+      <p>⭐ +${recipe.reward} XP</p>
       <p>🪙 +20 Coins</p>
-      <button class="primary-button" style="margin-top:15px"
-        onclick="resetKitchen()">Cook Another Dish</button>
+
+      <h3 style="margin-top:15px">
+        ${newLevel > oldLevel
+          ? "🌸 LEVEL UP! Mika is proud of you!"
+          : "💗 Excellent work, chef!"}
+      </h3>
+
+      <button class="primary-button"
+        style="margin-top:18px"
+        onclick="resetKitchen()">
+        Cook Another Recipe
+      </button>
     </div>
   `;
 
-  playSound(850);
-  showToast(`Wonderful! +${recipe.reward} XP and +20 coins!`);
-
-  if (getLevel() > Math.floor((player.xp - recipe.reward) / 100) + 1) {
-    levelUp();
+  if (newLevel > oldLevel) {
+    showToast(`🌸 LEVEL UP! Level ${newLevel}! +50 bonus coins!`);
+  } else {
+    showToast(`Amazing cooking! +${recipe.reward} XP and +20 coins!`);
   }
+
+  playSound(950);
 }
+
+/* ================= RESET KITCHEN ================= */
 
 function resetKitchen() {
   selectedRecipe = null;
+  cookingStage = 0;
 
   document.querySelectorAll(".recipe-card").forEach(card => {
     card.classList.remove("selected");
@@ -436,55 +499,35 @@ function resetKitchen() {
       <p>Your next culinary adventure is waiting.</p>
     </div>
   `;
-}
-
-function levelUp() {
-  const level = getLevel();
-
-  player.coins += 50;
-  saveGame();
-  renderPlayer();
-  checkBadges();
-  renderBadges();
-
-  document.getElementById("heroCharacter").textContent = "👩🏻‍🍳";
 
   document.getElementById("characterMessage").textContent =
-    `LEVEL UP! You are now Level ${level}! So proud of you! 💖`;
-
-  showToast(`🌸 LEVEL UP! You reached Level ${level}! +50 bonus coins!`);
-  playSound(1000);
+    "What shall we cook next, chef? 💗";
 }
 
-/* ------------------------------------------
-   INGREDIENT COLLECTION
------------------------------------------- */
+/* ================= INGREDIENT COLLECTION ================= */
 
 function renderIngredients() {
   document.getElementById("ingredientGrid").innerHTML =
     ingredients.map(item => `
       <article class="ingredient-card">
-        <img
-          src="${foodImage(item.image, 500)}"
-          alt="${item.name}"
-          loading="lazy"
-        >
+        <img src="${foodImage(item.image, 500)}"
+          alt="${item.name}" loading="lazy">
         <h4>${item.name}</h4>
         <p>${item.category}</p>
       </article>
     `).join("");
 }
 
-/* ------------------------------------------
-   BADGE SYSTEM
------------------------------------------- */
+/* ================= BADGE SYSTEM ================= */
 
 function checkBadges() {
   badgeDefinitions.forEach(badge => {
-    if (badge.condition() && !player.badges.includes(badge.id)) {
+    if (
+      badge.condition() &&
+      !player.badges.includes(badge.id)
+    ) {
       player.badges.push(badge.id);
       showToast(`🏆 New Badge Unlocked: ${badge.name}!`);
-      playSound(950);
     }
   });
 
@@ -506,9 +549,7 @@ function renderBadges() {
     }).join("");
 }
 
-/* ------------------------------------------
-   MISSIONS
------------------------------------------- */
+/* ================= MISSION SYSTEM ================= */
 
 function renderMission() {
   const missions = [
@@ -520,7 +561,7 @@ function renderMission() {
     },
     {
       title: "Kitchen Explorer",
-      description: "Prepare 5 different meals.",
+      description: "Prepare 5 meals.",
       target: 5,
       reward: "50 Coins"
     },
@@ -532,7 +573,9 @@ function renderMission() {
     }
   ];
 
-  const mission = missions.find(item => player.cooked < item.target);
+  const mission = missions.find(item =>
+    player.cooked < item.target
+  );
 
   if (!mission) {
     document.getElementById("missionCard").innerHTML = `
@@ -558,9 +601,7 @@ function renderMission() {
   `;
 }
 
-/* ------------------------------------------
-   PROFILE SYSTEM
------------------------------------------- */
+/* ================= PROFILE SYSTEM ================= */
 
 function openProfile() {
   document.getElementById("nickname").value = player.name;
@@ -576,7 +617,10 @@ function openProfile() {
   document.getElementById("profileModal").classList.remove("hidden");
 }
 
-document.getElementById("profileButton").addEventListener("click", openProfile);
+document.getElementById("profileButton").addEventListener(
+  "click",
+  openProfile
+);
 
 document.querySelectorAll(".avatar-option").forEach(button => {
   button.addEventListener("click", () => {
@@ -610,23 +654,27 @@ document.getElementById("saveProfile").addEventListener("click", () => {
   showToast("Your chef profile has been saved! 🌸");
 });
 
-/* ------------------------------------------
-   ACADEMY SYSTEM
------------------------------------------- */
+/* ================= FOOD ACADEMY ================= */
 
 document.querySelectorAll("[data-lesson]").forEach(button => {
   button.addEventListener("click", () => {
     const lessonId = button.dataset.lesson;
     const lesson = lessons[lessonId];
 
+    if (!lesson) return;
+
     const alreadyCompleted =
       player.completedLessons.includes(lessonId);
 
     document.getElementById("infoContent").innerHTML = `
       ${lesson.content}
-      <button class="primary-button" id="completeLesson"
+
+      <button class="primary-button"
+        id="completeLesson"
         style="margin-top:18px">
-        ${alreadyCompleted ? "Completed ✓" : "Complete Lesson +15 XP"}
+        ${alreadyCompleted
+          ? "Completed ✓"
+          : "Complete Lesson +15 XP"}
       </button>
     `;
 
@@ -638,26 +686,33 @@ document.querySelectorAll("[data-lesson]").forEach(button => {
         return;
       }
 
+      const oldLevel = getLevel();
+
       player.completedLessons.push(lessonId);
       player.xp += 15;
       player.coins += 10;
 
       checkBadges();
+
+      if (getLevel() > oldLevel) {
+        player.coins += 50;
+        showToast(`🌸 LEVEL UP! Level ${getLevel()}!`);
+      } else {
+        showToast("Lesson completed! +15 XP and +10 coins!");
+      }
+
       saveGame();
       renderPlayer();
       renderBadges();
 
       document.getElementById("infoModal").classList.add("hidden");
 
-      showToast("Lesson completed! +15 XP and +10 coins!");
       playSound(800);
     });
   });
 });
 
-/* ------------------------------------------
-   MODAL CONTROLS
------------------------------------------- */
+/* ================= MODAL CONTROLS ================= */
 
 document.querySelectorAll("[data-close]").forEach(button => {
   button.addEventListener("click", () => {
@@ -673,9 +728,7 @@ document.querySelectorAll(".modal").forEach(modal => {
   });
 });
 
-/* ------------------------------------------
-   SOUND SYSTEM
------------------------------------------- */
+/* ================= SOUND SYSTEM ================= */
 
 function playSound(frequency = 600) {
   if (!player.sound) return;
@@ -719,9 +772,7 @@ document.getElementById("soundButton").addEventListener("click", () => {
   if (player.sound) playSound(700);
 });
 
-/* ------------------------------------------
-   START GAME
------------------------------------------- */
+/* ================= START GAME ================= */
 
 document.getElementById("startButton").addEventListener("click", () => {
   document.getElementById("kitchen").scrollIntoView({
@@ -734,11 +785,7 @@ document.getElementById("startButton").addEventListener("click", () => {
   playSound(700);
 });
 
-/* ------------------------------------------
-   TOAST NOTIFICATIONS
------------------------------------------- */
-
-let toastTimer;
+/* ================= TOAST SYSTEM ================= */
 
 function showToast(message) {
   const toast = document.getElementById("toast");
@@ -753,9 +800,7 @@ function showToast(message) {
   }, 3000);
 }
 
-/* ------------------------------------------
-   GAME INITIALIZATION
------------------------------------------- */
+/* ================= INITIALIZATION ================= */
 
 function initializeGame() {
   renderPlayer();
