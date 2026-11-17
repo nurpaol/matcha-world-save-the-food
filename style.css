@@ -612,3 +612,617 @@ footer {
     width: 48px;
   }
 }
+/* =========================================
+   FRESHOPIA - PROFESSIONAL ANIME RESTAURANT
+   Pink & Mint Responsive Design
+========================================= */
+
+:root {
+  --pink: #ed9fbd;
+  --pink-dark: #d96f9b;
+  --pink-light: #fff0f6;
+  --mint: #a8d8c5;
+  --mint-dark: #579b80;
+  --mint-light: #edf9f3;
+  --cream: #fffaf5;
+  --text: #594b52;
+  --white: #ffffff;
+  --shadow: 0 8px 25px rgba(117, 77, 96, .10);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  color: var(--text);
+  background: #fff7f8;
+  overflow-x: hidden;
+}
+
+/* RESTAURANT BACKGROUND */
+
+.cafe-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 15% 15%, #f9dce8 0%, transparent 35%),
+    radial-gradient(ellipse at 85% 20%, #d9f2e7 0%, transparent 35%),
+    linear-gradient(135deg, #fff7f4, #f5fff9 55%, #fff0f6);
+}
+
+.cafe-window {
+  position: absolute;
+  top: 8%;
+  left: 5%;
+  width: 30%;
+  height: 30%;
+  border: 12px solid #fff;
+  border-radius: 18px;
+  background: linear-gradient(#d9f4ec, #fff4f8);
+  box-shadow: var(--shadow);
+  opacity: .7;
+}
+
+.cafe-lights {
+  position: absolute;
+  top: 4%;
+  right: 12%;
+  font-size: 30px;
+  opacity: .65;
+}
+
+.cafe-counter {
+  position: absolute;
+  top: 35%;
+  left: 0;
+  width: 100%;
+  height: 24%;
+  background: linear-gradient(180deg, #f5d4df, #e8b6c9);
+  border-top: 12px solid #fff;
+  border-bottom: 12px solid #d8a0b6;
+  text-align: center;
+  padding: 20px;
+  opacity: .32;
+}
+
+.cafe-counter h2 {
+  font-family: Georgia, serif;
+  letter-spacing: 7px;
+}
+
+.cafe-table {
+  position: absolute;
+  bottom: 10%;
+  width: 130px;
+  height: 75px;
+  border-radius: 50%;
+  background: #f1cbd8;
+  border: 9px solid #fff;
+  box-shadow: 0 18px 0 #c998ad;
+  text-align: center;
+  padding: 15px;
+  opacity: .5;
+}
+
+.table-one {
+  left: 8%;
+}
+
+.table-two {
+  right: 8%;
+  background: #c8e9da;
+  box-shadow: 0 18px 0 #8dbca8;
+}
+
+.cafe-chair {
+  position: absolute;
+  bottom: 5%;
+  font-size: 35px;
+  opacity: .5;
+}
+
+.chair-one { left: 4%; }
+.chair-two { left: 22%; }
+.chair-three { right: 14%; }
+
+.cafe-waiter {
+  position: absolute;
+  right: 5%;
+  top: 28%;
+  font-size: 55px;
+  opacity: .35;
+}
+
+.cafe-plants {
+  position: absolute;
+  bottom: 3%;
+  left: 42%;
+  font-size: 32px;
+  opacity: .5;
+}
+
+/* MAIN LAYOUT */
+
+main,
+header,
+nav,
+footer {
+  position: relative;
+  z-index: 1;
+}
+
+main {
+  width: min(1200px, 94%);
+  margin: 25px auto;
+}
+
+header,
+.top-bar {
+  background: rgba(255,255,255,.94);
+  border-radius: 20px;
+  padding: 16px 22px;
+  box-shadow: var(--shadow);
+}
+
+h1, h2, h3 {
+  color: #9c5576;
+}
+
+p {
+  line-height: 1.6;
+}
+
+/* NAVIGATION */
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  margin: 18px auto;
+  padding: 12px;
+  background: rgba(255,255,255,.93);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+nav button,
+.nav-btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 11px 15px;
+  background: var(--mint-light);
+  color: #477b68;
+  font-weight: 700;
+}
+
+nav button:hover,
+.nav-btn:hover {
+  background: var(--mint);
+  transform: translateY(-2px);
+}
+
+/* SECTIONS */
+
+.game-section {
+  background: rgba(255,255,255,.95);
+  border: 1px solid rgba(235,180,204,.35);
+  border-radius: 22px;
+  padding: 25px;
+  margin: 20px 0;
+  box-shadow: var(--shadow);
+}
+
+.game-section h2 {
+  margin-top: 0;
+}
+
+/* BUTTONS */
+
+.game-section button,
+button.primary-btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+  color: white;
+  font-weight: bold;
+}
+
+.game-section button:hover {
+  filter: brightness(1.04);
+  transform: translateY(-2px);
+}
+
+/* PLAYER STATS */
+
+.player-stats,
+.stats-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-around;
+  gap: 12px;
+}
+
+.stat-card {
+  background: var(--pink-light);
+  padding: 13px 17px;
+  border-radius: 15px;
+  min-width: 100px;
+  text-align: center;
+}
+
+#xpProgress {
+  accent-color: var(--pink-dark);
+  width: 100%;
+}
+
+/* INGREDIENTS AND CARDS */
+
+#ingredientGrid,
+#recipeGrid,
+#characterGrid,
+#missionList,
+#achievementList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 14px;
+}
+
+#ingredientGrid > *,
+#recipeGrid > *,
+#characterGrid > *,
+#missionList > *,
+#achievementList > * {
+  border-radius: 15px;
+  background: var(--mint-light);
+  padding: 13px;
+  border: 1px solid #d8eee3;
+}
+
+#selectedIngredients {
+  min-height: 45px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--pink-light);
+}
+
+/* CUSTOMER AREA */
+
+#customerArea {
+  background: linear-gradient(135deg, #fff0f6, #edf9f3);
+  border-radius: 20px;
+  padding: 20px;
+  margin: 15px 0;
+  text-align: center;
+}
+
+#orderImage {
+  max-width: 180px;
+  max-height: 160px;
+  object-fit: contain;
+  border-radius: 15px;
+}
+
+/* COOKING AREA */
+
+#cookingSteps,
+#cookingContent,
+#orderHistory {
+  background: #fff8fb;
+  border-radius: 15px;
+  padding: 15px;
+  margin-top: 14px;
+}
+
+/* GAME RULES */
+
+#freshopiaRules {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 10000;
+  width: 205px;
+  max-height: 42vh;
+  overflow-y: auto;
+  padding: 13px 15px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.97);
+  border: 2px solid #edc3d5;
+  box-shadow: 0 8px 25px rgba(90,50,70,.16);
+  font-size: 12px;
+}
+
+#freshopiaRules h3 {
+  margin: 0 0 9px;
+  font-size: 14px;
+  color: #c45d88;
+}
+
+#freshopiaRules p {
+  margin: 6px 0;
+  line-height: 1.4;
+}
+
+#freshopiaRules strong {
+  display: block;
+  margin-top: 9px;
+  color: #579b80;
+}
+
+/* MIKA ASSISTANT */
+
+#mikaAssistant {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 9000;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  max-width: min(420px, 90vw);
+}
+
+#mikaBubble {
+  max-width: 260px;
+  padding: 15px;
+  border: 2px solid #f0c4d6;
+  border-radius: 18px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+#mikaBubble p {
+  font-size: 13px;
+}
+
+#mikaCharacterImage {
+  width: 85px;
+  height: 105px;
+  object-fit: contain;
+}
+
+.mika-character-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.mika-art {
+  z-index: 5;
+}
+
+/* LEVEL MODAL */
+
+#levelModal {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(65,40,55,.45);
+}
+
+#levelModal > div {
+  max-width: 420px;
+  width: 100%;
+  padding: 30px;
+  text-align: center;
+  border-radius: 22px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+/* TOAST */
+
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 30000;
+  max-width: 90%;
+  padding: 13px 20px;
+  border-radius: 14px;
+  background: #579b80;
+  color: white;
+  box-shadow: var(--shadow);
+}
+
+/* FOOTER */
+
+footer {
+  text-align: center;
+  padding: 22px;
+  color: #986b80;
+}
+
+/* TABLET */
+
+@media (max-width: 800px) {
+  main {
+    width: 96%;
+  }
+
+  .game-section {
+    padding: 18px;
+  }
+
+  #freshopiaRules {
+    width: 175px;
+    font-size: 11px;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+  body {
+    font-size: 14px;
+  }
+
+  main {
+    width: 94%;
+    margin: 12px auto;
+  }
+
+  header,
+  .top-bar {
+    padding: 12px;
+    border-radius: 15px;
+  }
+
+  nav {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding: 9px;
+  }
+
+  nav button,
+  .nav-btn {
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+
+  .game-section {
+    padding: 15px;
+    border-radius: 17px;
+    margin: 14px 0;
+  }
+
+  .player-stats,
+  .stats-container {
+    gap: 7px;
+  }
+
+  .stat-card {
+    min-width: 75px;
+    padding: 9px;
+    font-size: 12px;
+  }
+
+  #ingredientGrid,
+  #recipeGrid,
+  #characterGrid,
+  #missionList,
+  #achievementList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  #customerArea {
+    padding: 13px;
+  }
+
+  #orderImage {
+    max-width: 125px;
+    max-height: 120px;
+  }
+
+  #freshopiaRules {
+    top: 8px;
+    right: 8px;
+    width: 145px;
+    max-height: 30vh;
+    padding: 9px;
+    font-size: 10px;
+    border-radius: 12px;
+  }
+
+  #freshopiaRules h3 {
+    font-size: 11px;
+  }
+
+  #freshopiaRules p {
+    margin: 4px 0;
+  }
+
+  #mikaAssistant {
+    right: 8px;
+    bottom: 8px;
+    max-width: 88vw;
+    gap: 5px;
+  }
+
+  #mikaBubble {
+    max-width: 190px;
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  #mikaBubble p {
+    font-size: 11px;
+    margin: 6px 0;
+  }
+
+  #mikaCharacterImage {
+    width: 58px;
+    height: 75px;
+  }
+
+  .cafe-window {
+    width: 40%;
+    height: 20%;
+  }
+
+  .cafe-waiter {
+    font-size: 35px;
+  }
+
+  .cafe-table {
+    width: 85px;
+    height: 55px;
+  }
+
+  .cafe-counter {
+    top: 40%;
+    height: 18%;
+  }
+
+  footer {
+    padding-bottom: 100px;
+  }
+}
+
+/* SMALL PHONES */
+
+@media (max-width: 380px) {
+  #freshopiaRules {
+    width: 125px;
+    font-size: 9px;
+  }
+
+  #freshopiaRules h3 {
+    font-size: 10px;
+  }
+
+  #mikaBubble {
+    max-width: 165px;
+  }
+
+  #mikaCharacterImage {
+    width: 48px;
+  }
+}
