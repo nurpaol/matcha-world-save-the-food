@@ -1226,3 +1226,129 @@ footer {
     width: 48px;
   }
 }
+/* FRESHOPIA INGREDIENT DESIGN FIX */
+
+#ingredientGrid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  align-items: stretch !important;
+}
+
+#ingredientGrid .ingredient-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
+  height: 205px !important;
+  min-height: 205px !important;
+  padding: 10px !important;
+  overflow: hidden !important;
+  background: #fff !important;
+  border: 1px solid #f1d5e1 !important;
+  border-radius: 17px !important;
+  box-shadow: 0 4px 14px rgba(120, 75, 95, .09) !important;
+  cursor: pointer;
+}
+
+#ingredientGrid .ingredient-card img {
+  display: block !important;
+  width: 100% !important;
+  height: 125px !important;
+  min-height: 125px !important;
+  max-height: 125px !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border-radius: 11px !important;
+  margin: 0 0 8px !important;
+}
+
+#ingredientGrid .ingredient-card strong {
+  font-size: 13px !important;
+  text-align: center !important;
+  color: #765064 !important;
+  margin: 2px 0 !important;
+}
+
+#ingredientGrid .ingredient-card small {
+  font-size: 11px !important;
+  color: #8a9c91 !important;
+  text-align: center !important;
+  margin-top: 4px !important;
+}
+
+#ingredientGrid .ingredient-card.selected {
+  border: 3px solid #76b99c !important;
+  background: #effaf4 !important;
+  transform: translateY(-3px);
+}
+
+.ingredient-placeholder {
+  width: 100%;
+  height: 125px;
+  min-height: 125px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #edf8f2;
+  border-radius: 11px;
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+/* RECIPE CARDS */
+
+#recipeGrid .recipe-card {
+  overflow: hidden;
+  border-radius: 17px;
+  background: white;
+  padding: 12px;
+  border: 1px solid #f1d5e1;
+}
+
+#recipeGrid .recipe-card img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* CHARACTER CARDS */
+
+#characterGrid .character-card {
+  text-align: center;
+  overflow: hidden;
+  background: white;
+  border-radius: 17px;
+  padding: 12px;
+}
+
+#characterGrid .character-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 12px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+  #ingredientGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  #ingredientGrid .ingredient-card {
+    height: 185px !important;
+    min-height: 185px !important;
+  }
+
+  #ingredientGrid .ingredient-card img,
+  .ingredient-placeholder {
+    height: 110px !important;
+    min-height: 110px !important;
+    max-height: 110px !important;
+  }
+}
