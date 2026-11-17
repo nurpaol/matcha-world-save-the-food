@@ -509,3 +509,126 @@ footer {
     padding: 11px;
   }
 }
+/* FRESHOPIA - CSS MIKA CHARACTER */
+
+.mika-art {
+  width: 125px;
+  height: 175px;
+  position: relative;
+  flex-shrink: 0;
+  animation: mikaFloat 2s ease-in-out infinite;
+}
+
+.mika-hair-back {
+  position: absolute;
+  width: 100px;
+  height: 115px;
+  left: 12px;
+  top: 12px;
+  background: linear-gradient(135deg,#d69be9,#9257c5);
+  border-radius: 48% 48% 42% 42%;
+}
+
+.mika-face {
+  position: absolute;
+  width: 73px;
+  height: 83px;
+  top: 29px;
+  left: 26px;
+  background: #ffe0d2;
+  border-radius: 45% 45% 48% 48%;
+  z-index: 2;
+}
+
+.mika-bangs {
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 73px;
+  height: 32px;
+  background: #b77ad7;
+  border-radius: 50% 50% 35% 35%;
+  clip-path: polygon(0 0,100% 0,100% 65%,70% 45%,53% 100%,35% 48%,0 80%);
+}
+
+.mika-eye {
+  position: absolute;
+  top: 43px;
+  width: 8px;
+  height: 12px;
+  background: #60436e;
+  border-radius: 50%;
+}
+
+.mika-eye.left { left: 17px; }
+.mika-eye.right { right: 17px; }
+
+.mika-blush {
+  position: absolute;
+  top: 57px;
+  width: 13px;
+  height: 6px;
+  background: #f49bb4;
+  border-radius: 50%;
+}
+
+.mika-blush.left { left: 7px; }
+.mika-blush.right { right: 7px; }
+
+.mika-smile {
+  position: absolute;
+  top: 62px;
+  left: 31px;
+  width: 12px;
+  height: 7px;
+  border-bottom: 2px solid #a45b72;
+  border-radius: 50%;
+}
+
+.mika-neck {
+  position: absolute;
+  top: 104px;
+  left: 52px;
+  width: 22px;
+  height: 17px;
+  background: #ffdfd0;
+}
+
+.mika-body {
+  position: absolute;
+  top: 115px;
+  left: 17px;
+  width: 92px;
+  height: 58px;
+  background: linear-gradient(135deg,#fff,#f6d9ed);
+  border: 3px solid #dba7d9;
+  border-radius: 25px 25px 12px 12px;
+  z-index: 3;
+}
+
+.mika-apron {
+  position: absolute;
+  top: 8px;
+  left: 21px;
+  width: 44px;
+  height: 43px;
+  background: #eaa4cb;
+  color: white;
+  text-align: center;
+  padding-top: 8px;
+  border-radius: 12px 12px 5px 5px;
+  font-weight: bold;
+}
+
+.mika-bow {
+  position: absolute;
+  top: 14px;
+  right: 8px;
+  z-index: 4;
+  font-size: 25px;
+}
+
+@keyframes mikaFloat {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
