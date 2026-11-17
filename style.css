@@ -1530,3 +1530,97 @@ select:focus-visible {
   object-fit: cover;
   border-radius: 14px;
 }
+/* FRESHOPIA - CHARACTER IMAGE CONNECTION */
+
+#freshopia-characters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.fresh-character-card {
+  overflow: hidden;
+  border-radius: 22px;
+  background: white;
+  border: 2px solid #f1dce6;
+  box-shadow: 0 8px 25px rgba(60,40,50,.08);
+}
+
+.fresh-character-card.selected {
+  border-color: #e986ae;
+}
+
+.fresh-character-art {
+  height: 250px;
+  overflow: hidden;
+  position: relative;
+  background: #f9e5ee;
+}
+
+.character-crop,
+.active-chef-image {
+  width: 100%;
+  height: 100%;
+  background-image: url("assets/characters.png");
+  background-repeat: no-repeat;
+  background-size: 400% 100%;
+  background-position: var(--character-position) center;
+}
+
+.character-lock {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 7px 12px;
+  border-radius: 20px;
+  background: white;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.fresh-character-info {
+  padding: 16px;
+}
+
+.fresh-character-info h3 {
+  color: #65445a;
+}
+
+.fresh-character-role {
+  color: #b46e91;
+  font-weight: bold;
+}
+
+.character-select-button {
+  width: 100%;
+  padding: 12px;
+  border: 0;
+  border-radius: 25px;
+  background: #e986ae;
+  color: white;
+  font-weight: bold;
+}
+
+.character-select-button:disabled {
+  background: #aaa;
+}
+
+.active-chef-display {
+  padding: 16px;
+  border-radius: 20px;
+  background: #fff0f5;
+}
+
+.active-chef-image {
+  height: 300px;
+  max-width: 230px;
+  margin: 12px auto;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+@media(max-width:600px) {
+  #freshopia-characters {
+    grid-template-columns: 1fr;
+  }
+}
