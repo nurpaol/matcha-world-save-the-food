@@ -1,852 +1,1230 @@
-// =============================================
-// FRESHOPIA - COMPLETE ANIME COOKING GAME
-// =============================================
+/* ==========================================
+   FRESHOPIA - ANIME COOKING ADVENTURE
+   Restaurant, Customer, Cooking and XP System
+========================================== */
 
-const defaultData = {
+const SAVE_KEY = "freshopiaCompleteSave";
+
+const defaultGame = {
   name: "Chef",
-  xp: 0,
   level: 1,
-  character: 0,
-  completedMissions: [],
+  xp: 0,
+  coins: 100,
+  reputation: 0,
+  happyCustomers: 0,
+  completedOrders: 0,
+  completedRecipes: [],
+  selectedCharacter: 0,
+  createdRecipes: 0,
+  puzzleWins: 0,
+  claimedMissions: [],
   achievements: [],
-  recipesCreated: 0,
-  puzzlesWon: 0,
-  cookedRecipes: [],
-  selectedIngredients: []
+  restaurantOpen: false
 };
 
-let savedData = {};
+let game = { ...defaultGame };
+
 try {
-  savedData = JSON.parse(localStorage.getItem("freshopiaSave") || "{}");
+  const saved = JSON.parse(localStorage.getItem(SAVE_KEY));
+  if (saved) game = { ...defaultGame, ...saved };
 } catch (error) {
-  savedData = {};
+  console.warn("Save data could not be loaded.");
 }
 
-let game = {
-  ...defaultData,
-  ...savedData
-};
-
-game.xp = Math.max(0, Number(game.xp) || 0);
-game.level = Math.max(1, Number(game.level) || 1);
-game.character = Math.max(0, Number(game.character) || 0);
-
-const characters = [
-  {name:"Sakura",emoji:"👩🏻‍🍳",role:"Sweet Dessert Chef",color:"Pink"},
-  {name:"Mika",emoji:"👩🏼‍🍳",role:"Master Baker",color:"Purple"},
-  {name:"Hana",emoji:"👩🏽‍🍳",role:"Vegetable Specialist",color:"Green"},
-  {name:"Yuki",emoji:"👩🏻‍🍳",role:"Pasta Expert",color:"Blue"},
-  {name:"Akira",emoji:"👨🏻‍🍳",role:"Professional Chef",color:"Red"},
-  {name:"Ren",emoji:"👨🏽‍🍳",role:"Grill Master",color:"Orange"},
-  {name:"Aoi",emoji:"👩🏾‍🍳",role:"Healthy Food Chef",color:"Mint"},
-  {name:"Kaito",emoji:"👨🏻‍🍳",role:"Sushi Chef",color:"Black"},
-  {name:"Emi",emoji:"👩🏼‍🍳",role:"Pastry Artist",color:"Pink"},
-  {name:"Sora",emoji:"👨🏼‍🍳",role:"World Cuisine Chef",color:"Purple"}
-];
-
-game.character = Math.min(game.character, characters.length - 1);
-
-const recipes = [
-  {
-    id:1,
-    name:"Italian Tomato Pasta",
-    emoji:"🍝",
-    category:"Main Course",
-    time:"25 min",
-    ingredients:["Pasta","Tomato","Garlic","Olive Oil","Basil","Parmesan"],
-    steps:[
-      "Boil water in a large pot.",
-      "Cook the pasta until al dente.",
-      "Sauté garlic in olive oil.",
-      "Add chopped tomatoes and simmer.",
-      "Mix the pasta with the sauce.",
-      "Finish with fresh basil and Parmesan."
-    ]
-  },
-  {
-    id:2,
-    name:"Margherita Pizza",
-    emoji:"🍕",
-    category:"Italian Cuisine",
-    time:"35 min",
-    ingredients:["Flour","Tomato","Mozzarella","Olive Oil","Basil","Yeast"],
-    steps:[
-      "Prepare dough with flour, yeast and water.",
-      "Let the dough rise.",
-      "Spread tomato sauce over the dough.",
-      "Add mozzarella cheese.",
-      "Bake until golden.",
-      "Finish with fresh basil."
-    ]
-  },
-  {
-    id:3,
-    name:"Fresh Garden Salad",
-    emoji:"🥗",
-    category:"Healthy Food",
-    time:"15 min",
-    ingredients:["Lettuce","Tomato","Cucumber","Olive Oil","Lemon","Feta Cheese"],
-    steps:[
-      "Wash all vegetables.",
-      "Chop lettuce, tomato and cucumber.",
-      "Add feta cheese.",
-      "Mix olive oil and lemon juice.",
-      "Dress the salad and serve."
-    ]
-  },
-  {
-    id:4,
-    name:"Chocolate Cake",
-    emoji:"🍰",
-    category:"Dessert",
-    time:"50 min",
-    ingredients:["Flour","Egg","Milk","Sugar","Cocoa","Butter"],
-    steps:[
-      "Preheat the oven to 180°C.",
-      "Mix eggs and sugar.",
-      "Add milk and melted butter.",
-      "Mix flour and cocoa into the batter.",
-      "Pour into a cake tin.",
-      "Bake until cooked through."
-    ]
-  },
-  {
-    id:5,
-    name:"Japanese Vegetable Sushi",
-    emoji:"🍣",
-    category:"Japanese Cuisine",
-    time:"40 min",
-    ingredients:["Rice","Nori","Cucumber","Avocado","Rice Vinegar"],
-    steps:[
-      "Wash and cook the sushi rice.",
-      "Season rice with rice vinegar.",
-      "Place nori on a bamboo mat.",
-      "Spread rice over the nori.",
-      "Add cucumber and avocado.",
-      "Roll and cut into pieces."
-    ]
-  },
-  {
-    id:6,
-    name:"Strawberry Smoothie",
-    emoji:"🥤",
-    category:"Drinks",
-    time:"5 min",
-    ingredients:["Strawberry","Milk","Banana","Honey"],
-    steps:[
-      "Wash the strawberries.",
-      "Peel the banana.",
-      "Add fruit and milk to a blender.",
-      "Blend until smooth.",
-      "Add honey if desired."
-    ]
-  }
+const customers = [
+  { name: "Mika", avatar: "👩🏻", mood: "Happy", patience: 100 },
+  { name: "Hana", avatar: "👧🏻", mood: "Excited", patience: 100 },
+  { name: "Yuki", avatar: "👩🏼", mood: "Calm", patience: 100 },
+  { name: "Akira", avatar: "👨🏻", mood: "Hungry", patience: 100 },
+  { name: "Sakura", avatar: "👩🏽", mood: "Cheerful", patience: 100 },
+  { name: "Ren", avatar: "👦🏻", mood: "Hungry", patience: 100 },
+  { name: "Aoi", avatar: "👩🏻‍🦰", mood: "Excited", patience: 100 },
+  { name: "Emi", avatar: "👧🏼", mood: "Happy", patience: 100 }
 ];
 
 const ingredients = [
-  "Pasta","Rice","Flour","Egg","Milk","Butter",
-  "Tomato","Potato","Carrot","Lettuce","Cucumber",
-  "Garlic","Onion","Mushroom","Broccoli","Spinach",
-  "Chicken","Beef","Salmon","Shrimp",
-  "Mozzarella","Parmesan","Feta Cheese",
-  "Olive Oil","Lemon","Basil","Parsley",
-  "Strawberry","Banana","Apple","Avocado",
-  "Sugar","Cocoa","Honey","Nori","Rice Vinegar"
+  {
+    id: "tomato",
+    name: "Fresh Tomatoes",
+    image: "https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=400"
+  },
+  {
+    id: "pasta",
+    name: "Italian Pasta",
+    image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400"
+  },
+  {
+    id: "basil",
+    name: "Fresh Basil",
+    image: "https://images.unsplash.com/photo-1618375569909-3c8616cf7733?w=400"
+  },
+  {
+    id: "cheese",
+    name: "Mozzarella Cheese",
+    image: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400"
+  },
+  {
+    id: "flour",
+    name: "Wheat Flour",
+    image: "https://images.unsplash.com/photo-1627485937980-221c88ac04f9?w=400"
+  },
+  {
+    id: "egg",
+    name: "Fresh Eggs",
+    image: "https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=400"
+  },
+  {
+    id: "lettuce",
+    name: "Fresh Lettuce",
+    image: "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=400"
+  },
+  {
+    id: "cucumber",
+    name: "Cucumber",
+    image: "https://images.unsplash.com/photo-1604977042946-1eecc30f269e?w=400"
+  },
+  {
+    id: "carrot",
+    name: "Fresh Carrots",
+    image: "https://images.unsplash.com/photo-1445282768818-728615cc910a?w=400"
+  },
+  {
+    id: "chicken",
+    name: "Chicken Breast",
+    image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=400"
+  },
+  {
+    id: "rice",
+    name: "Sushi Rice",
+    image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400"
+  },
+  {
+    id: "avocado",
+    name: "Fresh Avocado",
+    image: "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=400"
+  },
+  {
+    id: "strawberry",
+    name: "Strawberries",
+    image: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=400"
+  },
+  {
+    id: "milk",
+    name: "Fresh Milk",
+    image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400"
+  },
+  {
+    id: "chocolate",
+    name: "Dark Chocolate",
+    image: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=400"
+  },
+  {
+    id: "potato",
+    name: "Potatoes",
+    image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400"
+  },
+  {
+    id: "onion",
+    name: "Onion",
+    image: "https://images.unsplash.com/photo-1508747703725-719777637510?w=400"
+  },
+  {
+    id: "oliveoil",
+    name: "Olive Oil",
+    image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"
+  }
 ];
 
-const ingredientIcons = {
-  Pasta:"🍝",Rice:"🍚",Flour:"🌾",Egg:"🥚",
-  Milk:"🥛",Butter:"🧈",Tomato:"🍅",
-  Potato:"🥔",Carrot:"🥕",Lettuce:"🥬",
-  Cucumber:"🥒",Garlic:"🧄",Onion:"🧅",
-  Mushroom:"🍄",Broccoli:"🥦",Spinach:"🌿",
-  Chicken:"🍗",Beef:"🥩",Salmon:"🐟",
-  Shrimp:"🦐",Mozzarella:"🧀",Parmesan:"🧀",
-  "Feta Cheese":"🧀","Olive Oil":"🫒",
-  Lemon:"🍋",Basil:"🌱",Parsley:"🌿",
-  Strawberry:"🍓",Banana:"🍌",Apple:"🍎",
-  Avocado:"🥑",Sugar:"🍬",Cocoa:"🍫",
-  Honey:"🍯",Nori:"🍃","Rice Vinegar":"🍶"
-};
-
-const missions = [
-  {id:"cook",title:"First Cooking Adventure",description:"Complete one recipe.",reward:40},
-  {id:"create",title:"Creative Chef",description:"Create your own recipe.",reward:50},
-  {id:"quiz",title:"Food Knowledge",description:"Complete a quiz.",reward:30},
-  {id:"memory",title:"Memory Master",description:"Complete the memory puzzle.",reward:30},
-  {id:"order",title:"Kitchen Organizer",description:"Complete the recipe order challenge.",reward:40}
+const recipes = [
+  {
+    id: "pasta",
+    name: "Italian Tomato Pasta",
+    description: "Pasta with fresh tomato sauce and basil.",
+    image: "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=700",
+    ingredients: ["pasta", "tomato", "basil", "oliveoil"],
+    method: "Boil, sauté and combine.",
+    reward: 35,
+    price: 35
+  },
+  {
+    id: "pizza",
+    name: "Margherita Pizza",
+    description: "Classic Italian pizza with mozzarella and basil.",
+    image: "https://images.unsplash.com/photo-1579751626657-72bc17010498?w=700",
+    ingredients: ["flour", "tomato", "cheese", "basil"],
+    method: "Prepare dough, add toppings and bake.",
+    reward: 40,
+    price: 45
+  },
+  {
+    id: "salad",
+    name: "Fresh Garden Salad",
+    description: "A refreshing mix of fresh vegetables.",
+    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=700",
+    ingredients: ["lettuce", "cucumber", "carrot", "oliveoil"],
+    method: "Wash, chop and mix.",
+    reward: 25,
+    price: 25
+  },
+  {
+    id: "sushi",
+    name: "Japanese Vegetable Sushi",
+    description: "Delicate sushi rolls with fresh vegetables.",
+    image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=700",
+    ingredients: ["rice", "avocado", "carrot", "cucumber"],
+    method: "Cook rice, prepare vegetables and roll.",
+    reward: 45,
+    price: 50
+  },
+  {
+    id: "cake",
+    name: "Chocolate Cake",
+    description: "Rich chocolate cake with a soft texture.",
+    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700",
+    ingredients: ["flour", "egg", "milk", "chocolate"],
+    method: "Mix, pour and bake.",
+    reward: 50,
+    price: 55
+  },
+  {
+    id: "smoothie",
+    name: "Strawberry Smoothie",
+    description: "A fresh and creamy strawberry drink.",
+    image: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=700",
+    ingredients: ["strawberry", "milk"],
+    method: "Blend until smooth.",
+    reward: 25,
+    price: 30
+  }
 ];
 
-const achievements = [
-  {id:"first",name:"First Steps",icon:"🌱",description:"Reach Level 2",check:()=>game.level>=2},
-  {id:"chef",name:"Master Chef",icon:"👩‍🍳",description:"Reach Level 5",check:()=>game.level>=5},
-  {id:"creator",name:"Creative Mind",icon:"🎨",description:"Create a recipe",check:()=>game.recipesCreated>=1},
-  {id:"cook",name:"Cooking Star",icon:"🍳",description:"Complete 3 recipes",check:()=>game.cookedRecipes.length>=3},
-  {id:"puzzle",name:"Puzzle Genius",icon:"🧩",description:"Complete a puzzle",check:()=>game.puzzlesWon>=1},
-  {id:"legend",name:"Legendary Chef",icon:"👑",description:"Reach Level 10",check:()=>game.level>=10}
+const characters = [
+  { name: "Sakura", avatar: "👩🏻‍🍳", level: 1, role: "Head Chef" },
+  { name: "Mika", avatar: "👩🏼", level: 1, role: "Pastry Chef" },
+  { name: "Hana", avatar: "👧🏻", level: 2, role: "Kitchen Assistant" },
+  { name: "Yuki", avatar: "👩🏻‍🦰", level: 3, role: "Sushi Master" },
+  { name: "Akira", avatar: "👨🏻‍🍳", level: 4, role: "Pizza Chef" },
+  { name: "Ren", avatar: "👦🏻", level: 5, role: "Food Artist" },
+  { name: "Aoi", avatar: "👩🏽‍🍳", level: 7, role: "Master Chef" },
+  { name: "Emi", avatar: "👧🏼", level: 10, role: "Royal Chef" }
 ];
 
-// =============================================
-// SAVE SYSTEM
-// =============================================
+let currentOrder = null;
+let selectedIngredients = [];
+let currentCookingStep = 0;
+let timerInterval = null;
+let remainingTime = 0;
+let mealPrepared = false;
+let orderExpired = false;
+let completedOrderHistory = [];
+
+let quizIndex = 0;
+let quizScore = 0;
+let memoryCards = [];
+let memoryFirst = null;
+let memoryLocked = false;
+let memoryMatches = 0;
+let orderSteps = [];
+let orderStepIndex = 0;
+
+const cookingInstructions = [
+  "Prepare and wash all ingredients carefully.",
+  "Cut and measure the ingredients.",
+  "Cook the ingredients using the correct method.",
+  "Arrange the meal beautifully on a plate."
+];
 
 function saveGame() {
-  localStorage.setItem("freshopiaSave",JSON.stringify(game));
+  localStorage.setItem(SAVE_KEY, JSON.stringify(game));
 }
 
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g,char=>({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
-  })[char]);
-}
-
-// =============================================
-// INITIALIZATION
-// =============================================
-
-function initializeGame() {
-  let name = localStorage.getItem("freshopiaName");
-
-  if (!name) {
-    const answer = prompt("Welcome to Freshopia! What is your chef name?");
-    if (answer && answer.trim()) {
-      name = answer.trim().slice(0,20);
-      localStorage.setItem("freshopiaName",name);
-    }
-  }
-
-  game.name = name || game.name;
-
-  updateInterface();
-  renderCharacters();
-  renderRecipes();
-  renderIngredients();
-  renderMissions();
-  renderAchievements();
-  updateCharacterMessage();
-}
-
-function updateInterface() {
-  document.getElementById("playerName").textContent = game.name;
-  document.getElementById("level").textContent = game.level;
-  document.getElementById("xp").textContent = game.xp;
-  document.getElementById("heroCharacter").textContent =
-    characters[game.character].emoji;
-
-  const progress = game.xp / (game.level * 100) * 100;
-
-  document.getElementById("xpProgress").style.width = progress + "%";
-  document.getElementById("xpProgressText").textContent =
-    game.xp + " / " + (game.level * 100) + " XP";
-
-  saveGame();
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2600);
 }
 
 function showSection(sectionId) {
-  document.querySelectorAll(".game-section").forEach(section=>{
+  document.querySelectorAll(".game-section").forEach(section => {
     section.classList.remove("active");
   });
 
   const target = document.getElementById(sectionId);
-
   if (target) target.classList.add("active");
 
-  window.scrollTo({top:0,behavior:"smooth"});
+  document.querySelectorAll(".nav-btn").forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.getAttribute("onclick")?.includes("'" + sectionId + "'")
+    );
+  });
+
+  if (sectionId === "recipes") renderRecipes();
+  if (sectionId === "characters") renderCharacters();
+  if (sectionId === "missions") renderMissions();
+  if (sectionId === "awards") renderAchievements();
 }
 
-// =============================================
-// XP AND LEVEL SYSTEM
-// =============================================
-
-function addXP(amount,reason="") {
-  const oldLevel = game.level;
-
+function addXP(amount) {
   game.xp += amount;
 
   while (game.xp >= game.level * 100) {
     game.xp -= game.level * 100;
     game.level++;
+    showLevelUp();
   }
 
   updateInterface();
-
-  showToast("⭐ +" + amount + " XP! " + reason);
-
-  if (game.level > oldLevel) {
-    renderCharacters();
-    setTimeout(showLevelUp,400);
-  }
-
-  checkAchievements();
+  saveGame();
 }
 
 function showLevelUp() {
-  document.getElementById("danceCharacter").textContent =
-    characters[game.character].emoji;
+  const modal = document.getElementById("levelModal");
+  const character = characters[game.selectedCharacter] || characters[0];
 
+  document.getElementById("danceCharacter").textContent = character.avatar;
   document.getElementById("levelMessage").textContent =
-    "Congratulations " + game.name +
-    "! You reached Level " + game.level + "!";
+    "Congratulations! You reached Level " + game.level + "! New adventures are waiting!";
 
-  document.getElementById("levelModal").classList.remove("hidden");
+  modal.classList.add("show");
+  renderCharacters();
 }
 
 function closeLevelModal() {
-  document.getElementById("levelModal").classList.add("hidden");
-  showToast("🎁 New adventures are waiting for you!");
+  document.getElementById("levelModal").classList.remove("show");
 }
 
-function showToast(message) {
-  const toast = document.getElementById("toast");
+function updateInterface() {
+  const level = document.getElementById("playerLevel");
+  const coins = document.getElementById("playerCoins");
+  const xpProgress = document.getElementById("xpProgress");
+  const xpText = document.getElementById("xpText");
 
-  toast.textContent = message;
-  toast.classList.add("show");
+  if (level) level.textContent = game.level;
+  if (coins) coins.textContent = game.coins;
 
-  clearTimeout(window.toastTimer);
+  const needed = game.level * 100;
+  const percent = Math.min(100, (game.xp / needed) * 100);
 
-  window.toastTimer = setTimeout(()=>{
-    toast.classList.remove("show");
-  },2500);
+  if (xpProgress) xpProgress.style.width = percent + "%";
+  if (xpText) xpText.textContent = game.xp + " / " + needed + " XP";
+
+  setText("restaurantCoins", game.coins);
+  setText("restaurantReputation", game.reputation);
+  setText("happyCustomers", game.happyCustomers);
+
+  const homeCharacter = document.getElementById("homeCharacter");
+  if (homeCharacter) {
+    homeCharacter.textContent =
+      characters[game.selectedCharacter]?.avatar || "👩🏻‍🍳";
+  }
+
+  renderAchievements();
+  saveGame();
 }
 
-// =============================================
-// CHARACTER SELECTION
-// =============================================
+function setText(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.textContent = value;
+}
+
+/* ==========================================
+   RESTAURANT AND CUSTOMER SYSTEM
+========================================== */
+
+function openRestaurant() {
+  if (game.restaurantOpen) {
+    showToast("Your restaurant is already open!");
+    return;
+  }
+
+  game.restaurantOpen = true;
+
+  const button = document.getElementById("openRestaurantBtn");
+  button.textContent = "🛎️ Restaurant Open";
+
+  showToast("Welcome! Your restaurant is now open!");
+  saveGame();
+  createCustomerOrder();
+}
+
+function createCustomerOrder() {
+  if (!game.restaurantOpen || currentOrder) return;
+
+  const customer = customers[
+    Math.floor(Math.random() * customers.length)
+  ];
+
+  const availableRecipes = recipes.filter(recipe =>
+    game.level >= 1
+  );
+
+  const recipe = availableRecipes[
+    Math.floor(Math.random() * availableRecipes.length)
+  ];
+
+  currentOrder = {
+    customer,
+    recipe,
+    time: 100,
+    started: Date.now()
+  };
+
+  selectedIngredients = [];
+  currentCookingStep = 0;
+  mealPrepared = false;
+  orderExpired = false;
+
+  renderCustomer();
+  renderOrder();
+  renderIngredients();
+  renderSelectedIngredients();
+  renderCookingSteps();
+
+  const feedback = document.getElementById("orderFeedback");
+  if (feedback) {
+    feedback.textContent =
+      customer.name + " has ordered " + recipe.name + "!";
+  }
+
+  remainingTime = currentOrder.time;
+  updateTimerDisplay();
+
+  clearInterval(timerInterval);
+
+  timerInterval = setInterval(() => {
+    if (!currentOrder || orderExpired) return;
+
+    remainingTime--;
+    updateTimerDisplay();
+
+    if (remainingTime <= 0) {
+      expireOrder();
+    }
+  }, 1000);
+}
+
+function renderCustomer() {
+  const area = document.getElementById("customerArea");
+
+  area.innerHTML = `
+    <div class="customer-card">
+      <div class="customer-avatar">${currentOrder.customer.avatar}</div>
+      <div>
+        <h3>${currentOrder.customer.name}</h3>
+        <p>${currentOrder.customer.mood} customer • Waiting for food</p>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("currentCustomer").innerHTML = `
+    <div class="customer-avatar">${currentOrder.customer.avatar}</div>
+    <div>
+      <h3>${currentOrder.customer.name}</h3>
+      <p>"Hello chef! I would like something delicious!"</p>
+    </div>
+  `;
+}
+
+function renderOrder() {
+  const recipe = currentOrder.recipe;
+
+  document.getElementById("orderImage").src = recipe.image;
+  document.getElementById("orderName").textContent = recipe.name;
+  document.getElementById("orderDescription").textContent =
+    recipe.description;
+}
+
+function updateTimerDisplay() {
+  const timer = document.getElementById("orderTimer");
+  if (!timer) return;
+
+  const minutes = Math.floor(Math.max(0, remainingTime) / 60);
+  const seconds = Math.max(0, remainingTime) % 60;
+
+  timer.textContent =
+    String(minutes).padStart(2, "0") + ":" +
+    String(seconds).padStart(2, "0");
+
+  const mood = document.getElementById("customerMood");
+
+  if (mood) {
+    if (remainingTime > 60) {
+      mood.textContent = "😊 Customer is waiting patiently.";
+    } else if (remainingTime > 25) {
+      mood.textContent = "😟 Customer is getting hungry!";
+    } else {
+      mood.textContent = "😠 Hurry up! Customer is losing patience!";
+    }
+  }
+}
+
+function expireOrder() {
+  if (!currentOrder) return;
+
+  clearInterval(timerInterval);
+  orderExpired = true;
+
+  document.getElementById("orderFeedback").textContent =
+    "⏰ Time is up! The customer left without their meal.";
+
+  showToast("Customer left! Try again with the next order.");
+
+  currentOrder = null;
+  selectedIngredients = [];
+  mealPrepared = false;
+
+  renderEmptyCustomer();
+  disableKitchen();
+
+  setTimeout(() => {
+    if (game.restaurantOpen && !currentOrder) {
+      createCustomerOrder();
+    }
+  }, 3000);
+}
+
+function renderEmptyCustomer() {
+  document.getElementById("customerArea").innerHTML = `
+    <div class="empty-state">
+      <span>🪑</span>
+      <h3>Waiting for the next customer...</h3>
+      <p>A new guest will arrive soon.</p>
+    </div>
+  `;
+
+  document.getElementById("currentCustomer").innerHTML = `
+    <div class="customer-avatar">🪑</div>
+    <div>
+      <h3>Waiting for a customer...</h3>
+      <p>Your next customer will appear here.</p>
+    </div>
+  `;
+
+  document.getElementById("orderName").textContent = "No active order";
+  document.getElementById("orderDescription").textContent =
+    "Waiting for the next customer.";
+}
+
+function disableKitchen() {
+  document.getElementById("ingredientGrid").innerHTML =
+    "<p>Waiting for the next order.</p>";
+
+  document.getElementById("selectedIngredients").textContent =
+    "No ingredients selected.";
+
+  document.getElementById("prepareMealBtn").disabled = true;
+  document.getElementById("serveMealBtn").disabled = true;
+  document.getElementById("cookingContent").textContent =
+    "Your kitchen is waiting for a new order.";
+}
+
+/* ==========================================
+   INGREDIENT SELECTION
+========================================== */
+
+function renderIngredients() {
+  const grid = document.getElementById("ingredientGrid");
+
+  if (!currentOrder) {
+    grid.innerHTML = "<p>Open your restaurant to start cooking.</p>";
+    return;
+  }
+
+  const correctIds = currentOrder.recipe.ingredients;
+
+  const distractors = ingredients
+    .filter(item => !correctIds.includes(item.id))
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 5);
+
+  const available = [
+    ...ingredients.filter(item => correctIds.includes(item.id)),
+    ...distractors
+  ].sort(() => Math.random() - 0.5);
+
+  grid.innerHTML = available.map(item => `
+    <button class="ingredient-card"
+      type="button"
+      data-ingredient="${item.id}"
+      onclick="toggleIngredient('${item.id}')">
+      <img src="${item.image}" alt="${item.name}" loading="lazy">
+      <h4>${item.name}</h4>
+      <small>Tap to select</small>
+    </button>
+  `).join("");
+}
+
+function toggleIngredient(id) {
+  if (!currentOrder || mealPrepared || orderExpired) return;
+
+  const card = document.querySelector(
+    '[data-ingredient="' + id + '"]'
+  );
+
+  if (selectedIngredients.includes(id)) {
+    selectedIngredients = selectedIngredients.filter(item => item !== id);
+    card?.classList.remove("selected");
+  } else {
+    selectedIngredients.push(id);
+    card?.classList.add("selected");
+  }
+
+  renderSelectedIngredients();
+
+  const prepareButton = document.getElementById("prepareMealBtn");
+  prepareButton.disabled = selectedIngredients.length === 0;
+}
+
+function renderSelectedIngredients() {
+  const container = document.getElementById("selectedIngredients");
+
+  if (!selectedIngredients.length) {
+    container.textContent = "No ingredients selected yet.";
+    return;
+  }
+
+  const names = selectedIngredients.map(id =>
+    ingredients.find(item => item.id === id)?.name
+  );
+
+  container.textContent = names.join(" • ");
+}
+
+/* ==========================================
+   COOKING PROCESS
+========================================== */
+
+function prepareMeal() {
+  if (!currentOrder || mealPrepared || orderExpired) return;
+
+  const required = currentOrder.recipe.ingredients;
+
+  const correct =
+    required.length === selectedIngredients.length &&
+    required.every(id => selectedIngredients.includes(id));
+
+  if (!correct) {
+    document.getElementById("orderFeedback").textContent =
+      "❌ Some ingredients are missing or incorrect. Check the recipe!";
+    showToast("Check your ingredient selection!");
+    return;
+  }
+
+  mealPrepared = true;
+  currentCookingStep = 0;
+
+  document.getElementById("prepareMealBtn").disabled = true;
+
+  document.getElementById("orderFeedback").textContent =
+    "✨ Perfect ingredients! Let's cook!";
+
+  renderCookingSteps();
+  showCookingStep();
+}
+
+function renderCookingSteps() {
+  const container = document.getElementById("cookingSteps");
+
+  container.innerHTML = cookingInstructions.map((step, index) => `
+    <div class="cooking-step" id="cookingStep${index}">
+      ${index + 1}. ${step}
+    </div>
+  `).join("");
+}
+
+function showCookingStep() {
+  const container = document.getElementById("cookingContent");
+
+  if (!currentOrder || !mealPrepared) return;
+
+  if (currentCookingStep >= cookingInstructions.length) {
+    container.innerHTML = `
+      <div>
+        <h3>🍽️ Your meal is ready!</h3>
+        <img src="${currentOrder.recipe.image}" alt="Prepared meal">
+        <p>Beautifully prepared by you, chef!</p>
+      </div>
+    `;
+
+    document.getElementById("serveMealBtn").disabled = false;
+    document.getElementById("orderFeedback").textContent =
+      "🎉 Great work! Your meal is ready to serve.";
+    return;
+  }
+
+  const step = cookingInstructions[currentCookingStep];
+
+  container.innerHTML = `
+    <div>
+      <h3>🔥 Cooking Step ${currentCookingStep + 1}</h3>
+      <p>${step}</p>
+      <button class="primary-btn" onclick="nextCookingStep()">
+        Continue Cooking →
+      </button>
+    </div>
+  `;
+
+  const active = document.getElementById(
+    "cookingStep" + currentCookingStep
+  );
+
+  if (active) active.classList.add("completed");
+}
+
+function nextCookingStep() {
+  if (!mealPrepared || !currentOrder || orderExpired) return;
+
+  currentCookingStep++;
+  showCookingStep();
+}
+
+/* ==========================================
+   SERVING AND REWARDS
+========================================== */
+
+function serveMeal() {
+  if (!currentOrder || !mealPrepared || orderExpired) return;
+
+  clearInterval(timerInterval);
+
+  const recipe = currentOrder.recipe;
+  const customer = currentOrder.customer;
+
+  const onTime = remainingTime > 0;
+  const bonus = onTime ? 15 : 0;
+  const coinsEarned = recipe.price + bonus;
+  const xpEarned = recipe.reward + (onTime ? 10 : 0);
+
+  game.coins += coinsEarned;
+  game.reputation += onTime ? 5 : 2;
+  game.happyCustomers++;
+
+  game.completedOrders++;
+  game.completedRecipes.push(recipe.id);
+
+  addXP(xpEarned);
+
+  completedOrderHistory.unshift({
+    name: recipe.name,
+    customer: customer.name,
+    coins: coinsEarned
+  });
+
+  completedOrderHistory = completedOrderHistory.slice(0, 5);
+
+  renderOrderHistory();
+
+  document.getElementById("orderFeedback").textContent =
+    "💖 " + customer.name + " loved your " + recipe.name + "!";
+
+  document.getElementById("customerArea").innerHTML = `
+    <div class="customer-card">
+      <div class="customer-avatar">🥰</div>
+      <div>
+        <h3>${customer.name} is happy!</h3>
+        <p>"Thank you, chef! That was delicious!"</p>
+      </div>
+    </div>
+  `;
+
+  showToast(
+    "+" + coinsEarned + " Coins  |  +" + xpEarned + " XP"
+  );
+
+  currentOrder = null;
+  selectedIngredients = [];
+  mealPrepared = false;
+
+  disableKitchen();
+  updateInterface();
+  saveGame();
+
+  setTimeout(() => {
+    if (game.restaurantOpen && !currentOrder) {
+      createCustomerOrder();
+    }
+  }, 3500);
+}
+
+function renderOrderHistory() {
+  const container = document.getElementById("orderHistory");
+
+  if (!completedOrderHistory.length) {
+    container.innerHTML = "<p>No completed orders yet.</p>";
+    return;
+  }
+
+  container.innerHTML = completedOrderHistory.map(item => `
+    <div class="history-item">
+      <span>🍽️ ${item.name} — ${item.customer}</span>
+      <b>+${item.coins} 💰</b>
+    </div>
+  `).join("");
+}
+
+/* ==========================================
+   RECIPE ACADEMY
+========================================== */
+
+function renderRecipes() {
+  const grid = document.getElementById("recipeGrid");
+  if (!grid) return;
+
+  grid.innerHTML = recipes.map(recipe => `
+    <article class="recipe-card">
+      <img src="${recipe.image}" alt="${recipe.name}" loading="lazy">
+      <h3>${recipe.name}</h3>
+      <p>${recipe.description}</p>
+      <p>⭐ ${recipe.reward} XP</p>
+      <button class="primary-btn" onclick="startRecipe('${recipe.id}')">
+        View Recipe
+      </button>
+    </article>
+  `).join("");
+}
+
+function startRecipe(id) {
+  const recipe = recipes.find(item => item.id === id);
+  if (!recipe) return;
+
+  const container = document.getElementById("recipeGrid");
+
+  container.innerHTML = `
+    <article class="recipe-card">
+      <img src="${recipe.image}" alt="${recipe.name}">
+      <h2>${recipe.name}</h2>
+      <p>${recipe.description}</p>
+      <h3>Ingredients</h3>
+      <p>${recipe.ingredients.map(id =>
+        ingredients.find(item => item.id === id)?.name
+      ).join(", ")}</p>
+      <h3>Cooking Method</h3>
+      <p>${recipe.method}</p>
+      <button class="primary-btn" onclick="renderRecipes()">
+        Back to Recipes
+      </button>
+    </article>
+  `;
+}
+
+/* ==========================================
+   CHARACTERS
+========================================== */
 
 function renderCharacters() {
   const grid = document.getElementById("characterGrid");
+  if (!grid) return;
 
-  grid.innerHTML = characters.map((character,index)=>{
-    const unlocked = index===0 || game.level>=index+1;
-    const selected = game.character===index;
+  grid.innerHTML = characters.map((character, index) => {
+    const unlocked = game.level >= character.level;
+    const selected = game.selectedCharacter === index;
 
     return `
-      <article class="character-card ${selected?"selected":""}">
-        <div class="character-art">${character.emoji}</div>
+      <article class="character-card">
+        <div class="character-avatar">
+          ${unlocked ? character.avatar : "🔒"}
+        </div>
         <h3>${character.name}</h3>
         <p>${character.role}</p>
-        <p>Style: ${character.color}</p>
-        ${
-          unlocked
-          ? `<button onclick="selectCharacter(${index})">
-               ${selected?"Selected ✓":"Choose Character"}
-             </button>`
-          : `<button disabled>Unlock at Level ${index+1} 🔒</button>`
-        }
+        <p>Unlock at Level ${character.level}</p>
+        <button
+          ${!unlocked ? "disabled" : ""}
+          onclick="selectCharacter(${index})">
+          ${selected ? "Selected ✓" : unlocked ? "Choose Character" : "Locked"}
+        </button>
       </article>
     `;
   }).join("");
 }
 
 function selectCharacter(index) {
-  if (index>0 && game.level<index+1) {
-    showToast("🔒 Reach Level "+(index+1)+" to unlock!");
+  if (game.level < characters[index].level) {
+    showToast("Reach Level " + characters[index].level + " to unlock!");
     return;
   }
 
-  game.character=index;
-
+  game.selectedCharacter = index;
   updateInterface();
   renderCharacters();
-  updateCharacterMessage();
-
-  showToast(characters[index].name+" is your new chef!");
+  showToast(characters[index].name + " is now your cooking companion!");
 }
 
-function updateCharacterMessage() {
-  const messages=[
-    "Let's make something delicious today! 💗",
-    "Every great chef starts with a recipe!",
-    "Learning is the secret ingredient!",
-    "Your kitchen adventure begins now!"
-  ];
+/* ==========================================
+   MISSIONS
+========================================== */
 
-  document.getElementById("characterMessage").textContent =
-    messages[game.level%messages.length];
+const missions = [
+  { id: "order1", title: "Serve your first customer", target: 1, reward: 40 },
+  { id: "order3", title: "Complete 3 restaurant orders", target: 3, reward: 60 },
+  { id: "order5", title: "Serve 5 delicious meals", target: 5, reward: 80 },
+  { id: "coins", title: "Earn 100 restaurant coins", target: 100, reward: 50 },
+  { id: "puzzle", title: "Win a food puzzle", target: 1, reward: 40 }
+];
+
+function missionProgress(mission) {
+  if (mission.id === "order1" || mission.id === "order3" ||
+      mission.id === "order5") {
+    return game.completedOrders;
+  }
+
+  if (mission.id === "coins") return game.coins;
+  if (mission.id === "puzzle") return game.puzzleWins;
+
+  return 0;
 }
 
-// =============================================
-// RECIPE ACADEMY
-// =============================================
+function renderMissions() {
+  const container = document.getElementById("missionList");
+  if (!container) return;
 
-function renderRecipes() {
-  const grid=document.getElementById("recipeGrid");
+  container.innerHTML = missions.map(mission => {
+    const progress = Math.min(
+      mission.target,
+      missionProgress(mission)
+    );
 
-  grid.innerHTML=recipes.map(recipe=>`
-    <article class="recipe-card">
-      <div class="recipe-art">${recipe.emoji}</div>
-      <h3>${recipe.name}</h3>
-      <p>${recipe.category}</p>
-      <p>⏱ ${recipe.time}</p>
-      <button onclick="openRecipe(${recipe.id})">View Recipe</button>
-    </article>
-  `).join("");
+    const completed = progress >= mission.target;
+    const claimed = game.claimedMissions.includes(mission.id);
+
+    return `
+      <div class="mission-card">
+        <h3>🎯 ${mission.title}</h3>
+        <p>Progress: ${progress} / ${mission.target}</p>
+        <p>Reward: ${mission.reward} XP</p>
+        <button class="primary-btn"
+          ${!completed || claimed ? "disabled" : ""}
+          onclick="claimMission('${mission.id}')">
+          ${claimed ? "Completed ✓" : completed ? "Claim Reward" : "In Progress"}
+        </button>
+      </div>
+    `;
+  }).join("");
 }
 
-function openRecipe(id) {
-  const recipe=recipes.find(item=>item.id===id);
-  const details=document.getElementById("recipeDetails");
+function claimMission(id) {
+  const mission = missions.find(item => item.id === id);
+  if (!mission || game.claimedMissions.includes(id)) return;
 
-  details.classList.remove("hidden");
-
-  details.innerHTML=`
-    <h2>${recipe.emoji} ${recipe.name}</h2>
-    <p>Category: ${recipe.category} | Time: ${recipe.time}</p>
-    <h3>Ingredients</h3>
-    <ul>${recipe.ingredients.map(item=>`<li>${item}</li>`).join("")}</ul>
-    <h3>Preparation Steps</h3>
-    <ol>${recipe.steps.map(step=>`<li>${step}</li>`).join("")}</ol>
-    <button class="primary-btn" onclick="completeRecipe(${id})">
-      I Completed This Recipe! 🍳
-    </button>
-  `;
-
-  details.scrollIntoView({behavior:"smooth",block:"start"});
-}
-
-function completeRecipe(id) {
-  if(game.cookedRecipes.includes(id)) {
-    showToast("You already completed this recipe!");
+  if (missionProgress(mission) < mission.target) {
+    showToast("Complete the mission first!");
     return;
   }
 
-  game.cookedRecipes.push(id);
-
-  addXP(50,"Recipe completed!");
-  completeMission("cook");
-  saveGame();
+  game.claimedMissions.push(id);
+  addXP(mission.reward);
+  showToast("Mission completed! +" + mission.reward + " XP");
+  renderMissions();
 }
 
-// =============================================
-// CUSTOM RECIPE CREATOR
-// =============================================
+/* ==========================================
+   ACHIEVEMENTS
+========================================== */
 
-function renderIngredients() {
-  const grid=document.getElementById("ingredientGrid");
+const achievements = [
+  { id: "level2", name: "Rising Chef", icon: "⭐", check: () => game.level >= 2 },
+  { id: "level5", name: "Kitchen Star", icon: "🌟", check: () => game.level >= 5 },
+  { id: "firstOrder", name: "First Customer", icon: "🍽️", check: () => game.completedOrders >= 1 },
+  { id: "orders5", name: "Restaurant Expert", icon: "🏆", check: () => game.completedOrders >= 5 },
+  { id: "coins500", name: "Coin Collector", icon: "💰", check: () => game.coins >= 500 },
+  { id: "level10", name: "Master Chef", icon: "👑", check: () => game.level >= 10 }
+];
 
-  grid.innerHTML=ingredients.map(item=>`
-    <label class="ingredient-option">
-      <input type="checkbox" value="${item}"
-        onchange="toggleIngredient('${item}',this.checked)">
-      <span>${ingredientIcons[item]||"🍴"} ${item}</span>
-    </label>
-  `).join("");
+function renderAchievements() {
+  const container = document.getElementById("achievementList");
+  if (!container) return;
+
+  container.innerHTML = achievements.map(achievement => {
+    const unlocked = achievement.check();
+
+    return `
+      <div class="achievement-card">
+        <span>${unlocked ? achievement.icon : "🔒"}</span>
+        <h3>${achievement.name}</h3>
+        <p>${unlocked ? "Unlocked!" : "Keep playing to unlock."}</p>
+      </div>
+    `;
+  }).join("");
 }
 
-function toggleIngredient(item,checked) {
-  if(checked && !game.selectedIngredients.includes(item)) {
-    game.selectedIngredients.push(item);
-  } else if(!checked) {
-    game.selectedIngredients=
-      game.selectedIngredients.filter(x=>x!==item);
-  }
-}
+/* ==========================================
+   FOOD QUIZ
+========================================== */
 
-function createRecipe() {
-  const name=document.getElementById("dishName").value.trim();
-  const method=document.getElementById("cookingMethod").value;
-  const selected=game.selectedIngredients;
-
-  if(!name) {
-    showToast("Please give your recipe a name!");
-    return;
-  }
-
-  if(selected.length<2) {
-    showToast("Choose at least two ingredients!");
-    return;
-  }
-
-  if(!method) {
-    showToast("Choose a cooking method!");
-    return;
-  }
-
-  game.recipesCreated++;
-
-  document.getElementById("createdRecipe").innerHTML=`
-    <h3>🎉 Your Recipe Is Ready!</h3>
-    <h2>${escapeHTML(name)}</h2>
-    <p><b>Cooking Method:</b> ${method}</p>
-    <p><b>Ingredients:</b></p>
-    <ul>
-      ${selected.map(x=>`<li>${ingredientIcons[x]||"🍴"} ${x}</li>`).join("")}
-    </ul>
-    <p>Great creativity, Chef!</p>
-  `;
-
-  addXP(50,"Creative recipe!");
-  completeMission("create");
-
-  game.selectedIngredients=[];
-
-  document.querySelectorAll(".ingredient-option input")
-    .forEach(input=>input.checked=false);
-
-  document.getElementById("dishName").value="";
-  document.getElementById("cookingMethod").value="";
-
-  saveGame();
-}
-
-// =============================================
-// PUZZLE 1 - INGREDIENT QUIZ
-// =============================================
-
-const quizQuestions=[
+const quizQuestions = [
   {
-    question:"Which ingredient is commonly used to make guacamole?",
-    answers:["Avocado","Potato","Strawberry"],
-    correct:"Avocado",
-    fact:"Avocado is the main ingredient in traditional guacamole."
+    question: "Which ingredient is commonly used to make pasta sauce?",
+    options: ["Tomato", "Strawberry", "Chocolate"],
+    answer: 0
   },
   {
-    question:"Which food is rich in vitamin C?",
-    answers:["Lemon","Butter","Rice"],
-    correct:"Lemon",
-    fact:"Lemons are a source of vitamin C."
+    question: "Which ingredient is essential for traditional sushi rice?",
+    options: ["Potato", "Rice", "Flour"],
+    answer: 1
   },
   {
-    question:"Which ingredient helps bread dough rise?",
-    answers:["Yeast","Salt","Olive Oil"],
-    correct:"Yeast",
-    fact:"Yeast produces carbon dioxide and helps dough rise."
+    question: "Which food is a good source of protein?",
+    options: ["Chicken", "Sugar", "Olive oil"],
+    answer: 0
   },
   {
-    question:"Which cooking method uses hot water?",
-    answers:["Boiling","Grilling","Baking"],
-    correct:"Boiling",
-    fact:"Boiling cooks food in bubbling hot water."
+    question: "Which ingredient helps bread dough rise?",
+    options: ["Yeast", "Cucumber", "Lettuce"],
+    answer: 0
   },
   {
-    question:"Which ingredient is traditionally used in sushi?",
-    answers:["Rice","Pasta","Couscous"],
-    correct:"Rice",
-    fact:"Japanese sushi commonly uses seasoned short-grain rice."
+    question: "Which ingredient is often used in a smoothie?",
+    options: ["Strawberry", "Onion", "Flour"],
+    answer: 0
   }
 ];
 
-let quizIndex=0;
-let quizScore=0;
-let quizRewarded=false;
-
 function startQuiz() {
-  quizIndex=0;
-  quizScore=0;
-  quizRewarded=false;
-  showSection("puzzles");
-  showQuizQuestion();
+  quizIndex = 0;
+  quizScore = 0;
+  renderQuizQuestion();
 }
 
-function showQuizQuestion() {
-  const area=document.getElementById("puzzleGame");
-  area.classList.remove("hidden");
+function renderQuizQuestion() {
+  const container = document.getElementById("puzzleGame");
 
-  if(quizIndex>=quizQuestions.length) {
-    area.innerHTML=`
-      <h2>🎉 Quiz Completed!</h2>
-      <p>Your score: ${quizScore}/${quizQuestions.length}</p>
-      <button onclick="startQuiz()">Play Again</button>
+  if (quizIndex >= quizQuestions.length) {
+    container.innerHTML = `
+      <h2>Quiz Completed! 🎉</h2>
+      <p>Your score: ${quizScore} / ${quizQuestions.length}</p>
+      <button class="primary-btn" onclick="startQuiz()">Play Again</button>
     `;
 
-    if(quizScore>=3 && !quizRewarded) {
-      quizRewarded=true;
-      game.puzzlesWon++;
-      addXP(30,"Quiz completed!");
-      completeMission("quiz");
-      checkAchievements();
+    if (quizScore >= 3) {
+      game.puzzleWins++;
+      addXP(30);
+      showToast("Great job! You earned 30 XP!");
     }
 
+    renderMissions();
     return;
   }
 
-  const q=quizQuestions[quizIndex];
+  const question = quizQuestions[quizIndex];
 
-  area.innerHTML=`
-    <p>Question ${quizIndex+1} of ${quizQuestions.length}</p>
-    <div class="quiz-question">${q.question}</div>
-    ${q.answers.map(answer=>`
-      <button onclick="answerQuiz('${answer}')">${answer}</button>
+  container.innerHTML = `
+    <h3>Question ${quizIndex + 1} / ${quizQuestions.length}</h3>
+    <h2>${question.question}</h2>
+    ${question.options.map((option, index) => `
+      <button class="primary-btn"
+        style="display:block;width:100%;margin:10px 0"
+        onclick="answerQuiz(${index})">
+        ${option}
+      </button>
     `).join("")}
-    <p id="quizFeedback"></p>
   `;
 }
 
-function answerQuiz(answer) {
-  const q=quizQuestions[quizIndex];
-  const feedback=document.getElementById("quizFeedback");
-
-  if(answer===q.correct) {
+function answerQuiz(index) {
+  if (index === quizQuestions[quizIndex].answer) {
     quizScore++;
-    feedback.innerHTML="✅ Correct! "+q.fact;
+    showToast("Correct answer! ✨");
   } else {
-    feedback.innerHTML="❌ Correct answer: "+q.correct+". "+q.fact;
+    showToast("Not quite! Keep learning!");
   }
 
-  document.querySelectorAll("#puzzleGame button")
-    .forEach(button=>button.disabled=true);
-
   quizIndex++;
-  setTimeout(showQuizQuestion,1800);
+  renderQuizQuestion();
 }
 
-// =============================================
-// PUZZLE 2 - FOOD MEMORY
-// =============================================
-
-let memoryCards=[];
-let memoryOpen=[];
-let memoryMatched=[];
-let memoryMatches=0;
-let memoryLocked=false;
+/* ==========================================
+   FOOD MEMORY GAME
+========================================== */
 
 function startMemory() {
-  showSection("puzzles");
+  const container = document.getElementById("puzzleGame");
 
-  const foods=["🍓","🍕","🥕","🍰","🍋","🥑"];
+  const items = ["🍓", "🥑", "🍅", "🥕", "🧀", "🥦"];
+  memoryCards = [...items, ...items].sort(() => Math.random() - 0.5);
+  memoryFirst = null;
+  memoryLocked = false;
+  memoryMatches = 0;
 
-  memoryCards=[...foods,...foods].sort(()=>Math.random()-.5);
-  memoryOpen=[];
-  memoryMatched=[];
-  memoryMatches=0;
-  memoryLocked=false;
-
-  renderMemory();
-}
-
-function renderMemory() {
-  const area=document.getElementById("puzzleGame");
-  area.classList.remove("hidden");
-
-  area.innerHTML=`
-    <h2>🧠 Food Memory</h2>
-    <p>Find all matching food pairs!</p>
-    <div class="memory-grid">
-      ${memoryCards.map((food,index)=>`
-        <button class="memory-tile"
-          onclick="flipMemory(${index})"
-          id="memory-${index}">
-          ${memoryOpen.includes(index)||memoryMatched.includes(index)
-            ?food:"❔"}
+  container.innerHTML = `
+    <h3>Match the food pairs!</h3>
+    <div class="memory-grid" style="
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;margin-top:15px">
+      ${memoryCards.map((item, index) => `
+        <button id="memory${index}"
+          style="padding:18px;font-size:27px;border-radius:15px;background:#f1eaff"
+          onclick="flipMemory(${index})">
+          ❔
         </button>
       `).join("")}
     </div>
-    <p>Matches: ${memoryMatches}/6</p>
   `;
 }
 
 function flipMemory(index) {
-  if(memoryLocked||
-     memoryOpen.includes(index)||
-     memoryMatched.includes(index)) return;
+  if (memoryLocked) return;
 
-  memoryOpen.push(index);
-  renderMemory();
+  const button = document.getElementById("memory" + index);
+  if (!button || button.dataset.matched === "true" ||
+      button.dataset.open === "true") return;
 
-  if(memoryOpen.length===2) {
-    memoryLocked=true;
+  button.textContent = memoryCards[index];
+  button.dataset.open = "true";
 
-    const [a,b]=memoryOpen;
-
-    if(memoryCards[a]===memoryCards[b]) {
-      memoryMatched.push(a,b);
-      memoryMatches++;
-      memoryOpen=[];
-      memoryLocked=false;
-
-      if(memoryMatches===6) {
-        document.getElementById("puzzleGame").innerHTML=`
-          <h2>🏆 Memory Master!</h2>
-          <p>All pairs matched!</p>
-          <button onclick="startMemory()">Play Again</button>
-        `;
-
-        game.puzzlesWon++;
-        addXP(30,"Memory completed!");
-        completeMission("memory");
-        checkAchievements();
-      } else {
-        renderMemory();
-      }
-
-    } else {
-      setTimeout(()=>{
-        memoryOpen=[];
-        memoryLocked=false;
-        renderMemory();
-      },900);
-    }
-  }
-}
-
-// =============================================
-// PUZZLE 3 - RECIPE ORDER
-// =============================================
-
-const correctSteps=[
-  "Wash the vegetables.",
-  "Chop the vegetables.",
-  "Heat olive oil in a pan.",
-  "Cook the vegetables.",
-  "Season and serve."
-];
-
-function startOrder() {
-  showSection("puzzles");
-
-  const shuffled=[...correctSteps].sort(()=>Math.random()-.5);
-  const area=document.getElementById("puzzleGame");
-
-  area.classList.remove("hidden");
-
-  area.innerHTML=`
-    <h2>📋 Recipe Order Challenge</h2>
-    <p>Arrange the cooking steps in the correct order.</p>
-    <div id="orderOptions">
-      ${shuffled.map((step,index)=>`
-        <button onclick="selectOrder(${index})"
-          id="order-${index}">${step}</button>
-      `).join("")}
-    </div>
-    <p id="orderResult"></p>
-  `;
-
-  window.orderShuffled=shuffled;
-  window.orderSelected=[];
-}
-
-function selectOrder(index) {
-  if(window.orderSelected.includes(index)) return;
-
-  window.orderSelected.push(index);
-
-  const button=document.getElementById("order-"+index);
-  button.classList.add("correct");
-  button.disabled=true;
-
-  if(window.orderSelected.length===correctSteps.length) {
-    const result=window.orderSelected.map(i=>window.orderShuffled[i]);
-    const success=result.every((step,i)=>step===correctSteps[i]);
-
-    document.getElementById("orderResult").textContent=
-      success
-      ?"🎉 Perfect! All steps are correct!"
-      :"Not quite! Try again to learn the correct sequence.";
-
-    if(success) {
-      game.puzzlesWon++;
-      addXP(40,"Recipe order completed!");
-      completeMission("order");
-      checkAchievements();
-    } else {
-      setTimeout(startOrder,2000);
-    }
-  }
-}
-
-// =============================================
-// DAILY MISSIONS AND REWARDS
-// =============================================
-
-function renderMissions() {
-  const area=document.getElementById("missionList");
-
-  area.innerHTML=missions.map(mission=>{
-    const completed=game.completedMissions.includes(mission.id);
-
-    return `
-      <div class="mission-card">
-        <div>
-          <h3>${completed?"✅ ":"🎯 "}${mission.title}</h3>
-          <p>${mission.description}</p>
-          <small>Reward: ⭐ ${mission.reward} XP</small>
-        </div>
-        <button ${completed?"disabled":""}
-          onclick="claimMission('${mission.id}')">
-          ${completed?"Completed":"View Mission"}
-        </button>
-      </div>
-    `;
-  }).join("");
-}
-
-function completeMission(id) {
-  if(game.completedMissions.includes(id)) return;
-
-  game.completedMissions.push(id);
-
-  const mission=missions.find(m=>m.id===id);
-
-  if(mission) {
-    addXP(mission.reward,"Mission reward!");
-  }
-
-  renderMissions();
-  saveGame();
-}
-
-function claimMission(id) {
-  const conditions={
-    cook:game.cookedRecipes.length>0,
-    create:game.recipesCreated>0,
-    quiz:game.completedMissions.includes("quiz"),
-    memory:game.completedMissions.includes("memory"),
-    order:game.completedMissions.includes("order")
-  };
-
-  if(!conditions[id]) {
-    showToast("Complete the challenge first!");
+  if (memoryFirst === null) {
+    memoryFirst = index;
     return;
   }
 
-  showToast("This mission has already been completed!");
+  if (memoryCards[memoryFirst] === memoryCards[index]) {
+    button.dataset.matched = "true";
+    document.getElementById("memory" + memoryFirst).dataset.matched = "true";
+    memoryMatches++;
+    memoryFirst = null;
+
+    if (memoryMatches === 6) {
+      game.puzzleWins++;
+      addXP(30);
+      showToast("All pairs matched! +30 XP");
+      renderMissions();
+    }
+  } else {
+    memoryLocked = true;
+    const first = memoryFirst;
+
+    setTimeout(() => {
+      const firstButton = document.getElementById("memory" + first);
+      const secondButton = document.getElementById("memory" + index);
+
+      if (firstButton && firstButton.dataset.matched !== "true") {
+        firstButton.textContent = "❔";
+        firstButton.dataset.open = "false";
+      }
+
+      if (secondButton && secondButton.dataset.matched !== "true") {
+        secondButton.textContent = "❔";
+        secondButton.dataset.open = "false";
+      }
+
+      memoryFirst = null;
+      memoryLocked = false;
+    }, 800);
+  }
 }
 
-// =============================================
-// ACHIEVEMENT SYSTEM
-// =============================================
+/* ==========================================
+   RECIPE ORDER GAME
+========================================== */
 
-function checkAchievements() {
-  achievements.forEach(item=>{
-    if(item.check()&&!game.achievements.includes(item.id)) {
-      game.achievements.push(item.id);
-      showToast("🏆 New Achievement: "+item.name);
+function startOrder() {
+  orderSteps = [
+    "Wash the ingredients",
+    "Cut the vegetables",
+    "Prepare the sauce",
+    "Cook the meal",
+    "Serve the dish"
+  ];
+
+  orderSteps = orderSteps.sort(() => Math.random() - 0.5);
+  orderStepIndex = 0;
+
+  renderOrderPuzzle();
+}
+
+function renderOrderPuzzle() {
+  const container = document.getElementById("puzzleGame");
+
+  container.innerHTML = `
+    <h3>Put the cooking steps in the correct order!</h3>
+    <p>Choose the first step, then continue.</p>
+    ${orderSteps.map((step, index) => `
+      <button class="primary-btn"
+        style="display:block;width:100%;margin:8px 0"
+        onclick="chooseOrderStep(${index})">
+        ${step}
+      </button>
+    `).join("")}
+    <p id="orderPuzzleFeedback"></p>
+  `;
+}
+
+function chooseOrderStep(index) {
+  const correctSteps = [
+    "Wash the ingredients",
+    "Cut the vegetables",
+    "Prepare the sauce",
+    "Cook the meal",
+    "Serve the dish"
+  ];
+
+  const selected = orderSteps[index];
+
+  if (selected !== correctSteps[orderStepIndex]) {
+    showToast("Not quite! Try again.");
+    orderStepIndex = 0;
+    orderSteps = [...correctSteps].sort(() => Math.random() - 0.5);
+    renderOrderPuzzle();
+    return;
+  }
+
+  orderStepIndex++;
+
+  if (orderStepIndex === correctSteps.length) {
+    document.getElementById("puzzleGame").innerHTML = `
+      <h2>Perfect Cooking Order! 🎉</h2>
+      <p>You completed the recipe challenge!</p>
+      <button class="primary-btn" onclick="startOrder()">Play Again</button>
+    `;
+
+    game.puzzleWins++;
+    addXP(40);
+    renderMissions();
+    return;
+  }
+
+  orderSteps.splice(index, 1);
+  renderOrderPuzzle();
+}
+
+/* ==========================================
+   INITIALIZATION
+========================================== */
+
+function initializeGame() {
+  if (!localStorage.getItem("freshopiaName")) {
+    const enteredName = prompt("Welcome to Freshopia! What is your chef name?");
+    if (enteredName && enteredName.trim()) {
+      game.name = enteredName.trim().slice(0, 24);
+      localStorage.setItem("freshopiaName", game.name);
     }
+  } else {
+    game.name = localStorage.getItem("freshopiaName");
+  }
+
+  renderRecipes();
+  renderCharacters();
+  renderMissions();
+  renderAchievements();
+  renderOrderHistory();
+  updateInterface();
+
+  const button = document.getElementById("openRestaurantBtn");
+
+  if (game.restaurantOpen) {
+    game.restaurantOpen = false;
+    if (button) button.textContent = "🍽️ Open Restaurant";
+  }
+
+  disableKitchen();
+
+  document.addEventListener("visibilitychange", () => {
+    saveGame();
   });
 
-  renderAchievements();
-  saveGame();
+  window.addEventListener("beforeunload", saveGame);
 }
-
-function renderAchievements() {
-  const area=document.getElementById("achievementList");
-
-  area.innerHTML=achievements.map(item=>{
-    const unlocked=game.achievements.includes(item.id);
-
-    return `
-      <div class="achievement-item ${unlocked?"":"locked"}">
-        <span>${item.icon}</span>
-        <h3>${item.name}</h3>
-        <p>${item.description}</p>
-        <small>${unlocked?"Unlocked ✓":"Locked 🔒"}</small>
-      </div>
-    `;
-  }).join("");
-}
-
-// =============================================
-// AUTO SAVE
-// =============================================
-
-window.addEventListener("beforeunload",saveGame);
 
 initializeGame();
-
-// =============================================
-// END OF FRESHOPIA GAME ENGINE
-// =============================================
