@@ -779,3 +779,17 @@ document.addEventListener("click",event=>{
 window.addEventListener("load",()=>{
   mikaWave();
 });
+// GAME RULES OPEN AND CLOSE
+const rulesButton = document.getElementById("rulesButton");
+const rulesPanel = document.getElementById("rulesPanel");
+const closeRules = document.getElementById("closeRules");
+
+if (rulesButton && rulesPanel && closeRules) {
+  rulesButton.addEventListener("click", () => {
+    rulesPanel.classList.add("show");
+  });
+
+  closeRules.addEventListener("click", () => {
+    rulesPanel.classList.remove("show");
+  });
+}
