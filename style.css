@@ -1060,3 +1060,118 @@ footer {
     padding: 12px !important;
   }
 }
+/* FRESHOPIA PINK & MINT RESTAURANT */
+
+body {
+  background:
+    linear-gradient(135deg, #ffdce9, #e1f5df, #ffeaf2);
+  min-height: 100vh;
+}
+
+.cafe-background {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 50% 15%, #fff8e9, transparent 50%),
+    linear-gradient(135deg, #f9c9df, #d8efdb);
+}
+
+.cafe-window {
+  position: absolute;
+  top: 8%;
+  left: 25%;
+  width: 48%;
+  height: 32%;
+  border: 12px solid #b5d9bd;
+  border-radius: 80px 80px 12px 12px;
+  background: linear-gradient(#d9f3e9, #fff0f5);
+  display: grid;
+  place-items: center;
+  font-size: 35px;
+}
+
+.cafe-lights {
+  position: absolute;
+  top: 4%;
+  left: 35%;
+  font-size: 30px;
+}
+
+.cafe-counter {
+  position: absolute;
+  left: 2%;
+  top: 40%;
+  width: 25%;
+  height: 25%;
+  border-radius: 20px;
+  background: #f4a9cb;
+  border: 5px solid #fff0f5;
+  text-align: center;
+  color: #864a70;
+  padding: 15px;
+}
+
+.cafe-counter span {
+  font-size: 30px;
+}
+
+.cafe-table {
+  position: absolute;
+  bottom: 12%;
+  width: 130px;
+  height: 65px;
+  border-radius: 50%;
+  background: #f8c1dc;
+  border: 6px solid #fff0f5;
+  text-align: center;
+  font-size: 25px;
+  padding-top: 12px;
+  box-shadow: 0 15px 0 -5px #a77b77;
+}
+
+.table-one { left: 15%; }
+.table-two { right: 18%; }
+
+.cafe-chair {
+  position: absolute;
+  bottom: 5%;
+  width: 65px;
+  height: 90px;
+  border-radius: 22px;
+  background: #b9dfbf;
+  border: 5px solid #f8fff7;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+}
+
+.chair-one { left: 8%; }
+.chair-two { left: 28%; }
+.chair-three { right: 10%; }
+
+.cafe-waiter {
+  position: absolute;
+  bottom: 15%;
+  left: 48%;
+  font-size: 75px;
+  animation: waiterMove 3s ease-in-out infinite;
+}
+
+.cafe-waiter span {
+  font-size: 28px;
+}
+
+.cafe-plants {
+  position: absolute;
+  bottom: 3%;
+  left: 40%;
+  font-size: 35px;
+}
+
+@keyframes waiterMove {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
