@@ -1,309 +1,645 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
+
 :root {
-  --green: #244b3c;
-  --pink: #e995b8;
-  --cream: #fffaf5;
-  --purple: #b9a5d8;
-  --text: #34463c;
-  --shadow: 0 8px 25px rgba(50,60,45,.08);
+  --pink: #f49ac5;
+  --pink-dark: #e875ad;
+  --purple: #ad91e8;
+  --purple-dark: #7655ae;
+  --cream: #fff9fc;
+  --text: #59465f;
+  --green: #9bd6ae;
+  --shadow: 0 10px 30px rgba(160, 104, 153, .12);
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  margin: 0;
-  background: #f8f7f2;
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(140deg, #fff5fa, #f8f2ff, #fff9f3);
   color: var(--text);
-  font-family: Arial, sans-serif;
+  min-height: 100vh;
 }
 
-button { font: inherit; cursor: pointer; }
+button, input {
+  font: inherit;
+}
 
-.app { min-height: 100vh; }
+button {
+  cursor: pointer;
+  border: none;
+  transition: .2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+.game-shell {
+  max-width: 1250px;
+  margin: auto;
+  padding: 20px;
+}
 
 .topbar {
-  height: 76px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 0 25px;
-  background: white;
-  border-bottom: 1px solid #eee9e3;
+  padding: 15px 22px;
+  background: rgba(255,255,255,.88);
+  border: 1px solid white;
+  border-radius: 22px;
+  box-shadow: var(--shadow);
   position: sticky;
-  top: 0;
+  top: 8px;
   z-index: 10;
+  backdrop-filter: blur(15px);
 }
 
-.brand {
-  color: var(--green);
-  font-family: Georgia, serif;
-  font-size: 27px;
-  font-weight: bold;
+.logo {
+  font-size: 25px;
+  font-weight: 900;
+  color: var(--purple-dark);
+  text-decoration: none;
 }
 
-.player-stats {
+.top-stats {
   display: flex;
-  gap: 15px;
-  font-size: 15px;
+  align-items: center;
+  gap: 20px;
+  font-weight: 800;
 }
 
-.menu-button {
-  display: none;
-  border: 0;
-  background: #f8e8ed;
-  padding: 10px 13px;
+.icon-button {
+  background: #f8e8f5;
+  padding: 9px;
   border-radius: 12px;
 }
 
-.sidebar {
-  position: fixed;
-  top: 76px;
-  bottom: 0;
-  left: 0;
-  width: 245px;
-  padding: 24px 15px;
-  background: white;
-  border-right: 1px solid #eee9e3;
-  z-index: 9;
-  overflow-y: auto;
-}
-
-.side-brand {
-  color: var(--green);
-  font-size: 21px;
-  font-weight: bold;
-  margin: 0 10px 25px;
-}
-
-.sidebar nav { display: grid; gap: 8px; }
-
-.nav-button {
-  border: 0;
-  padding: 14px;
-  text-align: left;
-  border-radius: 13px;
-  background: transparent;
-  color: #59665d;
-}
-
-.nav-button:hover,
-.nav-button.active {
-  background: #f9e8ef;
-  color: #9b4e70;
-  font-weight: bold;
-}
-
-.side-footer {
-  margin: 35px 10px;
-  color: #9a9b91;
-  font-size: 12px;
-}
-
-.main-content {
-  margin-left: 245px;
-  padding: 30px;
-  max-width: 1500px;
-}
-
-.page { display: none; }
-.page.active { display: block; }
-
-h1 {
-  color: var(--green);
-  font-family: Georgia, serif;
-  font-size: clamp(28px, 4vw, 42px);
-}
-
-h2 { color: var(--green); }
-
 .hero {
-  display: flex;
+  margin-top: 25px;
+  min-height: 365px;
+  border-radius: 32px;
+  padding: 40px;
+  background: linear-gradient(115deg, #ffe0ee, #e9ddff);
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 35px;
-  min-height: 230px;
-  border-radius: 25px;
-  background: linear-gradient(120deg,#f8dce8,#f8eddf,#e3eee2);
+  overflow: hidden;
+  position: relative;
   box-shadow: var(--shadow);
 }
 
-.hero h1 { margin: 8px 0; }
-
-.hero p { line-height: 1.6; }
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
 
 .eyebrow {
+  color: var(--pink-dark);
   font-size: 11px;
-  font-weight: bold;
+  font-weight: 900;
   letter-spacing: 2px;
 }
 
-.hero-art { font-size: clamp(35px,6vw,75px); }
+.hero h1 {
+  font-size: clamp(38px, 6vw, 65px);
+  line-height: 1.05;
+  margin: 15px 0;
+  color: #72518f;
+}
+
+.hero h1 span {
+  color: #e47eae;
+}
+
+.hero p {
+  max-width: 390px;
+  line-height: 1.7;
+  margin-bottom: 22px;
+}
 
 .primary-button {
-  border: 0;
-  border-radius: 30px;
-  padding: 13px 22px;
-  background: var(--green);
+  background: linear-gradient(120deg, #ed89b8, #a98ae4);
   color: white;
-  font-weight: bold;
+  padding: 13px 24px;
+  border-radius: 16px;
+  font-weight: 900;
+  box-shadow: 0 7px 17px #d99cc5;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4,minmax(0,1fr));
-  gap: 15px;
-  margin: 22px 0;
+.anime-area {
+  position: relative;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
-.stat-card, .panel {
+.anime-character {
+  font-size: clamp(110px, 16vw, 175px);
+  filter: drop-shadow(0 10px 8px rgba(120, 70, 120, .15));
+  animation: float 3s ease-in-out infinite;
+}
+
+.character-name {
+  font-weight: 900;
+  color: #825ca4;
   background: white;
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: var(--shadow);
-  margin-bottom: 18px;
+  padding: 5px 18px;
+  border-radius: 30px;
 }
 
-.stat-card span {
-  display: block;
-  font-size: 25px;
-}
-
-.stat-card small {
-  display: block;
-  margin: 10px 0;
-  color: #899087;
-}
-
-.stat-card strong { font-size: 23px; }
-
-.progress-track {
-  height: 12px;
+.speech-bubble {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  background: white;
+  padding: 12px 17px;
   border-radius: 20px;
-  background: #eee;
-  overflow: hidden;
+  max-width: 210px;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: var(--shadow);
 }
 
-#mission-progress {
+.sparkle {
+  position: absolute;
+  color: white;
+  font-size: 35px;
+}
+
+.sparkle-one {
+  top: 35px;
+  left: 20px;
+}
+
+.player-panel {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding: 20px;
+  margin-top: 22px;
+  border-radius: 24px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.player-avatar {
+  width: 65px;
+  height: 65px;
+  border-radius: 20px;
+  background: #fce5f1;
+  display: grid;
+  place-items: center;
+  font-size: 37px;
+}
+
+.player-info {
+  flex: 1;
+}
+
+.player-name {
+  font-weight: 900;
+  font-size: 19px;
+}
+
+.level-text {
+  color: #a17cae;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.xp-track {
+  width: 100%;
+  max-width: 400px;
+  height: 10px;
+  border-radius: 20px;
+  background: #f0e9f3;
+  overflow: hidden;
+  margin: 7px 0 3px;
+}
+
+#xpBar {
   width: 0;
   height: 100%;
-  background: #83b78d;
-  transition: width .3s;
+  background: linear-gradient(90deg, #f49ac5, #a88ae5);
+  border-radius: 20px;
+  transition: width .5s;
 }
 
-.card-grid {
+.player-info small {
+  font-size: 10px;
+  color: #a58cae;
+}
+
+.secondary-button {
+  background: #f5eafa;
+  color: var(--purple-dark);
+  padding: 11px 17px;
+  border-radius: 13px;
+  font-weight: 900;
+}
+
+.section {
+  margin-top: 45px;
+  scroll-margin-top: 90px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-heading h2 {
+  font-size: 25px;
+  margin-top: 5px;
+  color: #76558d;
+}
+
+.pill {
+  background: #f6e6f5;
+  color: #a46eaa;
+  border-radius: 30px;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.recipe-grid {
   display: grid;
-  grid-template-columns: repeat(3,minmax(0,1fr));
-  gap: 17px;
-  margin-top: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
-.game-card {
+.recipe-card {
   background: white;
-  padding: 20px;
-  border-radius: 18px;
+  border-radius: 22px;
+  overflow: hidden;
   box-shadow: var(--shadow);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: .25s;
 }
 
-.game-card .food-image {
-  font-size: 48px;
+.recipe-card:hover, .recipe-card.selected {
+  border-color: var(--pink);
+  transform: translateY(-5px);
+}
+
+.food-photo {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  display: block;
+  background: #f4e9ef;
+}
+
+.recipe-details {
+  padding: 17px;
+}
+
+.recipe-details h3 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.recipe-details p {
+  font-size: 12px;
+  color: #9b8a9e;
+  line-height: 1.5;
+}
+
+.recipe-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  color: #a36eaa;
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.cooking-panel {
+  background: white;
+  padding: 25px;
+  margin-top: 20px;
+  border-radius: 25px;
+  box-shadow: var(--shadow);
+  min-height: 170px;
+}
+
+.empty-kitchen {
   text-align: center;
   padding: 15px;
-  background: #fff4ed;
-  border-radius: 15px;
 }
 
-.game-card button {
+.empty-kitchen span {
+  font-size: 40px;
+}
+
+.empty-kitchen p {
+  font-size: 13px;
+  margin-top: 8px;
+  color: #a18da6;
+}
+
+.cooking-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.cooking-layout img {
   width: 100%;
-  margin-top: 12px;
-}
-
-.restaurant-art {
-  padding: 65px 15px;
-  margin: 20px 0;
-  border-radius: 25px;
-  text-align: center;
-  font-size: 65px;
-  background: linear-gradient(120deg,#e9f2e4,#f8e3ed);
-}
-
-.customer-face { font-size: 65px; }
-
-.character-card {
-  overflow: hidden;
-  background: white;
+  height: 220px;
+  object-fit: cover;
   border-radius: 18px;
+}
+
+.cooking-layout h3 {
+  margin-bottom: 12px;
+  color: #805d99;
+}
+
+.ingredient-list {
+  list-style: none;
+  display: grid;
+  gap: 9px;
+  margin: 12px 0;
+}
+
+.ingredient-list li {
+  background: #fff2f8;
+  border-radius: 12px;
+  padding: 9px 12px;
+  font-size: 13px;
+}
+
+.cook-button {
+  margin-top: 15px;
+  background: var(--green);
+  color: #315c41;
+  padding: 12px 20px;
+  border-radius: 14px;
+  font-weight: 900;
+}
+
+.ingredient-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.ingredient-card {
+  background: white;
+  border-radius: 17px;
+  padding: 10px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.ingredient-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.ingredient-card h4 {
+  margin: 8px 0 2px;
+}
+
+.ingredient-card p {
+  font-size: 11px;
+  color: #a18da6;
+}
+
+.academy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 17px;
+}
+
+.academy-card {
+  background: white;
+  border-radius: 22px;
+  padding: 23px;
   box-shadow: var(--shadow);
 }
 
-.character-picture {
-  height: 220px;
-  background-image: url("assets/characters.png");
-  background-size: 400% 100%;
-  background-position: var(--position) center;
-  background-repeat: no-repeat;
-  background-color: #f8e4ed;
+.academy-card > span {
+  font-size: 35px;
 }
 
-.character-details { padding: 16px; }
+.academy-card h3 {
+  margin: 10px 0;
+  color: #825b99;
+}
 
-.character-details button {
+.academy-card p {
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 60px;
+  color: #927f97;
+}
+
+.small-button {
+  margin-top: 13px;
+  background: #f5e7f4;
+  color: #9666a4;
+  padding: 10px 15px;
+  border-radius: 12px;
+  font-weight: 900;
+}
+
+.badge-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.badge-item {
+  background: white;
+  box-shadow: var(--shadow);
+  border-radius: 17px;
+  padding: 15px;
+  min-width: 135px;
+  text-align: center;
+  flex: 1;
+}
+
+.badge-item span {
+  font-size: 32px;
+}
+
+.badge-item h4 {
+  font-size: 12px;
+  margin-top: 7px;
+}
+
+.badge-item.locked {
+  opacity: .4;
+  filter: grayscale(1);
+}
+
+.mission-card {
+  background: linear-gradient(110deg, #fff, #f5eaff);
+  padding: 25px;
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  line-height: 1.8;
+}
+
+footer {
+  margin-top: 55px;
+  text-align: center;
+  padding: 30px;
+  border-top: 1px solid #f0ddea;
+  color: #a48eaa;
+  font-size: 13px;
+}
+
+.footer-logo {
+  font-size: 25px;
+  font-weight: 900;
+  color: #a77cc0;
+  margin-bottom: 8px;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(65, 40, 70, .45);
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+.modal-box {
+  position: relative;
+  background: white;
+  padding: 30px;
+  border-radius: 25px;
   width: 100%;
-  margin-top: 10px;
+  max-width: 440px;
+  box-shadow: 0 20px 60px #684b6a44;
 }
 
-.selected-character {
-  border: 2px solid var(--pink);
+.modal-box h2 {
+  color: #855d9a;
+  margin-bottom: 17px;
+}
+
+.modal-box label {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: 800;
+}
+
+.modal-box input {
+  width: 100%;
+  padding: 13px;
+  border: 2px solid #f2dced;
+  border-radius: 12px;
+  outline: none;
+}
+
+.modal-box input:focus {
+  border-color: var(--pink);
+}
+
+.avatar-options {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0 20px;
+}
+
+.avatar-option {
+  background: #fff0f7;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 27px;
+}
+
+.avatar-option.active {
+  outline: 3px solid var(--pink);
+}
+
+.close-button {
+  position: absolute;
+  top: 12px;
+  right: 17px;
+  background: none;
+  color: #b07ea9;
+  font-size: 28px;
 }
 
 .toast {
-  display: none;
   position: fixed;
   bottom: 25px;
   left: 50%;
-  transform: translateX(-50%);
-  background: var(--green);
+  transform: translate(-50%, 100px);
+  background: #76558d;
   color: white;
-  padding: 14px 22px;
-  border-radius: 30px;
-  z-index: 30;
-  box-shadow: var(--shadow);
+  padding: 13px 22px;
+  border-radius: 15px;
+  z-index: 100;
+  font-weight: 800;
+  transition: .3s;
+  opacity: 0;
+  text-align: center;
+  width: max-content;
+  max-width: 90%;
 }
 
-.toast.show { display: block; }
-
-@media(max-width:900px) {
-  .sidebar { width: 210px; }
-  .main-content { margin-left: 210px; padding: 20px; }
-  .stats-grid { grid-template-columns: repeat(2,1fr); }
-  .card-grid { grid-template-columns: repeat(2,1fr); }
+.toast.show {
+  transform: translate(-50%, 0);
+  opacity: 1;
 }
 
-@media(max-width:650px) {
-  .topbar { height: 68px; padding: 0 12px; }
-  .menu-button { display: block; }
-  .brand { font-size: 21px; }
-  .player-stats { gap: 8px; font-size: 12px; }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-13px); }
+}
 
-  .sidebar {
-    top: 68px;
-    width: 270px;
-    transform: translateX(-110%);
-    transition: transform .25s;
-    box-shadow: var(--shadow);
+@media (max-width: 750px) {
+  .game-shell { padding: 12px; }
+  .topbar { padding: 12px; }
+  .logo { font-size: 20px; }
+  .top-stats { gap: 10px; font-size: 12px; }
+  .hero {
+    padding: 25px 20px;
+    grid-template-columns: 1fr;
+    text-align: center;
   }
+  .hero p { margin-left: auto; margin-right: auto; }
+  .anime-area { min-height: 230px; }
+  .speech-bubble { right: 0; top: 0; }
+  .recipe-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .food-photo { height: 135px; }
+  .recipe-details { padding: 12px; }
+  .recipe-details h3 { font-size: 15px; }
+  .ingredient-grid { grid-template-columns: repeat(2, 1fr); }
+  .academy-grid { grid-template-columns: 1fr; }
+  .cooking-layout { grid-template-columns: 1fr; }
+  .player-panel { flex-wrap: wrap; }
+  .player-info { min-width: 55%; }
+  .secondary-button { margin-left: auto; }
+  .section-heading h2 { font-size: 21px; }
+}
 
-  .sidebar.open { transform: translateX(0); }
-
-  .main-content {
-    margin-left: 0;
-    padding: 18px 14px 35px;
-  }
-
-  .hero { padding: 23px; }
-  .hero-art { display: none; }
-  .stats-grid { gap: 10px; }
-  .stat-card { padding: 14px; }
-  .stat-card strong { font-size: 19px; }
-  .card-grid { grid-template-columns: 1fr; }
+@media (max-width: 380px) {
+  .recipe-grid { grid-template-columns: 1fr; }
+  .top-stats { gap: 7px; }
 }
