@@ -406,21 +406,47 @@ function updateCustomerArea(){
 // INGREDIENTS
 // ========================================
 
-function renderIngredients(){
-  const grid=$("ingredientGrid");
-  if(!grid) return;
-  grid.innerHTML="";
+function renderIngredients() {
+  const grid = $("ingredientGrid");
+  if (!grid) return;
 
-  ingredients.forEach(ingredient=>{
-    const selected=selectedItems.includes(ingredient.id);
-    const card=document.createElement("div");
-    card.className="ingredient-card"+(selected?" selected":"");
-    card.innerHTML=`
-      <img src="${ingredient.image}" alt="${ingredient.name}" loading="lazy">
-      <strong>${ingredient.name}</strong>
-      <small>${selected?"Selected ✓":"Tap to select"}</small>
-    `;
-    card.addEventListener("click",()=>toggleIngredient(ingredient.id));
+  grid.innerHTML = "";
+
+  ingredients.forEach(ingredient => {
+    const selected = selectedItems.includes(ingredient.id);
+
+    const card = document.createElement("div");
+    card.className = "ingredient-card" + (selected ? " selected" : "");
+
+    const image = document.createElement("img");
+    image.src = ingredient.image;
+    image.alt = ingredient.name;
+    image.loading = "lazy";
+
+    // Görsel yüklenemezse düzenli bir yedek göster
+    image.onerror = function () {
+      this.style.display = "none";
+
+      const fallback = document.createElement("div");
+      fallback.className = "ingredient-placeholder";
+      fallback.textContent = "🥗";
+      this.parentElement.insertBefore(fallback, this);
+    };
+
+    const name = document.createElement("strong");
+    name.textContent = ingredient.name;
+
+    const instruction = document.createElement("small");
+    instruction.textContent = selected ? "Selected ✓" : "Tap to select";
+
+    card.appendChild(image);
+    card.appendChild(name);
+    card.appendChild(instruction);
+
+    card.addEventListener("click", () => {
+      toggleIngredient(ingredient.id);
+    });
+
     grid.appendChild(card);
   });
 }
