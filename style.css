@@ -1,922 +1,170 @@
 :root {
-  --pink: #f5a9c9;
-  --pink-light: #fff0f6;
-  --pink-dark: #d96d9e;
-  --purple: #c7b3ef;
-  --purple-light: #f1eaff;
-  --green: #b8dfc4;
-  --dark: #49364e;
-  --text: #65566a;
-  --white: #ffffff;
-  --shadow: 0 8px 28px rgba(153, 105, 151, 0.10);
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Nunito', sans-serif;
-  color: var(--dark);
-  background: linear-gradient(145deg, #fff2f8, #f4eaff, #fff5f8);
-  min-height: 100vh;
-}
-
-button {
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-  transition: 0.2s ease;
-}
-
-button:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.03);
-}
-
-.app {
-  width: min(100%, 1100px);
-  margin: auto;
-  padding: 18px;
-}
-
-/* HEADER */
-
-.top-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  background: rgba(255,255,255,0.92);
-  padding: 17px 22px;
-  border-radius: 25px;
-  box-shadow: var(--shadow);
-  margin-bottom: 20px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.brand-icon {
-  font-size: 37px;
-}
-
-.brand h1 {
-  font-size: 25px;
-  font-weight: 900;
-  color: #b85d94;
-}
-
-.brand p {
-  font-size: 12px;
-  color: #98849e;
-}
-
-.player-info {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.player-info span {
-  background: var(--purple-light);
-  border-radius: 20px;
-  padding: 9px 13px;
-  font-size: 13px;
-  font-weight: 800;
-}
-
-/* WELCOME */
-
-.welcome-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  padding: 28px;
-  border-radius: 28px;
-  background: linear-gradient(120deg, #f7c8dd, #dfd0ff);
-  box-shadow: var(--shadow);
-  margin-bottom: 22px;
-}
-
-.welcome-card h2 {
-  font-size: clamp(22px, 4vw, 31px);
-  margin: 7px 0;
-}
-
-.welcome-card p {
-  color: #765b7c;
-}
-
-.eyebrow {
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  font-weight: 900;
-  color: var(--pink-dark);
-}
-
-.welcome-character {
-  font-size: 85px;
-  animation: float 3s ease-in-out infinite;
-}
-
-.xp-track {
-  height: 10px;
-  background: rgba(255,255,255,0.65);
-  border-radius: 20px;
-  overflow: hidden;
-  margin-top: 17px;
-  max-width: 350px;
-}
-
-#xpProgress {
-  width: 0%;
-  height: 100%;
-  background: #b65e9b;
-  border-radius: 20px;
-  transition: width 0.5s;
-}
-
-#xpText {
-  display: block;
-  margin-top: 5px;
-  font-size: 12px;
-}
-
-/* NAVIGATION */
-
-.main-nav {
-  display: flex;
-  gap: 9px;
-  overflow-x: auto;
-  padding: 8px 2px 15px;
-  margin-bottom: 10px;
-  scrollbar-width: thin;
-}
-
-.nav-btn {
-  flex: 0 0 auto;
-  padding: 12px 17px;
-  background: white;
-  border-radius: 18px;
-  color: var(--text);
-  font-size: 13px;
-  font-weight: 800;
-  box-shadow: var(--shadow);
-}
-
-.nav-btn.active {
-  background: var(--pink);
-  color: white;
-}
-
-/* SECTIONS */
-
-.game-section {
-  display: none;
-  animation: fadeIn 0.35s ease;
-}
-
-.game-section.active {
-  display: block;
-}
-
-.section-heading {
-  margin: 20px 3px;
-}
-
-.section-heading h2 {
-  font-size: 27px;
-  margin: 5px 0;
-}
-
-.section-heading p {
-  color: #8d7b91;
-}
-
-/* DASHBOARD */
-
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-}
-
-.dashboard-card,
-.home-panel,
-.restaurant-scene,
-.customer-order-card,
-.ingredient-kitchen,
-.cooking-process,
-.order-history {
-  background: rgba(255,255,255,0.96);
-  padding: 23px;
-  border-radius: 26px;
-  box-shadow: var(--shadow);
-  margin-bottom: 20px;
-}
-
-.dashboard-card > span {
-  font-size: 36px;
-}
-
-.dashboard-card h3 {
-  margin: 8px 0;
-}
-
-.dashboard-card p {
-  color: #93839a;
-  font-size: 13px;
-  margin-bottom: 14px;
-}
-
-.dashboard-card button,
-.primary-btn {
-  padding: 12px 19px;
-  border-radius: 16px;
-  color: white;
-  background: linear-gradient(110deg, #ec9dc1, #b99be8);
-  font-weight: 900;
-}
-
-.special-content {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-top: 15px;
-}
-
-.special-content img {
-  width: 42%;
-  height: 165px;
-  object-fit: cover;
-  border-radius: 20px;
-}
-
-.special-content p {
-  color: #8c7a91;
-  margin: 8px 0 14px;
-}
-
-/* RESTAURANT STATS */
-
-.restaurant-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin: 18px 0;
-}
-
-.stat-card {
-  text-align: center;
-  background: white;
-  padding: 18px 8px;
-  border-radius: 22px;
-  box-shadow: var(--shadow);
-}
-
-.stat-card span {
-  font-size: 28px;
-}
-
-.stat-card p {
-  font-size: 12px;
-  color: #93839a;
-  margin: 5px 0;
-}
-
-.stat-card h3 {
-  font-size: 22px;
-  color: #b65e96;
-}
-
-/* RESTAURANT */
-
-.restaurant-scene-heading,
-.card-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.restaurant-scene-heading p,
-.card-heading p {
-  font-size: 13px;
-  color: #95869b;
-  margin-top: 4px;
-}
-
-.live-badge,
-.mode-badge {
-  background: var(--pink-light);
-  color: #b85c8e;
-  border-radius: 30px;
-  padding: 10px 14px;
-  font-size: 11px;
-  font-weight: 900;
-}
-
-.restaurant-image {
-  height: 230px;
-  overflow: hidden;
-  border-radius: 21px;
-  margin-bottom: 17px;
-}
-
-.restaurant-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.customer-area {
-  margin-bottom: 15px;
-}
-
-.empty-state {
-  background: var(--purple-light);
-  padding: 30px 15px;
-  text-align: center;
-  border-radius: 22px;
-}
-
-.empty-state span {
-  font-size: 40px;
-}
-
-.empty-state h3 {
-  margin: 8px 0;
-}
-
-.empty-state p {
-  font-size: 13px;
-  color: #93839a;
-}
-
-.customer-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 18px;
-  border-radius: 20px;
-  background: var(--pink-light);
-  margin-bottom: 10px;
-}
-
-.customer-avatar {
-  font-size: 49px;
-}
-
-.customer-card p {
-  font-size: 13px;
-  color: #8e7c92;
-}
-
-#openRestaurantBtn {
-  width: 100%;
-}
-
-/* CUSTOMER ORDER */
-
-.current-customer {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: #fff0f6;
-  padding: 20px;
-  border-radius: 23px;
-  margin-bottom: 17px;
-}
-
-.current-customer p {
-  color: #8b7c90;
-  margin-top: 4px;
-}
-
-.current-order {
-  background: var(--purple-light);
-  padding: 18px;
-  border-radius: 22px;
-}
-
-.recipe-preview {
-  display: flex;
-  align-items: center;
-  gap: 17px;
-  margin-top: 10px;
-}
-
-.recipe-preview img {
-  width: 115px;
-  height: 105px;
-  object-fit: cover;
-  border-radius: 18px;
-}
-
-.recipe-preview p {
-  font-size: 13px;
-  color: #85748c;
-  margin-top: 5px;
-}
-
-.timer-panel {
-  text-align: center;
-  padding: 22px;
-}
-
-.timer-panel p {
-  font-weight: 800;
-  color: #8b7c90;
-}
-
-.timer-panel h2 {
-  font-size: 42px;
-  color: #d76f9f;
-  margin: 5px;
-  font-variant-numeric: tabular-nums;
-}
-
-.feedback-message {
-  background: #fff0f6;
-  padding: 15px;
-  border-radius: 17px;
-  text-align: center;
-  color: #976c89;
-  font-weight: 800;
-}
-
-/* INGREDIENTS */
-
-.ingredient-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin: 20px 0;
-}
-
-.ingredient-card {
-  background: #fff0f6;
-  border: 3px solid transparent;
-  border-radius: 21px;
-  overflow: hidden;
-  text-align: center;
-  padding: 10px;
-  color: #4b3d53;
-}
-
-.ingredient-card.selected {
-  border-color: #bd91df;
-  background: #f0e8ff;
-}
-
-.ingredient-card img {
-  width: 100%;
-  height: 115px;
-  object-fit: cover;
-  border-radius: 14px;
-}
-
-.ingredient-card h4 {
-  padding: 9px 3px 5px;
-  color: #6d83ad;
-}
-
-.ingredient-card small {
-  color: #9989a0;
-}
-
-.ingredient-card.selected::after {
-  content: "✓ SELECTED";
-  display: block;
-  color: #9a65b7;
-  font-size: 11px;
-  font-weight: 900;
-  padding: 5px;
-}
-
-.selected-ingredients {
-  background: var(--purple-light);
-  padding: 18px;
-  border-radius: 19px;
-  margin-bottom: 16px;
-}
-
-.selected-ingredients h3 {
-  margin-bottom: 9px;
-}
-
-#selectedIngredients {
-  font-size: 13px;
-  color: #88788e;
-}
-
-#prepareMealBtn,
-#serveMealBtn {
-  width: 100%;
-}
-
-button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* COOKING PROCESS */
-
-.cooking-steps {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin: 16px 0;
-}
-
-.cooking-step {
-  padding: 13px;
-  border-radius: 15px;
-  background: var(--pink-light);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.cooking-step.completed {
-  background: var(--green);
-  color: #356b4a;
-}
-
-#cookingContent {
-  text-align: center;
-  background: var(--purple-light);
-  border-radius: 18px;
-  padding: 18px;
-  margin-bottom: 15px;
-}
-
-#cookingContent img {
-  max-width: 100%;
-  width: 180px;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 16px;
-}
-
-/* HISTORY */
-
-.history-item {
-  padding: 13px;
-  border-radius: 15px;
-  background: #fff0f6;
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 13px;
-}
-
-/* RECIPES */
-
-.recipe-grid,
-.character-grid,
-.achievement-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-}
-
-.recipe-card,
-.character-card,
-.achievement-card {
-  background: white;
-  padding: 14px;
-  border-radius: 22px;
-  box-shadow: var(--shadow);
-}
-
-.recipe-card img {
-  width: 100%;
-  height: 145px;
-  object-fit: cover;
-  border-radius: 16px;
-}
-
-.recipe-card h3,
-.character-card h3 {
-  margin: 10px 0 5px;
-}
-
-.recipe-card p,
-.character-card p {
-  font-size: 12px;
-  color: #95869b;
-}
-
-.character-card {
-  text-align: center;
-}
-
-.character-card .character-avatar {
-  font-size: 65px;
-}
-
-.character-card button {
-  background: var(--purple-light);
-  color: #8063a5;
-  border-radius: 13px;
-  padding: 10px;
-  margin-top: 12px;
-  width: 100%;
-  font-weight: 800;
-}
-
-/* MISSIONS AND AWARDS */
-
-#missionList {
-  display: grid;
-  gap: 12px;
-}
-
-.mission-card {
-  background: white;
-  padding: 18px;
-  border-radius: 20px;
-  box-shadow: var(--shadow);
-}
-
-.achievement-card {
-  text-align: center;
-}
-
-.achievement-card span {
-  font-size: 36px;
-}
-
-.achievement-card p {
-  font-size: 12px;
-  color: #95869b;
-}
-
-/* PUZZLES */
-
-.puzzle-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.puzzle-card {
-  background: white;
-  border-radius: 20px;
-  padding: 18px 10px;
-  box-shadow: var(--shadow);
-  color: var(--dark);
-}
-
-.puzzle-card span {
-  font-size: 32px;
-}
-
-.puzzle-card h3 {
-  font-size: 14px;
-  margin: 8px 0;
-}
-
-.puzzle-card p {
-  font-size: 11px;
-  color: #95869b;
-}
-
-.puzzle-game {
-  background: white;
-  border-radius: 22px;
-  padding: 22px;
-  margin-top: 18px;
-  box-shadow: var(--shadow);
-}
-
-/* FOOTER */
-
-footer {
-  text-align: center;
-  padding: 30px 10px;
-  color: #95869b;
-}
-
-.footer-logo {
-  font-size: 23px;
-  font-weight: 900;
-  color: #bd6b9d;
-}
-
-footer p {
-  margin: 5px 0;
-}
-
-/* LEVEL UP */
-
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(50,30,55,0.55);
-  z-index: 100;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-.modal.show {
-  display: flex;
-}
-
-.modal-content {
-  background: white;
-  text-align: center;
-  padding: 35px;
-  border-radius: 28px;
-  width: min(100%, 360px);
-}
-
-.dance-character {
-  font-size: 80px;
-  animation: dance 0.6s infinite alternate;
-}
-
-.modal-content h2 {
-  color: #cf6da1;
-  margin: 15px;
-}
-
-.modal-content button {
-  background: var(--pink);
-  color: white;
-  padding: 13px 25px;
-  border-radius: 15px;
-  margin-top: 15px;
-  font-weight: 900;
-}
-
-/* TOAST */
-
-.toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translate(-50%, 100px);
-  background: #6b5273;
-  color: white;
-  padding: 14px 22px;
-  border-radius: 30px;
-  z-index: 200;
-  transition: 0.3s;
-  opacity: 0;
-  text-align: center;
-  width: max-content;
-  max-width: 90%;
-}
-
-.toast.show {
-  transform: translate(-50%, 0);
-  opacity: 1;
-}
-
-/* ANIMATIONS */
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes dance {
-  from { transform: rotate(-12deg) translateY(0); }
-  to { transform: rotate(12deg) translateY(-12px); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* MOBILE */
-
-@media (max-width: 600px) {
-  .app {
-    padding: 10px;
-  }
-
-  .top-header {
-    padding: 13px;
-  }
-
-  .brand h1 {
-    font-size: 20px;
-  }
-
-  .brand-icon {
-    font-size: 29px;
-  }
-
-  .player-info {
-    gap: 5px;
-  }
-
-  .player-info span {
-    font-size: 10px;
-    padding: 7px;
-  }
-
-  .welcome-card {
-    padding: 20px;
-  }
-
-  .welcome-character {
-    font-size: 60px;
-  }
-
-  .welcome-card h2 {
-    font-size: 21px;
-  }
-
-  .section-heading h2 {
-    font-size: 23px;
-  }
-
-  .dashboard-grid,
-  .recipe-grid,
-  .character-grid,
-  .achievement-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .restaurant-stats {
-    gap: 7px;
-  }
-
-  .stat-card {
-    padding: 13px 5px;
-  }
-
-  .stat-card p {
-    font-size: 10px;
-  }
-
-  .stat-card h3 {
-    font-size: 18px;
-  }
-
-  .restaurant-scene,
-  .customer-order-card,
-  .ingredient-kitchen,
-  .cooking-process,
-  .order-history,
-  .home-panel {
-    padding: 16px;
-  }
-
-  .restaurant-image {
-    height: 175px;
-  }
-
-  .recipe-preview img {
-    width: 95px;
-    height: 90px;
-  }
-
-  .recipe-preview h3 {
-    font-size: 15px;
-  }
-
-  .ingredient-card img {
-    height: 100px;
-  }
-
-  .puzzle-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .special-content {
-    align-items: flex-start;
-  }
-
-  .special-content img {
-    width: 40%;
-    height: 130px;
-  }
-}
-
-@media (max-width: 360px) {
-  .welcome-character {
-    font-size: 48px;
-  }
-
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
+  --pink:#f3a8c9;
+  --pink-light:#fff0f6;
+  --pink-dark:#c96899;
+  --purple:#c7b4ee;
+  --purple-light:#f1eaff;
+  --green:#b9dfc5;
+  --dark:#49364e;
+  --muted:#928197;
+  --shadow:0 8px 28px rgba(153,105,151,.11);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;color:var(--dark);background:linear-gradient(145deg,#fff3f8,#f2eaff,#fff7fa);min-height:100vh}
+button{font-family:inherit;border:0;cursor:pointer;transition:.2s}
+button:hover{transform:translateY(-2px)}
+.app{width:min(1100px,100%);margin:auto;padding:16px}
+
+.top-header,.panel,.dashboard-card,.home-panel,.recipe-card,.character-card,.achievement-card,.mission-card{
+  background:#fff;border-radius:23px;box-shadow:var(--shadow)
+}
+.top-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-icon{font-size:35px}
+.brand h1{color:#b85d94;font-size:25px;font-weight:900}
+.brand p{font-size:12px;color:var(--muted)}
+.player-info{display:flex;gap:8px;flex-wrap:wrap}
+.player-info span{background:var(--purple-light);padding:9px 12px;border-radius:20px;font-size:13px;font-weight:800}
+
+.welcome-card{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:26px;border-radius:27px;background:linear-gradient(120deg,#f7c8dd,#dfd0ff);margin-bottom:20px}
+.welcome-card h2{font-size:clamp(22px,4vw,31px);margin:7px 0}
+.welcome-card p{color:#765b7c}
+.welcome-character{font-size:75px;animation:float 3s infinite}
+.eyebrow{font-size:11px;letter-spacing:1.3px;font-weight:900;color:var(--pink-dark)}
+.xp-track{height:10px;background:#ffffffa8;border-radius:20px;overflow:hidden;margin-top:14px;max-width:350px}
+#xpProgress{height:100%;width:0;background:#b65e9b;border-radius:20px;transition:width .4s}
+#xpText{font-size:12px}
+
+.main-nav{display:flex;gap:8px;overflow-x:auto;padding:8px 2px 14px;margin-bottom:10px}
+.nav-btn{flex:0 0 auto;background:white;padding:12px 16px;border-radius:16px;color:var(--dark);font-weight:800;box-shadow:var(--shadow)}
+.nav-btn.active{background:var(--pink);color:white}
+.game-section{display:none;animation:fade .3s}
+.game-section.active{display:block}
+.section-heading{margin:20px 3px}
+.section-heading h2{font-size:27px;margin:5px 0}
+.section-heading p{color:var(--muted)}
+
+.dashboard-grid,.recipe-grid,.character-grid,.achievement-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.dashboard-card{padding:20px}
+.dashboard-card span{font-size:35px}
+.dashboard-card h3{margin:8px 0}
+.dashboard-card p,.recipe-card p,.character-card p,.achievement-card p{font-size:13px;color:var(--muted);margin-bottom:12px}
+.dashboard-card button,.primary-btn{background:linear-gradient(110deg,#ec9dc1,#b99be8);color:white;padding:12px 17px;border-radius:15px;font-weight:900}
+.restaurant-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.stat-card{text-align:center;background:white;padding:16px 7px;border-radius:20px;box-shadow:var(--shadow)}
+.stat-card span{font-size:27px}
+.stat-card p{font-size:12px;color:var(--muted)}
+.stat-card h3{font-size:22px;color:#b65e96}
+.panel{padding:21px;margin-bottom:18px}
+.panel h3{margin-bottom:12px}
+.wide-image{width:100%;height:210px;object-fit:cover;border-radius:18px;margin:8px 0 15px}
+.empty-state{text-align:center;background:var(--purple-light);padding:25px;border-radius:18px;margin-bottom:14px}
+.empty-state h3{margin:8px}
+.empty-state p{color:var(--muted);font-size:13px}
+#openRestaurantBtn{width:100%}
+.card-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}
+.card-heading p{font-size:12px;color:var(--muted)}
+.live-badge,.mode-badge{background:var(--pink-light);color:#b85c8e;padding:8px 12px;border-radius:20px;font-size:10px;font-weight:900}
+.customer-card,.current-customer{display:flex;align-items:center;gap:14px;background:var(--pink-light);padding:16px;border-radius:18px;margin-bottom:14px}
+.customer-avatar{font-size:45px}
+.customer-card p,.current-customer p{font-size:13px;color:var(--muted)}
+.recipe-preview{display:flex;align-items:center;gap:15px;background:var(--purple-light);padding:13px;border-radius:18px}
+.recipe-preview img{width:110px;height:100px;object-fit:cover;border-radius:14px}
+.recipe-preview p{font-size:12px;color:var(--muted)}
+.timer-panel{text-align:center;padding:18px}
+.timer-panel p{font-weight:800;color:var(--muted);font-size:13px}
+.timer-panel h2{font-size:40px;color:#d76f9f}
+.feedback-message{background:var(--pink-light);padding:13px;border-radius:15px;text-align:center;color:#976c89;font-weight:800}
+.ingredient-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:16px 0}
+.ingredient-card{border:3px solid transparent;background:#fff0f6;border-radius:17px;padding:8px;color:var(--dark);overflow:hidden}
+.ingredient-card.selected{border-color:#bd91df;background:#f0e8ff}
+.ingredient-card img{width:100%;height:90px;object-fit:cover;border-radius:12px}
+.ingredient-card h4{font-size:12px;padding:7px 2px}
+.ingredient-card small{font-size:10px;color:var(--muted)}
+.selected-ingredients{background:var(--purple-light);padding:14px;border-radius:16px;margin-bottom:14px}
+.selected-ingredients h3{font-size:15px}
+#selectedIngredients{font-size:13px;color:var(--muted)}
+.primary-btn{width:100%}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.cooking-steps{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:14px 0}
+.cooking-step{padding:12px;border-radius:13px;background:var(--pink-light);font-size:12px;font-weight:800}
+.cooking-step.completed{background:var(--green);color:#356b4a}
+.cooking-content{text-align:center;background:var(--purple-light);padding:17px;border-radius:16px;margin-bottom:13px}
+.history-item{display:flex;justify-content:space-between;gap:8px;background:var(--pink-light);padding:12px;border-radius:13px;margin-top:8px;font-size:12px}
+.recipe-card,.character-card,.achievement-card{padding:13px}
+.recipe-card img{width:100%;height:140px;object-fit:cover;border-radius:15px}
+.recipe-card h3,.character-card h3{margin:8px 0}
+.recipe-card button{margin-top:8px}
+.character-card{text-align:center}
+.character-avatar{font-size:58px}
+.character-card button{width:100%;background:var(--purple-light);color:#8063a5;padding:10px;border-radius:12px;font-weight:800}
+.mission-card{padding:17px;margin-bottom:12px}
+.achievement-card{text-align:center}
+.achievement-card span{font-size:35px}
+.puzzle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.puzzle-card{background:white;border-radius:18px;padding:17px 8px;box-shadow:var(--shadow);color:var(--dark)}
+.puzzle-card h3{font-size:14px;margin:7px}
+.puzzle-card p{font-size:11px;color:var(--muted)}
+.puzzle-game{background:white;padding:20px;border-radius:20px;margin-top:15px;box-shadow:var(--shadow)}
+footer{text-align:center;padding:30px;color:var(--muted)}
+footer h3{color:#bd6b9d}
+
+/* MIKA ASSISTANT */
+.mika-assistant{position:fixed;right:17px;bottom:18px;z-index:80;display:flex;align-items:flex-end;gap:10px;max-width:min(440px,calc(100vw - 24px));pointer-events:none}
+.mika-character,.mika-bubble{pointer-events:auto}
+.mika-character{width:94px;height:112px;border-radius:48px 48px 25px 25px;background:linear-gradient(145deg,#f9c6df,#d9c9ff);box-shadow:0 8px 25px #9e77a544;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;border:3px solid white;flex-shrink:0}
+.mika-face{font-size:49px;filter:drop-shadow(0 3px 2px #a76c9b44)}
+.mika-name{font-size:10px;font-weight:900;letter-spacing:2px;color:#754b76}
+.mika-sparkle{position:absolute;right:8px;top:5px;color:white;font-size:20px;animation:twinkle 1.5s infinite}
+.mika-bubble{position:relative;background:white;border:2px solid #f4c4dc;border-radius:20px;padding:15px;width:260px;box-shadow:0 8px 25px #9e77a533;animation:pop .25s ease}
+.mika-bubble:after{content:"";position:absolute;bottom:18px;right:-10px;width:17px;height:17px;background:white;border-right:2px solid #f4c4dc;border-bottom:2px solid #f4c4dc;transform:rotate(-45deg)}
+.mika-tag{font-size:9px;letter-spacing:1.4px;font-weight:900;color:#c16e9b}
+.mika-bubble h3{font-size:17px;margin:5px 20px 5px 0;color:#754b76}
+.mika-bubble p:not(.mika-tag){font-size:12px;line-height:1.5;color:#76677c}
+.mika-next{margin-top:10px;background:#edacd0;color:#653e65;border-radius:12px;padding:9px 13px;font-weight:900;font-size:12px}
+.mika-close{position:absolute;right:9px;top:7px;background:transparent;color:#a47d9e;font-size:20px}
+.mika-assistant.hidden{display:none}
+
+.modal{display:none;position:fixed;inset:0;background:#321e3788;z-index:100;justify-content:center;align-items:center;padding:20px}
+.modal.show{display:flex}
+.modal-content{background:white;text-align:center;padding:30px;border-radius:26px;width:min(350px,100%)}
+.level-dancer{font-size:75px;animation:dance .5s infinite alternate}
+.modal-content h2{color:#cf6da1;margin:12px}
+.modal-content button{background:var(--pink);color:white;padding:12px 24px;border-radius:14px;margin-top:15px;font-weight:900}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,100px);background:#6b5273;color:white;padding:13px 20px;border-radius:30px;opacity:0;transition:.3s;z-index:120;text-align:center;max-width:90%}
+.toast.show{transform:translate(-50%,0);opacity:1}
+
+@keyframes float{50%{transform:translateY(-9px)}}
+@keyframes dance{to{transform:rotate(13deg) translateY(-10px)}}
+@keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes twinkle{50%{transform:scale(1.3) rotate(20deg)}}
+
+@media(max-width:600px){
+  .app{padding:10px}
+  .top-header{padding:12px}
+  .brand h1{font-size:20px}
+  .brand-icon{font-size:27px}
+  .player-info span{font-size:10px;padding:7px}
+  .welcome-card{padding:18px}
+  .welcome-character{font-size:52px}
+  .welcome-card h2{font-size:21px}
+  .section-heading h2{font-size:23px}
+  .dashboard-grid,.recipe-grid,.character-grid,.achievement-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .restaurant-stats{gap:6px}
+  .stat-card{padding:12px 4px}
+  .stat-card p{font-size:10px}
+  .stat-card h3{font-size:18px}
+  .panel{padding:15px}
+  .wide-image{height:160px}
+  .ingredient-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ingredient-card img{height:100px}
+  .mika-assistant{right:8px;bottom:8px;gap:6px}
+  .mika-character{width:66px;height:82px}
+  .mika-face{font-size:35px}
+  .mika-bubble{width:min(235px,calc(100vw - 100px));padding:12px}
+  .mika-bubble h3{font-size:15px}
+  .mika-bubble p:not(.mika-tag){font-size:11px}
+  .puzzle-grid{grid-template-columns:1fr}
 }
