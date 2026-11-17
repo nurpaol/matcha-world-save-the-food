@@ -1,2180 +1,1394 @@
+/* ============================================================
+   FRESHOPIA ULTIMATE GAME ENGINE 6.0
+   COMPLETE ALL-IN-ONE EDITION
+   Anime RPG | Cooking | Sustainability | Rewards
+   NO QUIZ SYSTEM
+============================================================ */
+
 "use strict";
 
-/* =========================================================
-   MATCHA WORLD: SAVE THE FOOD
-   ULTIMATE GAME ENGINE 5.0
-   English Edition | Restaurant Simulation
-   ========================================================= */
+/* ============================================================
+   1. CONFIGURATION
+============================================================ */
 
-/* =========================================================
-   01. CONFIGURATION
-========================================================= */
-
-const GAME_KEY = "matchaUltimateSave";
-const GAME_VERSION = "5.0.0";
+const GAME_KEY = "freshopiaUltimate6Save";
 
 const CONFIG = {
-    startingCash: 1500,
-    startingStock: 30,
-    startingEcoScore: 75,
-    startingLevel: 1,
-    startingSatisfaction: 100,
-    maxSatisfaction: 100,
-    maxEcoScore: 100,
-    xpPerLevel: 250,
-    autosaveInterval: 15000,
-    maxOrderQueue: 5,
-    currency: "$"
+    maxLevel: 30,
+    startCoins: 150,
+    startXP: 0,
+    maxIngredients: 6,
+    orderDuration: 180,
+    autosave: 10000,
+    dailyReward: 100
 };
 
-const $ = id => document.getElementById(id);
-
-const clamp = (value, min, max) =>
-    Math.max(min, Math.min(max, value));
-
-const random = (min, max) =>
-    Math.floor(Math.random() * (max - min + 1)) + min;
-
-const pick = array =>
-    array[Math.floor(Math.random() * array.length)];
-
-const formatMoney = value =>
-    CONFIG.currency + Number(value || 0).toLocaleString("en-US", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2
-    });
-
-const escapeHTML = value =>
-    String(value ?? "").replace(/[&<>"']/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-    })[char]);
-
-/* =========================================================
-   02. GAME DATA
-========================================================= */
+/* ============================================================
+   2. GAME DATA
+============================================================ */
 
 const INGREDIENTS = [
-    { id: "avocado", name: "Avocado", emoji: "🥑", price: 8, stock: 8, category: "Fresh" },
-    { id: "lettuce", name: "Lettuce", emoji: "🥬", price: 4, stock: 8, category: "Fresh" },
-    { id: "tomato", name: "Tomato", emoji: "🍅", price: 5, stock: 8, category: "Fresh" },
-    { id: "carrot", name: "Carrot", emoji: "🥕", price: 3, stock: 8, category: "Fresh" },
-    { id: "rice", name: "Rice", emoji: "🍚", price: 5, stock: 8, category: "Grains" },
-    { id: "broccoli", name: "Broccoli", emoji: "🥦", price: 6, stock: 8, category: "Fresh" },
-    { id: "mushroom", name: "Mushroom", emoji: "🍄", price: 6, stock: 8, category: "Fresh" },
-    { id: "corn", name: "Corn", emoji: "🌽", price: 4, stock: 8, category: "Fresh" },
-    { id: "lemon", name: "Lemon", emoji: "🍋", price: 3, stock: 8, category: "Fresh" },
-    { id: "cucumber", name: "Cucumber", emoji: "🥒", price: 4, stock: 8, category: "Fresh" },
-    { id: "cheese", name: "Cheese", emoji: "🧀", price: 7, stock: 8, category: "Dairy" },
-    { id: "herbs", name: "Fresh Herbs", emoji: "🌿", price: 5, stock: 8, category: "Fresh" }
+    {id:"tomato",name:"Tomato",emoji:"🍅",type:"vegetable"},
+    {id:"lettuce",name:"Lettuce",emoji:"🥬",type:"vegetable"},
+    {id:"carrot",name:"Carrot",emoji:"🥕",type:"vegetable"},
+    {id:"avocado",name:"Avocado",emoji:"🥑",type:"vegetable"},
+    {id:"broccoli",name:"Broccoli",emoji:"🥦",type:"vegetable"},
+    {id:"mushroom",name:"Mushroom",emoji:"🍄",type:"vegetable"},
+    {id:"corn",name:"Corn",emoji:"🌽",type:"vegetable"},
+    {id:"pepper",name:"Pepper",emoji:"🫑",type:"vegetable"},
+    {id:"apple",name:"Apple",emoji:"🍎",type:"fruit"},
+    {id:"strawberry",name:"Strawberry",emoji:"🍓",type:"fruit"},
+    {id:"lemon",name:"Lemon",emoji:"🍋",type:"fruit"},
+    {id:"banana",name:"Banana",emoji:"🍌",type:"fruit"},
+    {id:"rice",name:"Rice",emoji:"🍚",type:"grain"},
+    {id:"bread",name:"Wholegrain Bread",emoji:"🍞",type:"grain"},
+    {id:"pasta",name:"Pasta",emoji:"🍝",type:"grain"},
+    {id:"egg",name:"Egg",emoji:"🥚",type:"protein"},
+    {id:"beans",name:"Beans",emoji:"🫘",type:"protein"},
+    {id:"milk",name:"Milk",emoji:"🥛",type:"dairy"},
+    {id:"cheese",name:"Cheese",emoji:"🧀",type:"dairy"},
+    {id:"oliveoil",name:"Olive Oil",emoji:"🫒",type:"fat"}
 ];
 
 const RECIPES = [
     {
-        id: "green_bowl",
-        name: "Green Goddess Bowl",
-        description: "A nutritious bowl of fresh green ingredients.",
-        ingredients: ["avocado", "lettuce", "tomato"],
-        price: 85,
-        reward: 50,
-        difficulty: "Easy",
-        emoji: "🥗"
+        id:"rainbow",
+        name:"Rainbow Salad",
+        emoji:"🥗",
+        ingredients:["tomato","lettuce","carrot","avocado"],
+        level:1,xp:100,coins:35,eco:20,
+        difficulty:"Easy"
     },
     {
-        id: "veggie_rice",
-        name: "Garden Rice Bowl",
-        description: "Fresh vegetables served with nutritious rice.",
-        ingredients: ["rice", "carrot", "broccoli"],
-        price: 95,
-        reward: 60,
-        difficulty: "Easy",
-        emoji: "🍚"
+        id:"greenbowl",
+        name:"Green Energy Bowl",
+        emoji:"🥑",
+        ingredients:["avocado","broccoli","rice","lemon"],
+        level:2,xp:130,coins:40,eco:30,
+        difficulty:"Easy"
     },
     {
-        id: "mushroom_bowl",
-        name: "Forest Mushroom Bowl",
-        description: "A seasonal mushroom and herb combination.",
-        ingredients: ["mushroom", "rice", "herbs"],
-        price: 110,
-        reward: 70,
-        difficulty: "Medium",
-        emoji: "🍄"
+        id:"gardenpasta",
+        name:"Garden Pasta",
+        emoji:"🍝",
+        ingredients:["pasta","tomato","mushroom","oliveoil"],
+        level:3,xp:160,coins:50,eco:25,
+        difficulty:"Medium"
     },
     {
-        id: "fresh_salad",
-        name: "Fresh Market Salad",
-        description: "A refreshing seasonal vegetable salad.",
-        ingredients: ["lettuce", "cucumber", "lemon"],
-        price: 75,
-        reward: 45,
-        difficulty: "Easy",
-        emoji: "🥬"
+        id:"protein",
+        name:"Protein Toast",
+        emoji:"🍞",
+        ingredients:["bread","egg","avocado","cheese"],
+        level:4,xp:180,coins:55,eco:25,
+        difficulty:"Medium"
     },
     {
-        id: "rainbow_bowl",
-        name: "Rainbow Harvest Bowl",
-        description: "A colorful combination of garden vegetables.",
-        ingredients: ["carrot", "corn", "tomato"],
-        price: 90,
-        reward: 55,
-        difficulty: "Medium",
-        emoji: "🌈"
+        id:"fruit",
+        name:"Fresh Fruit Dessert",
+        emoji:"🍓",
+        ingredients:["strawberry","banana","apple","milk"],
+        level:5,xp:200,coins:65,eco:40,
+        difficulty:"Medium"
     },
     {
-        id: "broccoli_delight",
-        name: "Broccoli Delight",
-        description: "A warm and balanced vegetable meal.",
-        ingredients: ["broccoli", "cheese", "herbs"],
-        price: 105,
-        reward: 65,
-        difficulty: "Medium",
-        emoji: "🥦"
+        id:"rice",
+        name:"Eco Vegetable Rice",
+        emoji:"🍚",
+        ingredients:["rice","carrot","corn","beans"],
+        level:7,xp:250,coins:75,eco:50,
+        difficulty:"Hard"
     },
     {
-        id: "avocado_rice",
-        name: "Avocado Rice Plate",
-        description: "Creamy avocado with freshly prepared rice.",
-        ingredients: ["avocado", "rice", "lemon"],
-        price: 100,
-        reward: 65,
-        difficulty: "Medium",
-        emoji: "🥑"
+        id:"deluxe",
+        name:"Deluxe Chef Plate",
+        emoji:"🍽️",
+        ingredients:["pasta","tomato","cheese","mushroom","oliveoil"],
+        level:10,xp:300,coins:100,eco:45,
+        difficulty:"Hard"
     },
     {
-        id: "market_special",
-        name: "Market Special Bowl",
-        description: "A chef's special seasonal creation.",
-        ingredients: ["mushroom", "tomato", "cucumber"],
-        price: 120,
-        reward: 80,
-        difficulty: "Hard",
-        emoji: "🍽️"
+        id:"legend",
+        name:"Legendary Garden Feast",
+        emoji:"👑",
+        ingredients:["broccoli","avocado","rice","beans","carrot"],
+        level:15,xp:450,coins:150,eco:80,
+        difficulty:"Expert"
+    },
+    {
+        id:"champion",
+        name:"Freshopia Champion Dish",
+        emoji:"🏆",
+        ingredients:["tomato","avocado","pasta","egg","broccoli"],
+        level:20,xp:600,coins:200,eco:100,
+        difficulty:"Legendary"
     }
 ];
 
-const CUSTOMERS = [
-    { name: "Olivia", avatar: "👩", type: "Healthy Food Lover", patience: 100 },
-    { name: "James", avatar: "👨", type: "Busy Professional", patience: 85 },
-    { name: "Sophia", avatar: "👩🏻", type: "Eco-conscious Customer", patience: 110 },
-    { name: "Lucas", avatar: "🧑", type: "Food Explorer", patience: 90 },
-    { name: "Emma", avatar: "👩🏽", type: "Vegetarian Guest", patience: 105 },
-    { name: "Noah", avatar: "👨🏻", type: "Regular Customer", patience: 120 },
-    { name: "Ava", avatar: "👩🏾", type: "Sustainable Food Fan", patience: 100 },
-    { name: "Ethan", avatar: "👨🏽", type: "Curious Foodie", patience: 90 }
-];
+/* ============================================================
+   3. PLAYER SYSTEM
+============================================================ */
 
-const STAFF_ROLES = [
-    { id: "chef", name: "Head Chef", emoji: "👨‍🍳", cost: 350, salary: 45 },
-    { id: "assistant", name: "Kitchen Assistant", emoji: "🧑‍🍳", cost: 200, salary: 25 },
-    { id: "waiter", name: "Waiter", emoji: "🧑‍💼", cost: 180, salary: 20 },
-    { id: "eco", name: "Sustainability Manager", emoji: "🌱", cost: 400, salary: 35 },
-    { id: "cashier", name: "Cashier", emoji: "💼", cost: 160, salary: 18 }
-];
-
-const UPGRADES = [
-    {
-        id: "kitchen",
-        name: "Professional Kitchen",
-        description: "Increase kitchen efficiency and cooking rewards.",
-        emoji: "👩‍🍳",
-        cost: 500,
-        max: 5
-    },
-    {
-        id: "storage",
-        name: "Smart Storage",
-        description: "Reduce ingredient spoilage.",
-        emoji: "🧊",
-        cost: 400,
-        max: 5
-    },
-    {
-        id: "decor",
-        name: "Restaurant Interior",
-        description: "Improve customer satisfaction.",
-        emoji: "🪴",
-        cost: 600,
-        max: 5
-    },
-    {
-        id: "recycling",
-        name: "Recycling Station",
-        description: "Improve your sustainability score.",
-        emoji: "♻️",
-        cost: 450,
-        max: 5
-    },
-    {
-        id: "equipment",
-        name: "Energy Efficient Equipment",
-        description: "Reduce energy consumption.",
-        emoji: "⚡",
-        cost: 550,
-        max: 5
-    }
-];
-
-/* =========================================================
-   03. PLAYER AND GAME STATE
-========================================================= */
-
-function createDefaultGame() {
-    const inventory = {};
-
-    INGREDIENTS.forEach(item => {
-        inventory[item.id] = item.stock;
-    });
-
+function newPlayer(){
     return {
-        version: GAME_VERSION,
+        nickname:"Chef",
+        level:1,
+        xp:0,
+        coins:CONFIG.startCoins,
+        ecoScore:0,
 
-        player: {
-            nickname: "Chef",
-            avatar: "👩‍🍳",
-            preference: "Sustainable"
-        },
+        completedOrders:0,
+        failedOrders:0,
+        perfectOrders:0,
+        wastePrevented:0,
 
-        restaurant: {
-            name: "Matcha Garden",
-            day: 1,
-            isOpen: false,
-            reputation: 0,
-            rating: 5
-        },
+        totalPlayTime:0,
+        sessionTime:0,
 
-        stats: {
-            cash: CONFIG.startingCash,
-            points: 0,
-            xp: 0,
-            level: CONFIG.startingLevel,
-            satisfaction: CONFIG.startingSatisfaction,
-            ecoScore: CONFIG.startingEcoScore,
-            waste: 0,
-            completedOrders: 0,
-            failedOrders: 0,
-            totalIncome: 0,
-            totalExpenses: 0,
-            recycling: 0,
-            waterSaved: 0,
-            energySaved: 0,
-            streak: 0,
-            bestStreak: 0
-        },
+        badges:[],
+        unlockedFeatures:[],
+        ownedItems:["default"],
+        selectedOutfit:"default",
 
-        inventory,
+        dailyCompleted:[],
+        dailyDate:"",
+        dailyRewardClaimed:false,
 
-        staff: [],
+        musicEnabled:true,
+        soundEnabled:true,
+        voiceEnabled:true,
 
-        upgrades: {
-            kitchen: 0,
-            storage: 0,
-            decor: 0,
-            recycling: 0,
-            equipment: 0
-        },
-
-        quests: {
-            serveOrders: 0,
-            saveFood: 0,
-            earnMoney: 0,
-            ecoActions: 0,
-            claimed: []
-        },
-
-        achievements: [],
-
-        history: [],
-
-        settings: {
-            sound: true,
-            music: false
-        },
-
-        selectedIngredients: [],
-        currentCustomer: null,
-        currentRecipe: null,
-        orderQueue: [],
-
-        session: {
-            orders: 0,
-            income: 0,
-            waste: 0,
-            started: false
-        },
-
-        lastSaved: null
+        avatar:"👩‍🍳",
+        started:false
     };
 }
 
-let game = createDefaultGame();
+function loadPlayer(){
+    try{
+        const data=JSON.parse(localStorage.getItem(GAME_KEY));
+        return data ? {...newPlayer(),...data} : newPlayer();
+    }catch(e){
+        return newPlayer();
+    }
+}
 
-let selectedAvatar = "👩‍🍳";
-let selectedIngredients = [];
-let currentCustomer = null;
-let currentRecipe = null;
-let serviceInterval = null;
-let dayInterval = null;
-let toastTimeout = null;
+let player=loadPlayer();
 
-/* =========================================================
-   04. SAVE AND LOAD SYSTEM
-========================================================= */
+/* ============================================================
+   4. GAME STATE
+============================================================ */
 
-function saveGame() {
-    try {
-        game.lastSaved = new Date().toISOString();
+let currentRecipe=null;
+let selectedIngredients=[];
+let remainingTime=CONFIG.orderDuration;
 
-        localStorage.setItem(
-            GAME_KEY,
-            JSON.stringify(game)
+let gameTimer=null;
+let sessionTimer=null;
+
+let audioContext=null;
+let musicInterval=null;
+let musicNodes=[];
+let musicStarted=false;
+
+/* ============================================================
+   5. LEVEL SYSTEM
+============================================================ */
+
+function requiredXP(level){
+    return 250+(level-1)*150;
+}
+
+const LEVEL_REWARDS=[
+    {level:2,name:"Kitchen Tools",description:"New cooking tools unlocked."},
+    {level:3,name:"Recipe Collection",description:"More recipes unlocked."},
+    {level:4,name:"Eco Kitchen",description:"Special eco missions unlocked."},
+    {level:5,name:"Mika Pink Outfit",description:"A special character outfit unlocked."},
+    {level:7,name:"Restaurant Expansion",description:"New restaurant missions unlocked."},
+    {level:10,name:"Master Chef",description:"Master Chef challenges unlocked."},
+    {level:12,name:"Golden Kitchen",description:"Premium kitchen features unlocked."},
+    {level:15,name:"Legendary Recipes",description:"Legendary recipes unlocked."},
+    {level:20,name:"Champion Restaurant",description:"Champion restaurant unlocked."},
+    {level:25,name:"Royal Chef",description:"Royal character outfit unlocked."},
+    {level:30,name:"Freshopia Legend",description:"Ultimate achievement unlocked."}
+];
+
+function addXP(amount){
+    player.xp+=amount;
+
+    while(
+        player.xp>=requiredXP(player.level)&&
+        player.level<CONFIG.maxLevel
+    ){
+        player.xp-=requiredXP(player.level);
+        player.level++;
+        levelUp();
+    }
+
+    updateStats();
+}
+
+function levelUp(){
+    const bonus=player.level*30;
+    player.coins+=bonus;
+
+    const reward=LEVEL_REWARDS.find(r=>r.level===player.level);
+
+    if(reward&&!player.unlockedFeatures.includes(reward.name)){
+        player.unlockedFeatures.push(reward.name);
+    }
+
+    showLevelUp(player.level,bonus,reward);
+
+    checkBadges();
+    renderAll();
+}
+
+function showLevelUp(level,bonus,reward){
+    const modal=document.getElementById("levelModal");
+
+    if(modal){
+        modal.hidden=false;
+        modal.classList.add("active");
+
+        const title=modal.querySelector("h2");
+        const text=modal.querySelector("p");
+
+        if(title)title.textContent=`LEVEL ${level}!`;
+        if(text)text.textContent=
+            `Mika is proud of you! +${bonus} Coins! ${
+                reward?reward.description:"New level achieved!"
+            }`;
+    }
+
+    mikaSpeak(`Amazing! You reached level ${level}!`);
+    soundEffect("level");
+}
+
+/* ============================================================
+   6. ANIME CHARACTER MIKA
+============================================================ */
+
+const MIKA_MESSAGES={
+    welcome:[
+        "Welcome back, Chef! Let's make Freshopia amazing!",
+        "Ready for a new cooking adventure?",
+        "Let's cook, earn rewards and save food!"
+    ],
+    success:[
+        "Perfect! You're an amazing chef!",
+        "That looks delicious!",
+        "Wonderful work! I'm proud of you!",
+        "Another beautiful dish completed!"
+    ],
+    failure:[
+        "Don't worry! Let's try again!",
+        "Every great chef makes mistakes!",
+        "We can do better together!"
+    ],
+    eco:[
+        "Amazing! You're protecting our planet!",
+        "Less waste, more happiness!",
+        "You're a true Eco Hero!"
+    ]
+};
+
+function mikaMessage(message){
+    const el=document.getElementById("mikaMessage");
+    if(el)el.textContent=message;
+
+    const avatar=document.getElementById("mikaCharacter");
+
+    if(avatar){
+        avatar.classList.remove("mika-excited");
+        void avatar.offsetWidth;
+        avatar.classList.add("mika-excited");
+    }
+}
+
+function mikaSpeak(message){
+    mikaMessage(message);
+
+    if(
+        !player.voiceEnabled||
+        !("speechSynthesis" in window)
+    )return;
+
+    speechSynthesis.cancel();
+
+    const speech=new SpeechSynthesisUtterance(message);
+    speech.lang="en-US";
+    speech.pitch=1.4;
+    speech.rate=1;
+    speech.volume=0.9;
+
+    const voice=speechSynthesis.getVoices()
+        .find(v=>v.lang.startsWith("en"));
+
+    if(voice)speech.voice=voice;
+
+    speechSynthesis.speak(speech);
+}
+
+function randomMika(type){
+    const messages=MIKA_MESSAGES[type];
+    if(messages)mikaSpeak(messages[Math.floor(Math.random()*messages.length)]);
+}
+
+function changeAvatar(avatar){
+    player.avatar=avatar;
+
+    const el=document.getElementById("mikaCharacter");
+    if(el)el.textContent=avatar;
+
+    saveGame();
+}
+
+function repeatMika(){
+    const el=document.getElementById("mikaMessage");
+    mikaSpeak(el?.textContent||"Welcome to Freshopia!");
+}
+
+/* ============================================================
+   7. SOUND SYSTEM
+============================================================ */
+
+function initializeAudio(){
+    if(musicStarted)return;
+
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC)return;
+
+    audioContext=new AC();
+    musicStarted=true;
+
+    if(audioContext.state==="suspended")audioContext.resume();
+
+    if(player.musicEnabled)startMusic();
+}
+
+function soundEffect(type="click"){
+    if(!player.soundEnabled||!audioContext)return;
+
+    const patterns={
+        click:[440],
+        success:[523,659,784],
+        level:[523,659,784,1046],
+        reward:[659,784,988],
+        error:[220,180]
+    };
+
+    const notes=patterns[type]||patterns.click;
+
+    notes.forEach((frequency,index)=>{
+        setTimeout(()=>{
+            if(!audioContext)return;
+
+            const osc=audioContext.createOscillator();
+            const gain=audioContext.createGain();
+
+            osc.frequency.value=frequency;
+            osc.type="sine";
+
+            gain.gain.setValueAtTime(.08,audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+                .001,audioContext.currentTime+.2
+            );
+
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+
+            osc.start();
+            osc.stop(audioContext.currentTime+.2);
+        },index*120);
+    });
+}
+
+function startMusic(){
+    if(!audioContext||musicNodes.length)return;
+
+    const notes=[261.63,329.63,392,440,392,329.63];
+
+    notes.forEach(freq=>{
+        const osc=audioContext.createOscillator();
+        const gain=audioContext.createGain();
+
+        osc.type="sine";
+        osc.frequency.value=freq;
+        gain.gain.value=.004;
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.start();
+        musicNodes.push({osc,gain});
+    });
+
+    let index=0;
+
+    musicInterval=setInterval(()=>{
+        if(!player.musicEnabled||!audioContext)return;
+
+        musicNodes.forEach(node=>{
+            node.gain.gain.setTargetAtTime(
+                .002,audioContext.currentTime,.1
+            );
+        });
+
+        const selected=musicNodes[index%musicNodes.length];
+
+        selected.gain.gain.setTargetAtTime(
+            .018,audioContext.currentTime,.1
         );
 
-        updateSaveIndicator();
-        return true;
-
-    } catch (error) {
-        console.error("Save error:", error);
-        notify("Unable to save game progress.", "error");
-        return false;
-    }
+        index++;
+    },450);
 }
 
-function loadGame() {
-    try {
-        const saved = localStorage.getItem(GAME_KEY);
+function stopMusic(){
+    clearInterval(musicInterval);
+    musicInterval=null;
 
-        if (!saved) return false;
+    musicNodes.forEach(node=>{
+        try{node.osc.stop();}catch(e){}
+    });
 
-        const parsed = JSON.parse(saved);
+    musicNodes=[];
+}
 
-        if (!parsed || typeof parsed !== "object") {
-            throw new Error("Invalid save data");
+function toggleMusic(){
+    player.musicEnabled=!player.musicEnabled;
+
+    if(player.musicEnabled){
+        initializeAudio();
+        startMusic();
+    }else{
+        stopMusic();
+    }
+
+    updateSettings();
+    saveGame();
+}
+
+function toggleSound(){
+    player.soundEnabled=!player.soundEnabled;
+    updateSettings();
+    saveGame();
+}
+
+function toggleVoice(){
+    player.voiceEnabled=!player.voiceEnabled;
+
+    if(!player.voiceEnabled&&"speechSynthesis"in window){
+        speechSynthesis.cancel();
+    }
+
+    updateSettings();
+    saveGame();
+}
+
+/* ============================================================
+   8. INGREDIENT SYSTEM
+============================================================ */
+
+function renderIngredients(){
+    const grid=document.getElementById("ingredientGrid");
+    if(!grid)return;
+
+    grid.innerHTML="";
+
+    INGREDIENTS.forEach(item=>{
+        const btn=document.createElement("button");
+
+        btn.type="button";
+        btn.className="ingredient-card";
+
+        if(selectedIngredients.includes(item.id)){
+            btn.classList.add("selected");
         }
 
-        const defaults = createDefaultGame();
+        btn.innerHTML=`
+            <span class="ingredient-emoji">${item.emoji}</span>
+            <span>${item.name}</span>
+        `;
 
-        game = {
-            ...defaults,
-            ...parsed,
+        btn.addEventListener("click",()=>selectIngredient(item.id));
 
-            player: {
-                ...defaults.player,
-                ...(parsed.player || {})
-            },
+        grid.appendChild(btn);
+    });
+}
 
-            restaurant: {
-                ...defaults.restaurant,
-                ...(parsed.restaurant || {})
-            },
+function selectIngredient(id){
+    if(!player.started||!currentRecipe){
+        setText("feedback","Start the game first!");
+        return;
+    }
 
-            stats: {
-                ...defaults.stats,
-                ...(parsed.stats || {})
-            },
+    if(selectedIngredients.includes(id)){
+        selectedIngredients=selectedIngredients.filter(x=>x!==id);
+    }else if(selectedIngredients.length<CONFIG.maxIngredients){
+        selectedIngredients.push(id);
+    }else{
+        setText("feedback","Maximum ingredient limit reached!");
+    }
 
-            inventory: {
-                ...defaults.inventory,
-                ...(parsed.inventory || {})
-            },
+    renderIngredients();
+    soundEffect("click");
+}
 
-            upgrades: {
-                ...defaults.upgrades,
-                ...(parsed.upgrades || {})
-            },
+function clearIngredients(){
+    selectedIngredients=[];
+    renderIngredients();
+    setText("feedback","Ingredients cleared!");
+}
 
-            settings: {
-                ...defaults.settings,
-                ...(parsed.settings || {})
-            },
+function giveHint(){
+    if(!currentRecipe)return;
 
-            quests: {
-                ...defaults.quests,
-                ...(parsed.quests || {})
-            },
+    if(player.coins<15){
+        setText("feedback","Not enough coins!");
+        return;
+    }
 
-            session: {
-                ...defaults.session,
-                ...(parsed.session || {})
-            }
-        };
+    player.coins-=15;
 
-        game.restaurant.isOpen = false;
-        game.session.started = false;
+    const missing=currentRecipe.ingredients.filter(
+        x=>!selectedIngredients.includes(x)
+    );
 
-        return true;
+    const ingredient=INGREDIENTS.find(x=>x.id===missing[0]);
 
-    } catch (error) {
-        console.error("Load error:", error);
-        game = createDefaultGame();
-        return false;
+    setText(
+        "feedback",
+        ingredient
+            ?`Mika's Hint: Try ${ingredient.emoji} ${ingredient.name}!`
+            :"All ingredients are selected!"
+    );
+
+    updateStats();
+    saveGame();
+}
+
+/* ============================================================
+   9. ORDER AND CUSTOMER SYSTEM
+============================================================ */
+
+const CUSTOMERS=[
+    {name:"Luna",avatar:"👩🏻",message:"I'd love something fresh!"},
+    {name:"Aiko",avatar:"👧🏻",message:"Can you prepare a healthy meal?"},
+    {name:"Oliver",avatar:"🧑🏻",message:"Surprise me with your best dish!"},
+    {name:"Mia",avatar:"👩🏽",message:"Something delicious and sustainable, please!"},
+    {name:"Noah",avatar:"🧑🏼",message:"I'm hungry! Let's order!"},
+    {name:"Emma",avatar:"👩🏼",message:"I love colorful food!"}
+];
+
+let currentCustomer=null;
+
+function startGame(){
+    initializeAudio();
+
+    if(gameTimer)return;
+
+    player.started=true;
+
+    const btn=document.getElementById("startButton");
+
+    if(btn){
+        btn.disabled=true;
+        btn.textContent="Order Running";
+    }
+
+    if(!sessionTimer){
+        sessionTimer=setInterval(()=>{
+            player.totalPlayTime++;
+            player.sessionTime++;
+
+            checkTimeUnlocks();
+            checkBadges();
+
+            if(player.totalPlayTime%30===0)saveGame();
+        },1000);
+    }
+
+    generateOrder();
+    randomMika("welcome");
+    saveGame();
+}
+
+function generateOrder(){
+    stopOrderTimer();
+
+    const available=RECIPES.filter(
+        recipe=>player.level>=recipe.level
+    );
+
+    currentRecipe=available[
+        Math.floor(Math.random()*available.length)
+    ];
+
+    currentCustomer=CUSTOMERS[
+        Math.floor(Math.random()*CUSTOMERS.length)
+    ];
+
+    selectedIngredients=[];
+    remainingTime=CONFIG.orderDuration;
+
+    setText("timer",formatTime(remainingTime));
+    setText("recipeName",currentRecipe.name);
+    setText("currentRecipeName",currentRecipe.name);
+    setText("recipeEmoji",currentRecipe.emoji);
+    setText("customerName",currentCustomer.name);
+    setText("customerMessage",currentCustomer.message);
+    setText("customerAvatar",currentCustomer.avatar);
+    setText("feedback","");
+
+    renderIngredients();
+
+    gameTimer=setInterval(()=>{
+        remainingTime--;
+
+        setText("timer",formatTime(remainingTime));
+
+        if(remainingTime<=30){
+            const timer=document.getElementById("timer");
+            if(timer)timer.classList.add("timer-danger");
+        }
+
+        if(remainingTime<=0)orderFailed();
+    },1000);
+}
+
+function formatTime(seconds){
+    const m=Math.floor(seconds/60);
+    const s=seconds%60;
+
+    return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+
+function stopOrderTimer(){
+    clearInterval(gameTimer);
+    gameTimer=null;
+}
+
+function serveOrder(){
+    if(!currentRecipe||!player.started){
+        setText("feedback","Start your restaurant first!");
+        return;
+    }
+
+    const required=currentRecipe.ingredients;
+
+    const missing=required.filter(
+        x=>!selectedIngredients.includes(x)
+    );
+
+    const extra=selectedIngredients.filter(
+        x=>!required.includes(x)
+    );
+
+    if(missing.length===0&&extra.length===0){
+        completeOrder();
+    }else{
+        player.failedOrders++;
+
+        setText(
+            "feedback",
+            `Order needs improvement! Missing: ${missing.length}, Extra: ${extra.length}.`
+        );
+
+        randomMika("failure");
+        soundEffect("error");
+
+        saveGame();
     }
 }
 
-function resetGame() {
-    if (!confirm("Are you sure you want to reset all game progress?")) {
+function completeOrder(){
+    stopOrderTimer();
+
+    player.completedOrders++;
+    player.perfectOrders++;
+
+    const bonus=Math.floor(remainingTime/10);
+
+    const xp=currentRecipe.xp+bonus;
+    const coins=currentRecipe.coins+Math.floor(bonus/2);
+
+    addXP(xp);
+
+    player.coins+=coins;
+    player.ecoScore+=currentRecipe.eco;
+    player.wastePrevented++;
+
+    setText(
+        "feedback",
+        `Perfect! +${xp} XP | +${coins} Coins | +${currentRecipe.eco} Eco Points`
+    );
+
+    randomMika("success");
+    soundEffect("success");
+
+    showResult(
+        "ORDER COMPLETED!",
+        `${currentRecipe.emoji} ${currentRecipe.name}`,
+        `+${xp} XP • +${coins} Coins • +${currentRecipe.eco} Eco Points`
+    );
+
+    checkBadges();
+    checkDailyMissions();
+    updateStats();
+
+    saveGame();
+    enableNextOrder();
+}
+
+function orderFailed(){
+    stopOrderTimer();
+
+    player.failedOrders++;
+
+    setText("feedback","Time is up! Try again!");
+
+    randomMika("failure");
+
+    enableNextOrder();
+    saveGame();
+}
+
+function enableNextOrder(){
+    const btn=document.getElementById("startButton");
+
+    if(btn){
+        btn.disabled=false;
+        btn.textContent="Next Order";
+    }
+}
+
+/* ============================================================
+   10. BADGE SYSTEM
+============================================================ */
+
+const BADGES=[
+    {
+        id:"first",
+        name:"First Order",
+        emoji:"🍽️",
+        description:"Complete your first order.",
+        test:p=>p.completedOrders>=1
+    },
+    {
+        id:"eco",
+        name:"Eco Beginner",
+        emoji:"🌱",
+        description:"Earn 50 Eco Points.",
+        test:p=>p.ecoScore>=50
+    },
+    {
+        id:"chef",
+        name:"Professional Chef",
+        emoji:"👩‍🍳",
+        description:"Complete 10 orders.",
+        test:p=>p.completedOrders>=10
+    },
+    {
+        id:"perfect",
+        name:"Perfectionist",
+        emoji:"💎",
+        description:"Complete 10 perfect orders.",
+        test:p=>p.perfectOrders>=10
+    },
+    {
+        id:"master",
+        name:"Master Chef",
+        emoji:"⭐",
+        description:"Reach level 10.",
+        test:p=>p.level>=10
+    },
+    {
+        id:"ecoMaster",
+        name:"Eco Master",
+        emoji:"🌍",
+        description:"Reach 500 Eco Points.",
+        test:p=>p.ecoScore>=500
+    },
+    {
+        id:"legend",
+        name:"Freshopia Legend",
+        emoji:"👑",
+        description:"Reach level 30.",
+        test:p=>p.level>=30
+    },
+    {
+        id:"dedicated",
+        name:"Dedicated Player",
+        emoji:"⏰",
+        description:"Play for 30 minutes.",
+        test:p=>p.totalPlayTime>=1800
+    },
+    {
+        id:"collector",
+        name:"Fashion Collector",
+        emoji:"👗",
+        description:"Own 4 outfits.",
+        test:p=>p.ownedItems.length>=4
+    }
+];
+
+function checkBadges(){
+    BADGES.forEach(badge=>{
+        if(!player.badges.includes(badge.id)&&badge.test(player)){
+            player.badges.push(badge.id);
+            player.coins+=75;
+
+            showResult(
+                "NEW BADGE UNLOCKED!",
+                `${badge.emoji} ${badge.name}`,
+                `${badge.description} +75 Coins!`
+            );
+
+            soundEffect("reward");
+            renderBadges();
+        }
+    });
+
+    updateStats();
+}
+
+function renderBadges(){
+    const list=document.getElementById("badgeList");
+    if(!list)return;
+
+    list.innerHTML="";
+
+    BADGES.forEach(badge=>{
+        const unlocked=player.badges.includes(badge.id);
+
+        const item=document.createElement("div");
+
+        item.className=`badge-item ${unlocked?"unlocked":"locked"}`;
+
+        item.innerHTML=`
+            <span>${badge.emoji}</span>
+            <strong>${badge.name}</strong>
+            <small>${unlocked?"UNLOCKED":"LOCKED"}</small>
+            <p>${badge.description}</p>
+        `;
+
+        list.appendChild(item);
+    });
+}
+
+/* ============================================================
+   11. TIME-BASED UNLOCK SYSTEM
+============================================================ */
+
+const TIME_REWARDS=[
+    {time:60,id:"quick",name:"Quick Challenges"},
+    {time:180,id:"special",name:"Special Missions"},
+    {time:300,id:"bonus",name:"Bonus Rewards"},
+    {time:600,id:"advanced",name:"Advanced Kitchen"},
+    {time:900,id:"expert",name:"Expert Missions"},
+    {time:1800,id:"legendary",name:"Legendary Challenges"}
+];
+
+function checkTimeUnlocks(){
+    TIME_REWARDS.forEach(reward=>{
+        if(
+            player.sessionTime>=reward.time&&
+            !player.unlockedFeatures.includes(reward.id)
+        ){
+            player.unlockedFeatures.push(reward.id);
+
+            showResult(
+                "NEW FEATURE!",
+                `🔓 ${reward.name}`,
+                "Your dedication unlocked a new feature!"
+            );
+
+            mikaSpeak(`Amazing! You unlocked ${reward.name}!`);
+
+            saveGame();
+        }
+    });
+}
+
+/* ============================================================
+   12. DAILY MISSIONS
+============================================================ */
+
+function dailyReset(){
+    const today=new Date().toLocaleDateString("en-CA");
+
+    if(player.dailyDate!==today){
+        player.dailyDate=today;
+        player.dailyCompleted=[];
+        player.dailyRewardClaimed=false;
+        saveGame();
+    }
+}
+
+function dailyMissions(){
+    return [
+        {
+            id:"orders",
+            name:"Complete 3 Orders",
+            reward:100,
+            condition:()=>player.completedOrders>=3
+        },
+        {
+            id:"perfect",
+            name:"Complete 2 Perfect Dishes",
+            reward:100,
+            condition:()=>player.perfectOrders>=2
+        },
+        {
+            id:"eco",
+            name:"Earn 50 Eco Points",
+            reward:100,
+            condition:()=>player.ecoScore>=50
+        }
+    ];
+}
+
+function checkDailyMissions(){
+    dailyMissions().forEach(mission=>{
+        if(
+            mission.condition()&&
+            !player.dailyCompleted.includes(mission.id)
+        ){
+            player.dailyCompleted.push(mission.id);
+            player.coins+=mission.reward;
+
+            showResult(
+                "DAILY MISSION COMPLETE!",
+                mission.name,
+                `+${mission.reward} Coins`
+            );
+        }
+    });
+
+    saveGame();
+}
+
+function renderDailyMissions(){
+    const list=document.getElementById("dailyMissionList");
+    if(!list)return;
+
+    list.innerHTML="";
+
+    dailyMissions().forEach(mission=>{
+        const done=player.dailyCompleted.includes(mission.id);
+
+        const item=document.createElement("div");
+
+        item.className="mission-item";
+
+        item.innerHTML=`
+            <strong>${done?"✅":"🎯"} ${mission.name}</strong>
+            <span>${done?"Completed":`Reward: ${mission.reward} Coins`}</span>
+        `;
+
+        list.appendChild(item);
+    });
+}
+
+function claimDailyReward(){
+    dailyReset();
+
+    if(player.dailyRewardClaimed){
+        setText("feedback","Daily reward already claimed!");
         return;
     }
+
+    player.dailyRewardClaimed=true;
+    player.coins+=CONFIG.dailyReward;
+
+    showResult(
+        "DAILY LOGIN REWARD!",
+        "🎁 Welcome back!",
+        `You earned ${CONFIG.dailyReward} Coins!`
+    );
+
+    updateStats();
+    saveGame();
+}
+
+/* ============================================================
+   13. SHOP SYSTEM
+============================================================ */
+
+const SHOP_ITEMS=[
+    {
+        id:"default",
+        name:"Classic Mika",
+        emoji:"👩‍🍳",
+        price:0,
+        level:1
+    },
+    {
+        id:"pink",
+        name:"Pink Mika",
+        emoji:"👩🏻‍🎤",
+        price:250,
+        level:5
+    },
+    {
+        id:"chef",
+        name:"Master Chef Mika",
+        emoji:"👩🏻‍🍳",
+        price:400,
+        level:10
+    },
+    {
+        id:"royal",
+        name:"Royal Mika",
+        emoji:"👸🏻",
+        price:800,
+        level:25
+    },
+    {
+        id:"star",
+        name:"Star Mika",
+        emoji:"🌟",
+        price:600,
+        level:15
+    }
+];
+
+function renderShop(){
+    const shop=document.getElementById("shopList");
+    if(!shop)return;
+
+    shop.innerHTML="";
+
+    SHOP_ITEMS.forEach(item=>{
+        const owned=player.ownedItems.includes(item.id);
+
+        const card=document.createElement("div");
+        card.className="shop-item";
+
+        card.innerHTML=`
+            <div>${item.emoji}</div>
+            <strong>${item.name}</strong>
+            <p>Level ${item.level}</p>
+            <p>${owned?"Owned":`${item.price} Coins`}</p>
+            <button type="button" ${owned||player.level<item.level?"disabled":""}>
+                ${owned?"Owned":"Purchase"}
+            </button>
+        `;
+
+        card.querySelector("button").addEventListener("click",()=>{
+            purchaseItem(item.id);
+        });
+
+        shop.appendChild(card);
+    });
+}
+
+function purchaseItem(id){
+    const item=SHOP_ITEMS.find(x=>x.id===id);
+
+    if(!item)return;
+    if(player.ownedItems.includes(id))return;
+
+    if(player.level<item.level){
+        setText("feedback","Level requirement not reached!");
+        return;
+    }
+
+    if(player.coins<item.price){
+        setText("feedback","Not enough coins!");
+        return;
+    }
+
+    player.coins-=item.price;
+    player.ownedItems.push(id);
+
+    checkBadges();
+
+    showResult(
+        "ITEM PURCHASED!",
+        item.emoji+" "+item.name,
+        "Your new outfit is ready!"
+    );
+
+    renderShop();
+    updateStats();
+    saveGame();
+}
+
+function equipOutfit(id){
+    if(!player.ownedItems.includes(id))return;
+
+    player.selectedOutfit=id;
+
+    const item=SHOP_ITEMS.find(x=>x.id===id);
+
+    if(item)changeAvatar(item.emoji);
+
+    saveGame();
+}
+
+/* ============================================================
+   14. RESULT WINDOW
+============================================================ */
+
+function showResult(title,subtitle,description){
+    const modal=document.getElementById("resultModal");
+
+    if(modal){
+        const h2=modal.querySelector("h2");
+        const h3=modal.querySelector("h3");
+        const p=modal.querySelector("p");
+
+        if(h2)h2.textContent=title;
+        if(h3)h3.textContent=subtitle;
+        if(p)p.textContent=description;
+
+        modal.hidden=false;
+        modal.classList.add("active");
+
+        return;
+    }
+
+    const notification=document.createElement("div");
+
+    notification.className="freshopia-notification";
+
+    const heading=document.createElement("strong");
+    const subtitleText=document.createElement("p");
+    const descriptionText=document.createElement("small");
+
+    heading.textContent=title;
+    subtitleText.textContent=subtitle;
+    descriptionText.textContent=description;
+
+    notification.append(heading,subtitleText,descriptionText);
+    document.body.appendChild(notification);
+
+    setTimeout(()=>notification.remove(),4000);
+}
+
+function closeResult(){
+    const modal=document.getElementById("resultModal");
+
+    if(modal){
+        modal.hidden=true;
+        modal.classList.remove("active");
+    }
+}
+
+function closeLevelModal(){
+    const modal=document.getElementById("levelModal");
+
+    if(modal){
+        modal.hidden=true;
+        modal.classList.remove("active");
+    }
+}
+
+/* ============================================================
+   15. PLAYER STATISTICS
+============================================================ */
+
+function updateStats(){
+    setText("levelValue",player.level);
+    setText("xpValue",player.xp);
+    setText("coinValue",player.coins);
+    setText("ecoValue",player.ecoScore);
+    setText("badgeCount",player.badges.length);
+    setText("orderCount",player.completedOrders);
+
+    const required=requiredXP(player.level);
+    const progress=Math.min(100,player.xp/required*100);
+
+    const fill=document.getElementById("xpFill");
+
+    if(fill)fill.style.width=progress+"%";
+
+    setText("levelProgressText",`${player.xp} / ${required} XP`);
+}
+
+function showProgressReport(){
+    showResult(
+        "PLAYER REPORT",
+        `${player.nickname} | Level ${player.level}`,
+        `XP: ${player.xp} | Coins: ${player.coins} | Eco Points: ${player.ecoScore} | Orders: ${player.completedOrders} | Badges: ${player.badges.length} | Play Time: ${formatTime(player.totalPlayTime)}`
+    );
+}
+
+/* ============================================================
+   16. INTERFACE HELPERS
+============================================================ */
+
+function setText(id,value){
+    const el=document.getElementById(id);
+    if(el)el.textContent=value;
+}
+
+function updateSettings(){
+    const music=document.getElementById("musicToggle");
+    const sound=document.getElementById("soundToggle");
+    const voice=document.getElementById("voiceToggle");
+
+    if(music)music.checked=player.musicEnabled;
+    if(sound)sound.checked=player.soundEnabled;
+    if(voice)voice.checked=player.voiceEnabled;
+}
+
+function renderUnlocks(){
+    const list=document.getElementById("unlockList");
+    if(!list)return;
+
+    list.innerHTML="";
+
+    LEVEL_REWARDS.forEach(reward=>{
+        const unlocked=player.level>=reward.level;
+
+        const item=document.createElement("div");
+
+        item.className=`unlock-item ${unlocked?"unlocked":"locked"}`;
+
+        item.innerHTML=`
+            <strong>${unlocked?"🔓":"🔒"} ${reward.name}</strong>
+            <small>Level ${reward.level}</small>
+            <p>${reward.description}</p>
+        `;
+
+        list.appendChild(item);
+    });
+}
+
+function renderAll(){
+    updateStats();
+    updateSettings();
+    renderIngredients();
+    renderBadges();
+    renderUnlocks();
+    renderDailyMissions();
+    renderShop();
+
+    const avatar=document.getElementById("mikaCharacter");
+    if(avatar)avatar.textContent=player.avatar;
+}
+
+/* ============================================================
+   17. PLAYER PROFILE
+============================================================ */
+
+function setNickname(name){
+    name=String(name).trim().slice(0,20);
+
+    if(!name)return;
+
+    player.nickname=name;
+    saveGame();
+
+    mikaSpeak(`Welcome to Freshopia, ${name}!`);
+}
+
+function resetGame(){
+    if(!confirm("Reset all Freshopia progress?"))return;
+
+    stopOrderTimer();
+
+    clearInterval(sessionTimer);
+    sessionTimer=null;
+
+    stopMusic();
 
     localStorage.removeItem(GAME_KEY);
 
-    game = createDefaultGame();
-    selectedIngredients = [];
+    player=newPlayer();
+    selectedIngredients=[];
+    currentRecipe=null;
 
-    stopService();
-
-    showScreen("welcome-screen");
-    updateAll();
-
-    notify("A new restaurant journey has started!");
+    renderAll();
+    mikaSpeak("A brand new adventure begins!");
 }
 
-function updateSaveIndicator() {
-    const element = $("save-status");
+/* ============================================================
+   18. SAVE SYSTEM
+============================================================ */
 
-    if (element) {
-        element.textContent = "Saved ✓";
+function saveGame(){
+    try{
+        localStorage.setItem(GAME_KEY,JSON.stringify(player));
+    }catch(error){
+        console.error("Save failed:",error);
     }
 }
 
-/* =========================================================
-   05. NAVIGATION SYSTEM
-========================================================= */
+function initializeSave(){
+    dailyReset();
 
-function showScreen(screenId) {
-    const screens = document.querySelectorAll(".screen");
+    setInterval(saveGame,CONFIG.autosave);
 
-    screens.forEach(screen => {
-        screen.classList.remove("active");
-    });
+    window.addEventListener("beforeunload",saveGame);
 
-    const target = $(screenId);
-
-    if (!target) {
-        console.warn("Screen not found:", screenId);
-        return;
-    }
-
-    target.classList.add("active");
-
-    const navigation = $("bottom-nav");
-
-    if (navigation) {
-        navigation.style.display = [
-            "welcome-screen",
-            "profile-screen"
-        ].includes(screenId) ? "none" : "flex";
-    }
-
-    updateAll();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function navigateTo(screenId) {
-    showScreen(screenId);
-}
-
-/* =========================================================
-   06. PROFILE SYSTEM
-========================================================= */
-
-function selectAvatar(button) {
-    if (!button) return;
-
-    document.querySelectorAll(".avatar").forEach(item => {
-        item.classList.remove("selected");
-    });
-
-    button.classList.add("selected");
-
-    selectedAvatar = button.textContent.trim();
-}
-
-function createPlayer() {
-    const nicknameInput = $("nickname");
-    const preferenceInput = $("preference");
-
-    const nickname = nicknameInput?.value.trim() || "Chef";
-
-    if (nickname.length < 2) {
-        if ($("profile-message")) {
-            $("profile-message").textContent =
-                "Please enter a name with at least 2 characters.";
-        }
-        return;
-    }
-
-    game.player.nickname = nickname;
-    game.player.avatar = selectedAvatar;
-    game.player.preference = preferenceInput?.value || "Sustainable";
-
-    saveGame();
-
-    showScreen("dashboard-screen");
-
-    notify("Welcome to Matcha World, " + nickname + "!");
-
-    checkAchievements();
-}
-
-function updateProfile() {
-    setText("player-welcome", game.player.nickname);
-    setText("dashboard-avatar", game.player.avatar);
-}
-
-/* =========================================================
-   07. RESTAURANT LOBBY
-========================================================= */
-
-function updateRestaurantLobby() {
-    updateProfile();
-
-    setText("level", game.stats.level);
-    setText("header-level", game.stats.level);
-
-    setText("points", game.stats.points);
-    setText("cash", formatMoney(game.stats.cash));
-
-    setText("satisfaction", game.stats.satisfaction);
-    setText("waste", game.stats.waste);
-
-    setText("eco-score", game.stats.ecoScore);
-    setText("stock", getTotalStock());
-
-    setText("completed-orders", game.stats.completedOrders);
-
-    const xpNeeded = getXPNeeded();
-    const xpProgress = clamp(
-        (game.stats.xp / xpNeeded) * 100,
-        0,
-        100
-    );
-
-    setText(
-        "experience-text",
-        game.stats.xp + " / " + xpNeeded + " XP"
-    );
-
-    setStyle(
-        "experience-progress",
-        "width",
-        xpProgress + "%"
-    );
-
-    setText("inventory-total", getTotalStock());
-
-    const totalStock = getTotalStock();
-
-    setText("restaurant-stock", totalStock);
-}
-
-function getTotalStock() {
-    return Object.values(game.inventory)
-        .reduce((total, amount) => total + Number(amount || 0), 0);
-}
-
-function getXPNeeded() {
-    return game.stats.level * CONFIG.xpPerLevel;
-}
-
-/* =========================================================
-   08. CUSTOMER GENERATION
-========================================================= */
-
-function generateCustomer() {
-    const customer = pick(CUSTOMERS);
-    const recipe = pick(RECIPES);
-
-    currentCustomer = {
-        ...customer,
-        id: Date.now(),
-        patience: customer.patience,
-        originalPatience: customer.patience
-    };
-
-    currentRecipe = recipe;
-
-    game.currentCustomer = currentCustomer;
-    game.currentRecipe = currentRecipe;
-
-    selectedIngredients = [];
-    game.selectedIngredients = [];
-
-    return currentCustomer;
-}
-
-function updateCustomerDisplay() {
-    if (!currentCustomer || !currentRecipe) return;
-
-    setText("customer-avatar", currentCustomer.avatar);
-    setText("customer-name", currentCustomer.name);
-    setText("customer-type", currentCustomer.type);
-
-    setText("recipe-name", currentRecipe.name);
-    setText("customer-request", currentRecipe.description);
-
-    setText("order-reward", "+" + currentRecipe.reward + " Points");
-
-    setText("selected-count", selectedIngredients.length);
-
-    const avatar = $("customer-avatar");
-
-    if (avatar) {
-        avatar.textContent = currentCustomer.avatar;
-    }
-
-    renderOrderQueue();
-}
-
-function renderOrderQueue() {
-    const container = $("order-queue");
-
-    if (!container) return;
-
-    container.innerHTML = game.orderQueue.map((order, index) => `
-        <div class="queue-item">
-            <span>${escapeHTML(order.avatar)}</span>
-            <strong>${escapeHTML(order.name)}</strong>
-            <small>${escapeHTML(order.recipe.name)}</small>
-            <span>#${index + 1}</span>
-        </div>
-    `).join("");
-}
-
-/* =========================================================
-   09. SERVICE MANAGEMENT
-========================================================= */
-
-function startGame() {
-    if (game.stats.cash < 0) {
-        notify("Your restaurant needs positive cash to operate.", "error");
-        return;
-    }
-
-    stopService();
-
-    game.restaurant.isOpen = true;
-    game.session.started = true;
-
-    game.session.orders = 0;
-    game.session.income = 0;
-    game.session.waste = 0;
-
-    generateCustomer();
-    updateCustomerDisplay();
-
-    showScreen("game-screen");
-
-    notify("Restaurant service has started!");
-
-    startPatienceSystem();
-    saveGame();
-}
-
-function stopService() {
-    if (serviceInterval) {
-        clearInterval(serviceInterval);
-        serviceInterval = null;
-    }
-
-    game.restaurant.isOpen = false;
-    game.session.started = false;
-}
-
-function startPatienceSystem() {
-    if (serviceInterval) {
-        clearInterval(serviceInterval);
-    }
-
-    serviceInterval = setInterval(() => {
-        if (!currentCustomer || !game.session.started) return;
-
-        currentCustomer.patience -= 5;
-
-        if (currentCustomer.patience <= 0) {
-            failOrder("The customer left because of the waiting time.");
-        }
-
-        updatePatienceDisplay();
-
-    }, 5000);
-}
-
-function updatePatienceDisplay() {
-    const percentage = clamp(
-        currentCustomer?.patience || 0,
-        0,
-        currentCustomer?.originalPatience || 100
-    );
-
-    setText("customer-patience", percentage);
-
-    setStyle(
-        "patience-progress",
-        "width",
-        percentage + "%"
-    );
-}
-
-/* =========================================================
-   10. INGREDIENT SELECTION
-========================================================= */
-
-function chooseIngredient(buttonOrIngredient, ingredientValue) {
-    let emoji;
-
-    if (typeof buttonOrIngredient === "string") {
-        emoji = buttonOrIngredient;
-    } else {
-        emoji = ingredientValue;
-
-        if (!emoji && buttonOrIngredient) {
-            emoji = buttonOrIngredient.textContent.trim();
-        }
-    }
-
-    const ingredient = INGREDIENTS.find(item =>
-        item.emoji === emoji
-    );
-
-    if (!ingredient) return;
-
-    if (selectedIngredients.includes(ingredient.id)) {
-        selectedIngredients = selectedIngredients.filter(
-            id => id !== ingredient.id
-        );
-
-        if (buttonOrIngredient?.classList) {
-            buttonOrIngredient.classList.remove("selected");
-        }
-
-    } else {
-        if (selectedIngredients.length >= 3) {
-            notify("You can select only 3 ingredients.", "error");
-            return;
-        }
-
-        if (game.inventory[ingredient.id] <= 0) {
-            notify(ingredient.name + " is out of stock!", "error");
-            return;
-        }
-
-        selectedIngredients.push(ingredient.id);
-
-        if (buttonOrIngredient?.classList) {
-            buttonOrIngredient.classList.add("selected");
-        }
-    }
-
-    game.selectedIngredients = [...selectedIngredients];
-
-    setText("selected-count", selectedIngredients.length);
-
-    const message = $("game-message");
-
-    if (message) {
-        message.textContent =
-            selectedIngredients.length + " of 3 ingredients selected.";
-    }
-}
-
-/* =========================================================
-   11. RECIPE VALIDATION
-========================================================= */
-
-function validateRecipe() {
-    if (!currentRecipe) return false;
-
-    if (selectedIngredients.length !== 3) {
-        notify("Please select exactly 3 ingredients.", "error");
-        return false;
-    }
-
-    const correct = [...currentRecipe.ingredients].sort();
-    const selected = [...selectedIngredients].sort();
-
-    return correct.every((id, index) => id === selected[index]);
-}
-
-/* =========================================================
-   12. ORDER SERVING ENGINE
-========================================================= */
-
-function serveOrder() {
-    if (!currentCustomer || !currentRecipe) {
-        notify("No active customer order.", "error");
-        return;
-    }
-
-    if (selectedIngredients.length !== 3) {
-        notify("Select 3 ingredients before serving.", "error");
-        return;
-    }
-
-    const ingredientsAvailable = selectedIngredients.every(id =>
-        game.inventory[id] > 0
-    );
-
-    if (!ingredientsAvailable) {
-        notify("Not enough ingredients in stock.", "error");
-        return;
-    }
-
-    if (!validateRecipe()) {
-        failOrder("Incorrect ingredients! The customer was disappointed.");
-        return;
-    }
-
-    completeOrder();
-}
-
-function completeOrder() {
-    const recipe = currentRecipe;
-
-    let bonus = 0;
-
-    const staffBonus = game.staff.some(
-        staff => staff.id === "chef"
-    ) ? 10 : 0;
-
-    const upgradeBonus = game.upgrades.kitchen * 5;
-
-    const ecoBonus = game.upgrades.recycling * 3;
-
-    bonus += staffBonus + upgradeBonus + ecoBonus;
-
-    const reward = recipe.reward + bonus;
-
-    const income = recipe.price;
-
-    recipe.ingredients.forEach(id => {
-        game.inventory[id]--;
-    });
-
-    game.stats.points += reward;
-    game.stats.cash += income;
-    game.stats.totalIncome += income;
-
-    game.stats.completedOrders++;
-    game.stats.satisfaction = clamp(
-        game.stats.satisfaction + 2,
-        0,
-        CONFIG.maxSatisfaction
-    );
-
-    game.stats.streak++;
-    game.stats.bestStreak = Math.max(
-        game.stats.bestStreak,
-        game.stats.streak
-    );
-
-    game.stats.xp += 40 + upgradeBonus;
-
-    game.restaurant.reputation += 2;
-
-    game.session.orders++;
-    game.session.income += income;
-
-    game.quests.serveOrders++;
-    game.quests.earnMoney += income;
-
-    game.stats.ecoScore = clamp(
-        game.stats.ecoScore + 1,
-        0,
-        100
-    );
-
-    game.stats.waterSaved += 1;
-    game.stats.energySaved += 1;
-
-    addHistory("income", "Order: " + recipe.name, income);
-
-    awardXP(40 + upgradeBonus);
-    checkDailyQuests();
-    checkAchievements();
-
-    saveGame();
-
-    notify(
-        "Order completed! +" +
-        reward + " points | +" + formatMoney(income),
-        "success"
-    );
-
-    clearIngredientSelection();
-
-    updateAll();
-
-    setTimeout(() => {
-        if (game.session.started) {
-            generateCustomer();
-            updateCustomerDisplay();
-            updateIngredientButtons();
-        }
-    }, 900);
-}
-
-function failOrder(reason) {
-    game.stats.failedOrders++;
-
-    game.stats.streak = 0;
-
-    game.stats.satisfaction = clamp(
-        game.stats.satisfaction - 8,
-        0,
-        100
-    );
-
-    game.stats.points = Math.max(
-        0,
-        game.stats.points - 10
-    );
-
-    game.stats.ecoScore = clamp(
-        game.stats.ecoScore - 1,
-        0,
-        100
-    );
-
-    game.stats.waste += 1;
-    game.session.waste += 1;
-
-    game.quests.saveFood += 0;
-
-    addHistory("expense", "Failed order / food waste", 5);
-
-    game.stats.cash = Math.max(0, game.stats.cash - 5);
-    game.stats.totalExpenses += 5;
-
-    notify(reason, "error");
-
-    selectedIngredients = [];
-    game.selectedIngredients = [];
-
-    updateAll();
-
-    setTimeout(() => {
-        if (game.session.started) {
-            generateCustomer();
-            updateCustomerDisplay();
-            updateIngredientButtons();
-        }
-    }, 1000);
-
-    saveGame();
-}
-
-function clearIngredientSelection() {
-    selectedIngredients = [];
-    game.selectedIngredients = [];
-
-    document.querySelectorAll(".ingredient-list button").forEach(button => {
-        button.classList.remove("selected");
-    });
-
-    setText("selected-count", 0);
-    setText("game-message", "");
-}
-
-function updateIngredientButtons() {
-    const buttons = document.querySelectorAll(".ingredient-list button");
-
-    buttons.forEach(button => {
-        button.classList.remove("selected");
-        button.disabled = false;
+    document.addEventListener("visibilitychange",()=>{
+        if(document.hidden)saveGame();
     });
 }
 
-/* =========================================================
-   13. XP AND LEVEL SYSTEM
-========================================================= */
+/* ============================================================
+   19. EVENT SYSTEM
+============================================================ */
 
-function awardXP(amount) {
-    game.stats.xp += amount;
+function bindEvents(){
+    const events=[
+        ["startButton","click",startGame],
+        ["serveButton","click",serveOrder],
+        ["clearButton","click",clearIngredients],
+        ["hintButton","click",giveHint],
+        ["musicToggle","change",toggleMusic],
+        ["soundToggle","change",toggleSound],
+        ["voiceToggle","change",toggleVoice],
+        ["repeatMika","click",repeatMika],
+        ["closeResult","click",closeResult],
+        ["closeLevelModal","click",closeLevelModal],
+        ["reportButton","click",showProgressReport],
+        ["resetButton","click",resetGame],
+        ["dailyRewardButton","click",claimDailyReward]
+    ];
 
-    while (game.stats.xp >= getXPNeeded()) {
-        game.stats.xp -= getXPNeeded();
-        game.stats.level++;
+    events.forEach(([id,event,callback])=>{
+        const el=document.getElementById(id);
 
-        const reward = game.stats.level * 150;
-
-        game.stats.cash += reward;
-        game.stats.totalIncome += reward;
-
-        notify(
-            "LEVEL UP! You are now level " +
-            game.stats.level + "! Reward: " + formatMoney(reward),
-            "success"
-        );
-
-        addHistory("income", "Level up reward", reward);
-    }
-}
-
-/* =========================================================
-   14. MARKET AND SUPPLY SYSTEM
-========================================================= */
-
-function renderMarket() {
-    const screen = $("market-screen");
-    const card = screen?.querySelector(".feature-card");
-
-    if (!card) return;
-
-    let container = $("market-products");
-
-    if (!container) {
-        container = document.createElement("div");
-        container.id = "market-products";
-        card.appendChild(container);
-    }
-
-    container.innerHTML = `
-        <h3>Fresh Ingredient Market</h3>
-        <p>Purchase supplies from sustainable local producers.</p>
-        <div class="market-grid">
-            ${INGREDIENTS.map(item => `
-                <div class="market-item">
-                    <span>${item.emoji}</span>
-                    <strong>${escapeHTML(item.name)}</strong>
-                    <small>${formatMoney(item.price)} / unit</small>
-                    <small>Stock: ${game.inventory[item.id]}</small>
-                    <button class="secondary-btn"
-                        onclick="buyIngredients('${item.id}', 5)">
-                        Buy 5
-                    </button>
-                </div>
-            `).join("")}
-        </div>
-    `;
-
-    setText("market-cash", formatMoney(game.stats.cash));
-}
-
-function buyIngredients(ingredientId, quantity = 5) {
-    const ingredient = INGREDIENTS.find(
-        item => item.id === ingredientId
-    );
-
-    if (!ingredient) return;
-
-    const totalCost = ingredient.price * quantity;
-
-    if (game.stats.cash < totalCost) {
-        notify("Not enough money to purchase this supply.", "error");
-        return;
-    }
-
-    game.stats.cash -= totalCost;
-    game.stats.totalExpenses += totalCost;
-
-    game.inventory[ingredientId] += quantity;
-
-    game.quests.ecoActions++;
-
-    addHistory(
-        "expense",
-        "Purchased " + ingredient.name,
-        totalCost
-    );
-
-    saveGame();
-    updateAll();
-
-    notify(
-        quantity + " " + ingredient.name + " added to inventory.",
-        "success"
-    );
-}
-
-function buyAllSupplies() {
-    INGREDIENTS.forEach(item => {
-        if (game.stats.cash >= item.price * 5) {
-            buyIngredients(item.id, 5);
+        if(el){
+            el.addEventListener(event,callback);
         }
     });
 }
 
-/* =========================================================
-   15. INVENTORY MANAGEMENT
-========================================================= */
+/* ============================================================
+   20. GAME INITIALIZATION
+============================================================ */
 
-function renderInventory() {
-    const container = $("inventory-list");
+function initializeFreshopia(){
+    console.log("Freshopia Ultimate 6.0 Ready!");
 
-    if (!container) return;
+    bindEvents();
+    initializeSave();
 
-    container.innerHTML = INGREDIENTS.map(item => {
-        const stock = game.inventory[item.id] || 0;
+    renderAll();
 
-        const percentage = clamp(stock * 5, 0, 100);
-
-        return `
-            <div class="inventory-item">
-                <div>
-                    <span>${item.emoji}</span>
-                    <strong>${escapeHTML(item.name)}</strong>
-                </div>
-                <strong>${stock} units</strong>
-                <div class="progress-track">
-                    <div class="progress-fill"
-                         style="width:${percentage}%"></div>
-                </div>
-                <small>${stock <= 3 ? "Low stock" : "Available"}</small>
-            </div>
-        `;
-    }).join("");
-}
-
-function checkInventory() {
-    const lowStock = INGREDIENTS.filter(item =>
-        game.inventory[item.id] <= 3
+    mikaMessage(
+        `Welcome back, ${player.nickname}! Your adventure continues!`
     );
 
-    if (lowStock.length > 0) {
-        console.info(
-            "Low stock:",
-            lowStock.map(item => item.name)
-        );
-    }
+    console.log("Game loaded successfully.");
+    console.log("Player:",player);
 }
 
-function spoilageSystem() {
-    INGREDIENTS.forEach(item => {
-        const reduction = Math.max(
-            0,
-            2 - game.upgrades.storage
-        );
-
-        if (reduction > 0 && game.inventory[item.id] > 0) {
-            const spoiled = Math.min(
-                reduction,
-                game.inventory[item.id]
-            );
-
-            game.inventory[item.id] -= spoiled;
-
-            game.stats.waste += spoiled;
-            game.session.waste += spoiled;
-
-            game.stats.ecoScore = clamp(
-                game.stats.ecoScore - spoiled,
-                0,
-                100
-            );
-        }
-    });
-
-    saveGame();
-    updateAll();
-}
-
-/* =========================================================
-   16. STAFF MANAGEMENT
-========================================================= */
-
-function hireStaff(roleId) {
-    const role = STAFF_ROLES.find(
-        item => item.id === roleId
+if(document.readyState==="loading"){
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeFreshopia
     );
-
-    if (!role) return;
-
-    if (game.staff.some(item => item.id === roleId)) {
-        notify("This position is already occupied.", "error");
-        return;
-    }
-
-    if (game.stats.cash < role.cost) {
-        notify("Not enough money to hire this employee.", "error");
-        return;
-    }
-
-    game.stats.cash -= role.cost;
-    game.stats.totalExpenses += role.cost;
-
-    game.staff.push({
-        ...role,
-        hiredAt: Date.now(),
-        performance: 100
-    });
-
-    addHistory(
-        "expense",
-        "Hired " + role.name,
-        role.cost
-    );
-
-    notify(role.name + " has joined your team!", "success");
-
-    saveGame();
-    updateAll();
+}else{
+    initializeFreshopia();
 }
 
-function fireStaff(roleId) {
-    const index = game.staff.findIndex(
-        staff => staff.id === roleId
-    );
-
-    if (index === -1) return;
-
-    const employee = game.staff[index];
-
-    game.staff.splice(index, 1);
-
-    notify(employee.name + " has left the restaurant.");
-
-    saveGame();
-    updateAll();
-}
-
-function renderStaff() {
-    const container = $("staff-list");
-
-    if (!container) return;
-
-    container.innerHTML = `
-        <h3>Current Team</h3>
-        ${game.staff.length === 0
-            ? "<p>No employees hired yet.</p>"
-            : game.staff.map(staff => `
-                <div class="staff-item">
-                    <span>${staff.emoji}</span>
-                    <strong>${escapeHTML(staff.name)}</strong>
-                    <small>Salary: ${formatMoney(staff.salary)} / day</small>
-                    <button class="secondary-btn"
-                        onclick="fireStaff('${staff.id}')">
-                        Remove
-                    </button>
-                </div>
-            `).join("")
-        }
-
-        <h3>Available Positions</h3>
-
-        ${STAFF_ROLES.map(role => {
-            const hired = game.staff.some(
-                staff => staff.id === role.id
-            );
-
-            return `
-                <div class="staff-item">
-                    <span>${role.emoji}</span>
-                    <strong>${escapeHTML(role.name)}</strong>
-                    <small>Hiring: ${formatMoney(role.cost)}</small>
-                    <small>Daily salary: ${formatMoney(role.salary)}</small>
-                    <button class="secondary-btn"
-                        ${hired ? "disabled" : ""}
-                        onclick="hireStaff('${role.id}')">
-                        ${hired ? "Hired" : "Hire Employee"}
-                    </button>
-                </div>
-            `;
-        }).join("")}
-    `;
-}
-
-/* =========================================================
-   17. UPGRADE SYSTEM
-========================================================= */
-
-function purchaseUpgrade(upgradeId) {
-    const upgrade = UPGRADES.find(
-        item => item.id === upgradeId
-    );
-
-    if (!upgrade) return;
-
-    const currentLevel = game.upgrades[upgradeId] || 0;
-
-    if (currentLevel >= upgrade.max) {
-        notify("Maximum upgrade level reached.", "error");
-        return;
-    }
-
-    const cost = upgrade.cost * (currentLevel + 1);
-
-    if (game.stats.cash < cost) {
-        notify("Not enough cash for this upgrade.", "error");
-        return;
-    }
-
-    game.stats.cash -= cost;
-    game.stats.totalExpenses += cost;
-
-    game.upgrades[upgradeId]++;
-
-    addHistory(
-        "expense",
-        "Purchased " + upgrade.name,
-        cost
-    );
-
-    game.stats.ecoScore = clamp(
-        game.stats.ecoScore +
-        (upgradeId === "recycling" ? 5 : 1),
-        0,
-        100
-    );
-
-    notify(
-        upgrade.name + " upgraded to level " +
-        game.upgrades[upgradeId] + "!",
-        "success"
-    );
-
-    saveGame();
-    updateAll();
-}
-
-function renderUpgrades() {
-    const screen = $("upgrades-screen");
-    const card = screen?.querySelector(".feature-card");
-
-    if (!card) return;
-
-    let container = $("upgrade-list");
-
-    if (!container) {
-        container = document.createElement("div");
-        container.id = "upgrade-list";
-        card.appendChild(container);
-    }
-
-    container.innerHTML = UPGRADES.map(upgrade => {
-        const level = game.upgrades[upgrade.id] || 0;
-        const cost = upgrade.cost * (level + 1);
-
-        return `
-            <div class="upgrade-item">
-                <span>${upgrade.emoji}</span>
-                <h3>${escapeHTML(upgrade.name)}</h3>
-                <p>${escapeHTML(upgrade.description)}</p>
-                <small>Level: ${level} / ${upgrade.max}</small>
-                <button class="secondary-btn"
-                    ${level >= upgrade.max ? "disabled" : ""}
-                    onclick="purchaseUpgrade('${upgrade.id}')">
-                    ${level >= upgrade.max
-                        ? "MAX LEVEL"
-                        : "Upgrade - " + formatMoney(cost)}
-                </button>
-            </div>
-        `;
-    }).join("");
-}
-
-/* =========================================================
-   18. FINANCIAL ENGINE
-========================================================= */
-
-function addHistory(type, description, amount) {
-    game.history.unshift({
-        type,
-        description,
-        amount,
-        date: new Date().toISOString()
-    });
-
-    game.history = game.history.slice(0, 100);
-}
-
-function payDailySalaries() {
-    const totalSalary = game.staff.reduce(
-        (total, employee) => total + employee.salary,
-        0
-    );
-
-    if (totalSalary <= 0) return;
-
-    game.stats.cash -= totalSalary;
-    game.stats.totalExpenses += totalSalary;
-
-    addHistory(
-        "expense",
-        "Daily staff salaries",
-        totalSalary
-    );
-
-    if (game.stats.cash < 0) {
-        game.stats.satisfaction = clamp(
-            game.stats.satisfaction - 5,
-            0,
-            100
-        );
-
-        notify("Warning: Your restaurant has negative cash!", "error");
-    }
-}
-
-function renderFinance() {
-    const stats = game.stats;
-
-    setText("finance-cash", formatMoney(stats.cash));
-    setText("total-income", formatMoney(stats.totalIncome));
-    setText("total-expenses", formatMoney(stats.totalExpenses));
-
-    setText(
-        "net-profit",
-        formatMoney(stats.totalIncome - stats.totalExpenses)
-    );
-
-    const history = $("finance-history");
-
-    if (history) {
-        history.innerHTML = game.history.length
-            ? game.history.map(item => `
-                <div class="history-item">
-                    <strong>${escapeHTML(item.description)}</strong>
-                    <span>${item.type === "income" ? "+" : "-"}${formatMoney(item.amount)}</span>
-                    <small>${new Date(item.date).toLocaleString("en-US")}</small>
-                </div>
-            `).join("")
-            : "<p>No transactions yet.</p>";
-    }
-}
-
-/* =========================================================
-   19. SUSTAINABILITY ENGINE
-========================================================= */
-
-function recycleFood(amount = 1) {
-    if (game.stats.waste <= 0) {
-        notify("There is no food waste to recycle.");
-        return;
-    }
-
-    const recycled = Math.min(
-        amount,
-        game.stats.waste
-    );
-
-    game.stats.waste -= recycled;
-    game.stats.recycling += recycled;
-
-    game.stats.ecoScore = clamp(
-        game.stats.ecoScore + recycled * 3,
-        0,
-        100
-    );
-
-    game.quests.ecoActions++;
-
-    notify(
-        recycled + " waste units recycled successfully!",
-        "success"
-    );
-
-    saveGame();
-    updateAll();
-}
-
-function saveWater(amount = 5) {
-    game.stats.waterSaved += amount;
-
-    game.stats.ecoScore = clamp(
-        game.stats.ecoScore + 2,
-        0,
-        100
-    );
-
-    game.quests.ecoActions++;
-
-    notify("Water conservation action completed!", "success");
-
-    saveGame();
-    updateAll();
-}
-
-function saveEnergy(amount = 5) {
-    game.stats.energySaved += amount;
-
-    game.stats.ecoScore = clamp(
-        game.stats.ecoScore + 2,
-        0,
-        100
-    );
-
-    game.quests.ecoActions++;
-
-    notify("Energy conservation action completed!", "success");
-
-    saveGame();
-    updateAll();
-}
-
-function updateSustainability() {
-    setText("eco-dashboard-score", game.stats.ecoScore);
-    setText("eco-waste", game.stats.waste);
-
-    setText("recycling-score", game.stats.recycling);
-    setText("water-score", game.stats.waterSaved);
-    setText("energy-score", game.stats.energySaved);
-
-    setText("recycling-progress", game.stats.recycling);
-}
-
-/* =========================================================
-   20. DAILY QUESTS
-========================================================= */
-
-const DAILY_QUESTS = [
-    {
-        id: "serveOrders",
-        name: "Perfect Service",
-        description: "Complete 3 customer orders.",
-        target: 3,
-        reward: 100,
-        type: "points"
-    },
-    {
-        id: "saveFood",
-        name: "Food Guardian",
-        description: "Keep food waste below 5 units.",
-        target: 5,
-        reward: 75,
-        type: "waste"
-    },
-    {
-        id: "earnMoney",
-        name: "Smart Business",
-        description: "Earn $200 from restaurant orders.",
-        target: 200,
-        reward: 125,
-        type: "money"
-    },
-    {
-        id: "ecoActions",
-        name: "Green Champion",
-        description: "Complete 3 sustainability actions.",
-        target: 3,
-        reward: 100,
-        type: "eco"
-    }
-];
-
-function checkDailyQuests() {
-    const container = $("quests-screen");
-
-    if (!container) return;
-
-    renderQuests();
-}
-
-function renderQuests() {
-    const screen = $("quests-screen");
-    const card = screen?.querySelector(".feature-card");
-
-    if (!card) return;
-
-    let container = $("daily-quest-list");
-
-    if (!container) {
-        container = document.createElement("div");
-        container.id = "daily-quest-list";
-        card.appendChild(container);
-    }
-
-    container.innerHTML = DAILY_QUESTS.map(quest => {
-        const current = quest.type === "waste"
-            ? game.stats.waste
-            : game.quests[quest.id];
-
-        const progress = quest.type === "waste"
-            ? Math.max(0, quest.target - current)
-            : current;
-
-        const completed = quest.type === "waste"
-            ? current < quest.target
-            : progress >= quest.target;
-
-        const claimed = game.quests.claimed.includes(quest.id);
-
-        return `
-            <div class="quest-item">
-                <h3>${escapeHTML(quest.name)}</h3>
-                <p>${escapeHTML(quest.description)}</p>
-                <small>Progress: ${quest.type === "waste"
-                    ? (completed ? "Completed" : "Not completed")
-                    : Math.min(progress, quest.target) + " / " + quest.target
-                }</small>
-                <small>Reward: ${quest.reward} points</small>
-                <button class="secondary-btn"
-                    ${!completed || claimed ? "disabled" : ""}
-                    onclick="claimQuest('${quest.id}')">
-                    ${claimed ? "Claimed ✓" : "Claim Reward"}
-                </button>
-            </div>
-        `;
-    }).join("");
-}
-
-function claimQuest(questId) {
-    const quest = DAILY_QUESTS.find(
-        item => item.id === questId
-    );
-
-    if (!quest || game.quests.claimed.includes(questId)) {
-        return;
-    }
-
-    const current = quest.type === "waste"
-        ? game.stats.waste
-        : game.quests[questId];
-
-    const completed = quest.type === "waste"
-        ? current < quest.target
-        : current >= quest.target;
-
-    if (!completed) {
-        notify("Complete the quest first.", "error");
-        return;
-    }
-
-    game.quests.claimed.push(questId);
-
-    if (quest.type === "money") {
-        game.stats.cash += quest.reward;
-    } else {
-        game.stats.points += quest.reward;
-    }
-
-    notify("Quest completed! Reward claimed.", "success");
-
-    checkAchievements();
-    saveGame();
-    updateAll();
-}
-
-/* =========================================================
-   21. ACHIEVEMENTS
-========================================================= */
-
-const ACHIEVEMENTS = [
-    {
-        id: "first_order",
-        name: "First Service",
-        description: "Complete your first customer order.",
-        emoji: "🍽️",
-        condition: () => game.stats.completedOrders >= 1,
-        reward: 50
-    },
-    {
-        id: "ten_orders",
-        name: "Restaurant Rising",
-        description: "Complete 10 customer orders.",
-        emoji: "🏅",
-        condition: () => game.stats.completedOrders >= 10,
-        reward: 150
-    },
-    {
-        id: "eco_master",
-        name: "Eco Master",
-        description: "Reach 90 eco score.",
-        emoji: "🌍",
-        condition: () => game.stats.ecoScore >= 90,
-        reward: 200
-    },
-    {
-        id: "level_five",
-        name: "Rising Chef",
-        description: "Reach level 5.",
-        emoji: "👩‍🍳",
-        condition: () => game.stats.level >= 5,
-        reward: 250
-    },
-    {
-        id: "millionaire",
-        name: "Smart Entrepreneur",
-        description: "Earn $5,000 in total income.",
-        emoji: "💰",
-        condition: () => game.stats.totalIncome >= 5000,
-        reward: 300
-    }
-];
-
-function checkAchievements() {
-    ACHIEVEMENTS.forEach(achievement => {
-        const alreadyUnlocked = game.achievements.some(
-            item => item.id === achievement.id
-        );
-
-        if (!alreadyUnlocked && achievement.condition()) {
-            game.achievements.push({
-                id: achievement.id,
-                name: achievement.name,
-                unlockedAt: new Date().toISOString()
-            });
-
-            game.stats.points += achievement.reward;
-
-            notify(
-                "Achievement unlocked: " + achievement.name,
-                "success"
-            );
-        }
-    });
-}
-
-function renderAchievements() {
-    const screen = $("quests-screen");
-    const card = screen?.querySelector(".feature-card");
-
-    if (!card) return;
-
-    let container = $("achievement-list");
-
-    if (!container) {
-        container = document.createElement("div");
-        container.id = "achievement-list";
-        card.appendChild(container);
-    }
-
-    container.innerHTML = `
-        <h3>Achievements</h3>
-        ${ACHIEVEMENTS.map(item => {
-            const unlocked = game.achievements.some(
-                achievement => achievement.id === item.id
-            );
-
-            return `
-                <div class="achievement-item">
-                    <span>${item.emoji}</span>
-                    <strong>${escapeHTML(item.name)}</strong>
-                    <small>${escapeHTML(item.description)}</small>
-                    <span>${unlocked ? "UNLOCKED ✓" : "LOCKED 🔒"}</span>
-                </div>
-            `;
-        }).join("")}
-    `;
-}
-
-/* =========================================================
-   22. DAILY RESTAURANT OPERATIONS
-========================================================= */
-
-function endRestaurantDay() {
-    if (!confirm("Close your restaurant for today?")) {
-        return;
-    }
-
-    stopService();
-
-    payDailySalaries();
-    spoilageSystem();
-
-    game.restaurant.day++;
-
-    game.quests.serveOrders = 0;
-    game.quests.saveFood = 0;
-    game.quests.earnMoney = 0;
-    game.quests.ecoActions = 0;
-    game.quests.claimed = [];
-
-    game.session.started = false;
-
-    saveGame();
-    updateAll();
-
-    notify("Day completed! Welcome to Day " + game.restaurant.day);
-}
-
-function openRestaurantDay() {
-    game.restaurant.isOpen = true;
-    game.session.started = true;
-
-    generateCustomer();
-    updateCustomerDisplay();
-
-    notify("Your restaurant is open!");
-
-    showScreen("game-screen");
-}
-
-/* =========================================================
-   23. RANDOM EVENTS
-========================================================= */
-
-const RANDOM_EVENTS = [
-    {
-        name: "Local Harvest Festival",
-        description: "Local suppliers offer a special discount!",
-        effect: () => {
-            INGREDIENTS.forEach(item => {
-                game.inventory[item.id] += 1;
-            });
-            notify("Harvest Festival! You received extra ingredients.");
-        }
-    },
-    {
-        name: "Eco Awareness Day",
-        description: "Your sustainability reputation increases.",
-        effect: () => {
-            game.stats.ecoScore = clamp(
-                game.stats.ecoScore + 5,
-                0,
-                100
-            );
-            notify("Eco Awareness Day! +5 eco score.");
-        }
-    },
-    {
-        name: "Busy Lunch Hour",
-        description: "Your restaurant receives extra attention.",
-        effect: () => {
-            game.stats.satisfaction = clamp(
-                game.stats.satisfaction + 5,
-                0,
-                100
-            );
-            notify("Busy Lunch Hour! Customer satisfaction increased.");
-        }
-    },
-    {
-        name: "Food Donation Opportunity",
-        description: "Share resources with your local community.",
-        effect: () => {
-            game.stats.points += 40;
-            game.stats.ecoScore = clamp(
-                game.stats.ecoScore + 3,
-                0,
-                100
-            );
-            notify("Donation completed! +40 points.");
-        }
-    }
-];
-
-function triggerRandomEvent() {
-    const event = pick(RANDOM_EVENTS);
-
-    event.effect();
-
-    saveGame();
-    updateAll();
-
-    return event;
-}
-
-/* =========================================================
-   24. REPORTS AND ANALYTICS
-========================================================= */
-
-function renderReports() {
-    setText("report-orders", game.stats.completedOrders);
-    setText("report-points", game.stats.points);
-    setText("report-satisfaction", game.stats.satisfaction);
-    setText("report-eco", game.stats.ecoScore);
-
-    setText(
-        "report-revenue",
-        formatMoney(game.stats.totalIncome)
-    );
-
-    setText(
-        "report-profit",
-        formatMoney(game.stats.totalIncome - game.stats.totalExpenses)
-    );
-
-    setText("report-waste", game.stats.waste);
-    setText("report-level", game.stats.level);
-    setText("report-day", game.restaurant.day);
-}
-
-/* =========================================================
-   25. SETTINGS
-========================================================= */
-
-function updateSettings() {
-    const sound = $("sound-toggle");
-    const music = $("music-toggle");
-
-    if (sound) {
-        sound.checked = game.settings.sound;
-    }
-
-    if (music) {
-        music.checked = game.settings.music;
-    }
-}
-
-function initializeSettings() {
-    const sound = $("sound-toggle");
-    const music = $("music-toggle");
-
-    if (sound) {
-        sound.addEventListener("change", event => {
-            game.settings.sound = event.target.checked;
-            saveGame();
-        });
-    }
-
-    if (music) {
-        music.addEventListener("change", event => {
-            game.settings.music = event.target.checked;
-            saveGame();
-        });
-    }
-}
-
-/* =========================================================
-   26. USER INTERFACE HELPERS
-========================================================= */
-
-function setText(id, value) {
-    const element = $(id);
-
-    if (element) {
-        element.textContent = value;
-    }
-}
-
-function setStyle(id, property, value) {
-    const element = $(id);
-
-    if (element) {
-        element.style[property] = value;
-    }
-}
-
-function notify(message, type = "info") {
-    let toast = $("game-toast");
-
-    if (!toast) {
-        toast = document.createElement("div");
-        toast.id = "game-toast";
-        toast.setAttribute("role", "status");
-        document.body.appendChild(toast);
-    }
-
-    toast.textContent = message;
-    toast.className = "game-toast " + type;
-    toast.style.display = "block";
-
-    if (toastTimeout) {
-        clearTimeout(toastTimeout);
-    }
-
-    toastTimeout = setTimeout(() => {
-        toast.style.display = "none";
-    }, 3500);
-}
-
-/* =========================================================
-   27. DYNAMIC MARKET / STAFF / UPGRADE UI
-========================================================= */
-
-function renderRecipes() {
-    const container = $("recipe-list");
-
-    if (!container) return;
-
-    container.innerHTML = RECIPES.map(recipe => `
-        <div class="recipe-item">
-            <span>${recipe.emoji}</span>
-            <strong>${escapeHTML(recipe.name)}</strong>
-            <p>${escapeHTML(recipe.description)}</p>
-            <small>Difficulty: ${recipe.difficulty}</small>
-            <small>Price: ${formatMoney(recipe.price)}</small>
-            <small>Ingredients: ${
-                recipe.ingredients.map(id =>
-                    INGREDIENTS.find(item => item.id === id)?.name || id
-                ).join(", ")
-            }</small>
-        </div>
-    `).join("");
-}
-
-function renderKitchen() {
-    const container = $("kitchen-orders");
-
-    if (!container) return;
-
-    container.innerHTML = `
-        <h3>Kitchen Performance</h3>
-        <p>Orders completed: ${game.stats.completedOrders}</p>
-        <p>Current streak: ${game.stats.streak}</p>
-        <p>Kitchen upgrade: ${game.upgrades.kitchen}/5</p>
-    `;
-}
-
-/* =========================================================
-   28. RESTAURANT PERFORMANCE
-========================================================= */
-
-function calculateRestaurantRating() {
-    const satisfaction = game.stats.satisfaction;
-    const eco = game.stats.ecoScore;
-    const orders = game.stats.completedOrders;
-
-    const rating = (
-        satisfaction * 0.45 +
-        eco * 0.35 +
-        Math.min(orders * 2, 100) * 0.20
-    ) / 20;
-
-    game.restaurant.rating = Math.round(
-        clamp(rating, 0, 5) * 10
-    ) / 10;
-
-    setText("restaurant-rating", game.restaurant.rating + " / 5");
-
-    return game.restaurant.rating;
-}
-
-function updateRestaurantPerformance() {
-    calculateRestaurantRating();
-
-    setText("restaurant-day", game.restaurant.day);
-    setText("restaurant-reputation", game.restaurant.reputation);
-}
-
-/* =========================================================
-   29. COMPLETE UI REFRESH
-========================================================= */
-
-function updateAll() {
-    updateRestaurantLobby();
-
-    updateProfile();
-
-    updateCustomerDisplayIfNeeded();
-
-    renderInventory();
-    renderMarket();
-    renderStaff();
-    renderUpgrades();
-
-    renderFinance();
-    updateSustainability();
-
-    renderQuests();
-    renderAchievements();
-    renderRecipes();
-    renderKitchen();
-
-    renderReports();
-
-    updateSettings();
-    updateRestaurantPerformance();
-
-    checkInventory();
-}
-
-function updateCustomerDisplayIfNeeded() {
-    if (!currentCustomer || !currentRecipe) return;
-
-    if ($("customer-name")) {
-        setText("customer-name", currentCustomer.name);
-        setText("recipe-name", currentRecipe.name);
-        setText("customer-avatar", currentCustomer.avatar);
-    }
-}
-
-/* =========================================================
-   30. AUTOMATIC SAVE AND LIFECYCLE
-========================================================= */
-
-function initializeAutosave() {
-    setInterval(() => {
-        saveGame();
-    }, CONFIG.autosaveInterval);
-
-    document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "hidden") {
-            saveGame();
-        }
-    });
-
-    window.addEventListener("pagehide", saveGame);
-}
-
-/* =========================================================
-   31. GAME INITIALIZATION
-========================================================= */
-
-function initializeGame() {
-    const loaded = loadGame();
-
-    selectedAvatar = game.player.avatar || "👩‍🍳";
-
-    selectedIngredients = [];
-
-    currentCustomer = null;
-    currentRecipe = null;
-
-    initializeSettings();
-    initializeAutosave();
-
-    updateAll();
-
-    if (loaded && game.player.nickname !== "Chef") {
-        showScreen("dashboard-screen");
-
-        notify(
-            "Welcome back, " + game.player.nickname + "!"
-        );
-
-    } else {
-        showScreen("welcome-screen");
-    }
-
-    console.log(
-        "%c MATCHA WORLD: SAVE THE FOOD ",
-        "background:#173D32;color:#fff;padding:10px;font-weight:bold;"
-    );
-
-    console.log("Game Engine:", GAME_VERSION);
-    console.log("Game initialized successfully.");
-}
-
-/* =========================================================
-   32. GLOBAL GAME API
-========================================================= */
-
-window.showScreen = showScreen;
-window.navigateTo = navigateTo;
-
-window.selectAvatar = selectAvatar;
-window.createPlayer = createPlayer;
-
-window.startGame = startGame;
-window.openRestaurantDay = openRestaurantDay;
-window.endRestaurantDay = endRestaurantDay;
-
-window.chooseIngredient = chooseIngredient;
-window.serveOrder = serveOrder;
-
-window.buyIngredients = buyIngredients;
-window.buyAllSupplies = buyAllSupplies;
-
-window.hireStaff = hireStaff;
-window.fireStaff = fireStaff;
-
-window.purchaseUpgrade = purchaseUpgrade;
-
-window.recycleFood = recycleFood;
-window.saveWater = saveWater;
-window.saveEnergy = saveEnergy;
-
-window.claimQuest = claimQuest;
-window.triggerRandomEvent = triggerRandomEvent;
-
-window.saveGame = saveGame;
-window.loadGame = loadGame;
-window.resetGame = resetGame;
-
-/* =========================================================
-   33. START ENGINE
-========================================================= */
-
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initializeGame);
-} else {
-    initializeGame();
-}
-
-/* =========================================================
-   END OF MATCHA WORLD GAME ENGINE 5.0
-========================================================= */
+/* ============================================================
+   END OF FRESHOPIA ULTIMATE 6.0
+============================================================ */
