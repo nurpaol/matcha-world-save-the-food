@@ -1,2318 +1,1233 @@
-
 /* =========================================================
-   FRESHOPIA
-   ULTIMATE ANIME COOKING & NUTRITION GAME ENGINE
-   VERSION 3.0
+   FRESHOPIA - ANIME COOKING ADVENTURE
+   ULTIMATE GAME ENGINE 6.1
+   Features:
+   - Player profile and avatar
+   - Mika anime assistant
+   - Cooking orders and ingredient selection
+   - XP, levels, coins and eco points
+   - Daily missions and rewards
+   - Achievements and unlocks
+   - Background music, sound effects and voice
+   - Timer, hints and progress saving
 ========================================================= */
 
+"use strict";
 
-/* =========================================================
-   1. GAME CONFIGURATION
-========================================================= */
+/* =========================
+   1. GAME SETTINGS
+========================= */
 
-const GAME_KEY = "freshopiaUltimateSaveV3";
+const GAME_KEY = "freshopia_ultimate_61";
 
-const AVATARS = [
-    "👩🏻‍🍳", "👨🏻‍🍳", "👩🏼‍🍳", "👨🏼‍🍳",
-    "👩🏽‍🍳", "👨🏽‍🍳", "🧑🏻‍🍳", "👩🏾‍🍳"
-];
-
-const LEVEL_TITLES = [
-    "Beginner Chef",
-    "Junior Chef",
-    "Food Explorer",
-    "Creative Chef",
-    "Nutrition Expert",
-    "Master Chef",
-    "Super Chef",
-    "Eco Chef",
-    "Grand Chef",
-    "Legendary Chef"
-];
-
-const LEVEL_XP = 250;
-
-const GAME_REWARDS = {
-    matching: 100,
-    puzzle: 150,
-    cooking: 200,
-    quiz: 120,
-    sorting: 130,
-    challenge: 250
+const CONFIG = {
+    startingTime: 90,
+    dailyRewardXP: 100,
+    dailyRewardCoins: 50,
+    xpPerCorrectOrder: 40,
+    coinsPerCorrectOrder: 20,
+    maxLevel: 20
 };
 
-const DEFAULT_PLAYER = {
-    name: "",
-    avatar: "👩🏻‍🍳",
-    style: "Healthy Chef",
-    level: 1,
-    xp: 0,
-    coins: 0,
-    ecoPoints: 0,
-    gamesPlayed: 0,
-    completedGames: 0,
-    badges: [],
-    completedLessons: [],
-    unlockedOutfits: [],
-    completedMission: false,
-    soundEnabled: true,
-    musicEnabled: false,
-    gameHistory: []
+const $ = id => document.getElementById(id);
+
+const show = (id, display = "block") => {
+    const el = $(id);
+    if (el) {
+        el.hidden = false;
+        el.style.display = display;
+    }
 };
 
-let player = { ...DEFAULT_PLAYER };
+const hide = id => {
+    const el = $(id);
+    if (el) {
+        el.hidden = true;
+        el.style.display = "none";
+    }
+};
 
-let selectedAvatar = "👩🏻‍🍳";
-let currentGame = null;
-let currentQuestion = 0;
-let gameScore = 0;
-let gameTimer = null;
-let gameTimeLeft = 30;
-let gameFinished = false;
-let gameAnswers = [];
-let matchingSelection = [];
-let matchedCards = [];
-let sortingIndex = 0;
-let cookingSelected = [];
-let puzzleOrder = [];
-let puzzleStep = 0;
+const setText = (id, value) => {
+    const el = $(id);
+    if (el) el.textContent = value;
+};
+
+/* =========================
+   2. INGREDIENT DATABASE
+========================= */
+
+const ingredients = [
+    { id: "tomato", name: "Tomato", emoji: "🍅", category: "Vegetable", eco: 2 },
+    { id: "carrot", name: "Carrot", emoji: "🥕", category: "Vegetable", eco: 2 },
+    { id: "lettuce", name: "Lettuce", emoji: "🥬", category: "Vegetable", eco: 2 },
+    { id: "broccoli", name: "Broccoli", emoji: "🥦", category: "Vegetable", eco: 3 },
+    { id: "potato", name: "Potato", emoji: "🥔", category: "Vegetable", eco: 2 },
+    { id: "mushroom", name: "Mushroom", emoji: "🍄", category: "Vegetable", eco: 3 },
+    { id: "avocado", name: "Avocado", emoji: "🥑", category: "Fruit", eco: 1 },
+    { id: "apple", name: "Apple", emoji: "🍎", category: "Fruit", eco: 3 },
+    { id: "lemon", name: "Lemon", emoji: "🍋", category: "Fruit", eco: 3 },
+    { id: "strawberry", name: "Strawberry", emoji: "🍓", category: "Fruit", eco: 3 },
+    { id: "banana", name: "Banana", emoji: "🍌", category: "Fruit", eco: 2 },
+    { id: "rice", name: "Rice", emoji: "🍚", category: "Grain", eco: 2 },
+    { id: "bread", name: "Bread", emoji: "🍞", category: "Grain", eco: 2 },
+    { id: "pasta", name: "Pasta", emoji: "🍝", category: "Grain", eco: 2 },
+    { id: "egg", name: "Egg", emoji: "🥚", category: "Protein", eco: 2 },
+    { id: "chicken", name: "Chicken", emoji: "🍗", category: "Protein", eco: 1 },
+    { id: "fish", name: "Fish", emoji: "🐟", category: "Protein", eco: 2 },
+    { id: "beans", name: "Beans", emoji: "🫘", category: "Protein", eco: 4 },
+    { id: "milk", name: "Milk", emoji: "🥛", category: "Dairy", eco: 1 },
+    { id: "cheese", name: "Cheese", emoji: "🧀", category: "Dairy", eco: 1 },
+    { id: "yogurt", name: "Yogurt", emoji: "🥣", category: "Dairy", eco: 2 },
+    { id: "oliveoil", name: "Olive Oil", emoji: "🫒", category: "Pantry", eco: 3 },
+    { id: "basil", name: "Basil", emoji: "🌿", category: "Herb", eco: 3 },
+    { id: "oats", name: "Oats", emoji: "🌾", category: "Grain", eco: 3 }
+];
+
+/* =========================
+   3. RECIPE DATABASE
+========================= */
+
+const recipes = [
+    {
+        id: "salad",
+        name: "Fresh Garden Salad",
+        emoji: "🥗",
+        ingredients: ["tomato", "lettuce", "carrot", "oliveoil"],
+        level: 1,
+        fact: "Colorful vegetables provide different vitamins, minerals and dietary fiber."
+    },
+    {
+        id: "fruitbowl",
+        name: "Rainbow Fruit Bowl",
+        emoji: "🍓",
+        ingredients: ["apple", "banana", "strawberry", "yogurt"],
+        level: 1,
+        fact: "Whole fruits contain fiber as well as naturally occurring sugars."
+    },
+    {
+        id: "sandwich",
+        name: "Healthy Veggie Sandwich",
+        emoji: "🥪",
+        ingredients: ["bread", "tomato", "lettuce", "cheese"],
+        level: 2,
+        fact: "Whole-grain bread can contribute to daily fiber intake."
+    },
+    {
+        id: "ricebowl",
+        name: "Chicken Rice Bowl",
+        emoji: "🍚",
+        ingredients: ["rice", "chicken", "broccoli", "carrot"],
+        level: 2,
+        fact: "A balanced meal can combine grains, protein and vegetables."
+    },
+    {
+        id: "pasta",
+        name: "Tomato Basil Pasta",
+        emoji: "🍝",
+        ingredients: ["pasta", "tomato", "basil", "oliveoil"],
+        level: 3,
+        fact: "Herbs can add flavor without relying only on salt."
+    },
+    {
+        id: "omelette",
+        name: "Garden Omelette",
+        emoji: "🍳",
+        ingredients: ["egg", "mushroom", "tomato", "cheese"],
+        level: 3,
+        fact: "Eggs provide protein and several important nutrients."
+    },
+    {
+        id: "fish",
+        name: "Green Fish Plate",
+        emoji: "🐟",
+        ingredients: ["fish", "potato", "broccoli", "lemon"],
+        level: 4,
+        fact: "Fish can provide protein and, depending on the type, omega-3 fats."
+    },
+    {
+        id: "oatbowl",
+        name: "Berry Oat Breakfast",
+        emoji: "🥣",
+        ingredients: ["oats", "milk", "strawberry", "banana"],
+        level: 4,
+        fact: "Oats contain beta-glucan, a type of soluble fiber."
+    },
+    {
+        id: "beanbowl",
+        name: "Plant Power Bowl",
+        emoji: "🫘",
+        ingredients: ["beans", "rice", "avocado", "tomato"],
+        level: 5,
+        fact: "Beans are a plant-based source of protein and dietary fiber."
+    }
+];
+
+/* =========================
+   4. CUSTOMERS
+========================= */
+
+const customers = [
+    { name: "Luna", avatar: "👩🏻‍🎤", message: "I would love something fresh today!" },
+    { name: "Milo", avatar: "🧑🏻‍🍳", message: "Surprise me with a delicious meal!" },
+    { name: "Aiko", avatar: "👧🏻", message: "Let's make something colorful!" },
+    { name: "Leo", avatar: "🧑🏻", message: "I am hungry for a healthy dish!" },
+    { name: "Mia", avatar: "👩🏻", message: "Can you prepare my favorite recipe?" }
+];
+
+/* =========================
+   5. PLAYER DATA
+========================= */
+
+function newPlayer() {
+    return {
+        name: "Chef",
+        avatar: "👩🏻‍🍳",
+        level: 1,
+        xp: 0,
+        coins: 0,
+        eco: 0,
+        orders: 0,
+        correctOrders: 0,
+        failedOrders: 0,
+        badges: [],
+        unlockedRecipes: ["salad", "fruitbowl"],
+        purchasedItems: [],
+        completedMissions: [],
+        missionDate: new Date().toDateString(),
+        musicOn: false,
+        soundOn: true,
+        voiceOn: true,
+        bestStreak: 0,
+        streak: 0
+    };
+}
+
+let player = loadPlayer();
+let selectedIngredients = [];
+let currentRecipe = null;
+let currentCustomer = null;
+let timerInterval = null;
+let timeLeft = CONFIG.startingTime;
+let gameRunning = false;
 let audioContext = null;
 let musicInterval = null;
+let musicStep = 0;
 
+/* =========================
+   6. SAVE AND LOAD
+========================= */
 
-/* =========================================================
-   2. INGREDIENT DATABASE
-========================================================= */
-
-const INGREDIENTS = [
-
-    // VEGETABLES
-
-    {
-        name: "Broccoli",
-        emoji: "🥦",
-        category: "vegetables",
-        calories: 34,
-        protein: 2.8,
-        carbs: 6.6,
-        fat: 0.4,
-        fiber: 2.6,
-        vitamin: "Vitamin C and Vitamin K",
-        benefit: "Supports normal immune function and contributes to bone health.",
-        storage: "Keep refrigerated in a breathable bag.",
-        sustainability: "Use the florets and stems to reduce food waste."
-    },
-    {
-        name: "Spinach",
-        emoji: "🥬",
-        category: "vegetables",
-        calories: 23,
-        protein: 2.9,
-        carbs: 3.6,
-        fat: 0.4,
-        fiber: 2.2,
-        vitamin: "Vitamin A, C and K",
-        benefit: "Contains folate, iron and antioxidant compounds.",
-        storage: "Store dry and refrigerated.",
-        sustainability: "Use fresh leaves in salads, soups and smoothies."
-    },
-    {
-        name: "Carrot",
-        emoji: "🥕",
-        category: "vegetables",
-        calories: 41,
-        protein: 0.9,
-        carbs: 9.6,
-        fat: 0.2,
-        fiber: 2.8,
-        vitamin: "Beta-carotene (Vitamin A precursor)",
-        benefit: "Contributes to normal vision and immune function.",
-        storage: "Refrigerate and remove leafy tops before storage.",
-        sustainability: "Use in soups, salads and vegetable stocks."
-    },
-    {
-        name: "Tomato",
-        emoji: "🍅",
-        category: "vegetables",
-        calories: 18,
-        protein: 0.9,
-        carbs: 3.9,
-        fat: 0.2,
-        fiber: 1.2,
-        vitamin: "Vitamin C and Potassium",
-        benefit: "Contains lycopene and other antioxidant compounds.",
-        storage: "Keep ripe tomatoes refrigerated if necessary.",
-        sustainability: "Use ripe tomatoes in sauces and soups."
-    },
-    {
-        name: "Cucumber",
-        emoji: "🥒",
-        category: "vegetables",
-        calories: 15,
-        protein: 0.7,
-        carbs: 3.6,
-        fat: 0.1,
-        fiber: 0.5,
-        vitamin: "Vitamin K",
-        benefit: "Has a high water content.",
-        storage: "Keep refrigerated and avoid freezing.",
-        sustainability: "Use in salads, sandwiches and refreshing drinks."
-    },
-    {
-        name: "Avocado",
-        emoji: "🥑",
-        category: "vegetables",
-        calories: 160,
-        protein: 2,
-        carbs: 8.5,
-        fat: 14.7,
-        fiber: 6.7,
-        vitamin: "Vitamin E, K and Folate",
-        benefit: "Provides mostly unsaturated fats and dietary fiber.",
-        storage: "Allow to ripen at room temperature, then refrigerate.",
-        sustainability: "Use the ripe fruit promptly to avoid waste."
-    },
-    {
-        name: "Beetroot",
-        emoji: "🫜",
-        category: "vegetables",
-        calories: 43,
-        protein: 1.6,
-        carbs: 9.6,
-        fat: 0.2,
-        fiber: 2.8,
-        vitamin: "Folate and Potassium",
-        benefit: "Contains naturally occurring nitrates and betalain pigments.",
-        storage: "Refrigerate in a cool and dry environment.",
-        sustainability: "Use in salads, soups and vegetable purees."
-    },
-    {
-        name: "Bell Pepper",
-        emoji: "🫑",
-        category: "vegetables",
-        calories: 31,
-        protein: 1,
-        carbs: 6,
-        fat: 0.3,
-        fiber: 2.1,
-        vitamin: "Vitamin C",
-        benefit: "Provides vitamin C and colorful plant compounds.",
-        storage: "Keep refrigerated.",
-        sustainability: "Use in stir-fries, soups and roasted dishes."
-    },
-    {
-        name: "Zucchini",
-        emoji: "🥒",
-        category: "vegetables",
-        calories: 17,
-        protein: 1.2,
-        carbs: 3.1,
-        fat: 0.3,
-        fiber: 1,
-        vitamin: "Vitamin C and Potassium",
-        benefit: "A low-energy-density vegetable containing water and fiber.",
-        storage: "Refrigerate and use while fresh.",
-        sustainability: "Use the entire vegetable in soups and meals."
-    },
-    {
-        name: "Onion",
-        emoji: "🧅",
-        category: "vegetables",
-        calories: 40,
-        protein: 1.1,
-        carbs: 9.3,
-        fat: 0.1,
-        fiber: 1.7,
-        vitamin: "Vitamin C and B6",
-        benefit: "Contains sulfur compounds and flavonoids.",
-        storage: "Store in a cool, dry and ventilated place.",
-        sustainability: "Use in sauces, stocks and soups."
-    },
-
-    // FRUITS
-
-    {
-        name: "Strawberry",
-        emoji: "🍓",
-        category: "fruits",
-        calories: 32,
-        protein: 0.7,
-        carbs: 7.7,
-        fat: 0.3,
-        fiber: 2,
-        vitamin: "Vitamin C",
-        benefit: "Provides vitamin C and antioxidant compounds.",
-        storage: "Refrigerate without washing until ready to eat.",
-        sustainability: "Use very ripe strawberries in smoothies."
-    },
-    {
-        name: "Banana",
-        emoji: "🍌",
-        category: "fruits",
-        calories: 89,
-        protein: 1.1,
-        carbs: 22.8,
-        fat: 0.3,
-        fiber: 2.6,
-        vitamin: "Vitamin B6 and Potassium",
-        benefit: "Provides carbohydrates and potassium.",
-        storage: "Keep at room temperature until ripe.",
-        sustainability: "Use ripe bananas in pancakes and smoothies."
-    },
-    {
-        name: "Blueberry",
-        emoji: "🫐",
-        category: "fruits",
-        calories: 57,
-        protein: 0.7,
-        carbs: 14.5,
-        fat: 0.3,
-        fiber: 2.4,
-        vitamin: "Vitamin C and K",
-        benefit: "Contains anthocyanins and other polyphenols.",
-        storage: "Refrigerate and wash before consumption.",
-        sustainability: "Freeze extra berries to prevent waste."
-    },
-    {
-        name: "Apple",
-        emoji: "🍎",
-        category: "fruits",
-        calories: 52,
-        protein: 0.3,
-        carbs: 13.8,
-        fat: 0.2,
-        fiber: 2.4,
-        vitamin: "Vitamin C",
-        benefit: "Provides dietary fiber, especially when eaten with its skin.",
-        storage: "Store in a cool place or refrigerator.",
-        sustainability: "Use in fruit salads and baked dishes."
-    },
-    {
-        name: "Orange",
-        emoji: "🍊",
-        category: "fruits",
-        calories: 47,
-        protein: 0.9,
-        carbs: 11.8,
-        fat: 0.1,
-        fiber: 2.4,
-        vitamin: "Vitamin C",
-        benefit: "Contributes to normal immune function.",
-        storage: "Keep in a cool place or refrigerate.",
-        sustainability: "Use the zest in recipes when appropriate."
-    },
-    {
-        name: "Mango",
-        emoji: "🥭",
-        category: "fruits",
-        calories: 60,
-        protein: 0.8,
-        carbs: 15,
-        fat: 0.4,
-        fiber: 1.6,
-        vitamin: "Vitamin A and C",
-        benefit: "Provides beta-carotene and vitamin C.",
-        storage: "Ripen at room temperature and refrigerate when ripe.",
-        sustainability: "Use ripe mango in smoothies and desserts."
-    },
-    {
-        name: "Kiwi",
-        emoji: "🥝",
-        category: "fruits",
-        calories: 61,
-        protein: 1.1,
-        carbs: 14.7,
-        fat: 0.5,
-        fiber: 3,
-        vitamin: "Vitamin C and K",
-        benefit: "Provides vitamin C and dietary fiber.",
-        storage: "Refrigerate when ripe.",
-        sustainability: "Use in fruit salads and breakfast bowls."
-    },
-    {
-        name: "Pineapple",
-        emoji: "🍍",
-        category: "fruits",
-        calories: 50,
-        protein: 0.5,
-        carbs: 13.1,
-        fat: 0.1,
-        fiber: 1.4,
-        vitamin: "Vitamin C and Manganese",
-        benefit: "Contains bromelain enzymes.",
-        storage: "Refrigerate after cutting.",
-        sustainability: "Use the fruit in smoothies and savory dishes."
-    },
-    {
-        name: "Watermelon",
-        emoji: "🍉",
-        category: "fruits",
-        calories: 30,
-        protein: 0.6,
-        carbs: 7.6,
-        fat: 0.2,
-        fiber: 0.4,
-        vitamin: "Vitamin C and Lycopene",
-        benefit: "Has a high water content.",
-        storage: "Refrigerate cut watermelon.",
-        sustainability: "Use leftover fruit in refreshing drinks."
-    },
-    {
-        name: "Pear",
-        emoji: "🍐",
-        category: "fruits",
-        calories: 57,
-        protein: 0.4,
-        carbs: 15.2,
-        fat: 0.1,
-        fiber: 3.1,
-        vitamin: "Vitamin C and K",
-        benefit: "Provides dietary fiber.",
-        storage: "Ripen at room temperature.",
-        sustainability: "Use ripe pears in oatmeal and desserts."
-    },
-
-    // PROTEINS
-
-    {
-        name: "Chicken Breast",
-        emoji: "🍗",
-        category: "proteins",
-        calories: 165,
-        protein: 31,
-        carbs: 0,
-        fat: 3.6,
-        fiber: 0,
-        vitamin: "Vitamin B6 and Niacin",
-        benefit: "Provides high-quality complete protein.",
-        storage: "Keep refrigerated and cook thoroughly. Avoid cross-contamination.",
-        sustainability: "Plan portions carefully to reduce leftovers."
-    },
-    {
-        name: "Salmon",
-        emoji: "🐟",
-        category: "proteins",
-        calories: 208,
-        protein: 20,
-        carbs: 0,
-        fat: 13,
-        fiber: 0,
-        vitamin: "Vitamin D and B12",
-        benefit: "Provides protein and omega-3 fatty acids.",
-        storage: "Keep refrigerated and follow safe cooking guidance.",
-        sustainability: "Choose responsibly sourced seafood."
-    },
-    {
-        name: "Egg",
-        emoji: "🥚",
-        category: "proteins",
-        calories: 155,
-        protein: 13,
-        carbs: 1.1,
-        fat: 11,
-        fiber: 0,
-        vitamin: "Vitamin B12 and Choline",
-        benefit: "Contains complete protein and several micronutrients.",
-        storage: "Keep refrigerated in its original packaging.",
-        sustainability: "Use eggs before their recommended date."
-    },
-    {
-        name: "Lentils",
-        emoji: "🫘",
-        category: "proteins",
-        calories: 116,
-        protein: 9,
-        carbs: 20,
-        fat: 0.4,
-        fiber: 7.9,
-        vitamin: "Folate and Iron",
-        benefit: "Plant-based protein and fiber source.",
-        storage: "Store dried lentils in an airtight container.",
-        sustainability: "Legumes can support lower-impact meal planning."
-    },
-    {
-        name: "Chickpeas",
-        emoji: "🫘",
-        category: "proteins",
-        calories: 164,
-        protein: 8.9,
-        carbs: 27.4,
-        fat: 2.6,
-        fiber: 7.6,
-        vitamin: "Folate and Iron",
-        benefit: "Provides plant protein and dietary fiber.",
-        storage: "Store dried chickpeas in a dry place.",
-        sustainability: "Use in soups, salads and hummus."
-    },
-    {
-        name: "Tofu",
-        emoji: "🧈",
-        category: "proteins",
-        calories: 76,
-        protein: 8,
-        carbs: 1.9,
-        fat: 4.8,
-        fiber: 0.3,
-        vitamin: "Iron and Calcium (varies by product)",
-        benefit: "A versatile plant-based protein.",
-        storage: "Refrigerate and follow package instructions.",
-        sustainability: "Use in stir-fries and balanced meals."
-    },
-    {
-        name: "Turkey",
-        emoji: "🍖",
-        category: "proteins",
-        calories: 135,
-        protein: 30,
-        carbs: 0,
-        fat: 1,
-        fiber: 0,
-        vitamin: "Vitamin B6 and B12",
-        benefit: "Provides lean protein.",
-        storage: "Keep chilled and cook thoroughly.",
-        sustainability: "Use leftovers in sandwiches and soups."
-    },
-    {
-        name: "Tuna",
-        emoji: "🐠",
-        category: "proteins",
-        calories: 132,
-        protein: 28,
-        carbs: 0,
-        fat: 1,
-        fiber: 0,
-        vitamin: "Vitamin B12 and Selenium",
-        benefit: "Provides protein and several micronutrients.",
-        storage: "Refrigerate fresh tuna and follow package guidance for canned products.",
-        sustainability: "Choose responsibly sourced tuna."
-    },
-
-    // GRAINS
-
-    {
-        name: "Oats",
-        emoji: "🌾",
-        category: "grains",
-        calories: 389,
-        protein: 16.9,
-        carbs: 66.3,
-        fat: 6.9,
-        fiber: 10.6,
-        vitamin: "Manganese and B Vitamins",
-        benefit: "Contains beta-glucan soluble fiber.",
-        storage: "Keep dry in an airtight container.",
-        sustainability: "Use in breakfast bowls and homemade snacks."
-    },
-    {
-        name: "Quinoa",
-        emoji: "🍚",
-        category: "grains",
-        calories: 120,
-        protein: 4.4,
-        carbs: 21.3,
-        fat: 1.9,
-        fiber: 2.8,
-        vitamin: "Magnesium and Folate",
-        benefit: "Contains all nine essential amino acids.",
-        storage: "Store dry and airtight.",
-        sustainability: "Use as an alternative grain in meal planning."
-    },
-    {
-        name: "Brown Rice",
-        emoji: "🍚",
-        category: "grains",
-        calories: 123,
-        protein: 2.7,
-        carbs: 25.6,
-        fat: 1,
-        fiber: 1.6,
-        vitamin: "Manganese and Magnesium",
-        benefit: "Provides complex carbohydrates and some fiber.",
-        storage: "Keep dry and airtight.",
-        sustainability: "Cook suitable portions to reduce food waste."
-    },
-    {
-        name: "Bulgur",
-        emoji: "🌾",
-        category: "grains",
-        calories: 83,
-        protein: 3.1,
-        carbs: 18.6,
-        fat: 0.2,
-        fiber: 4.5,
-        vitamin: "Manganese and Magnesium",
-        benefit: "A whole-grain food rich in dietary fiber.",
-        storage: "Keep in a cool, dry place.",
-        sustainability: "Use in salads, soups and traditional dishes."
-    },
-    {
-        name: "Whole Wheat Bread",
-        emoji: "🍞",
-        category: "grains",
-        calories: 247,
-        protein: 13,
-        carbs: 41,
-        fat: 4.2,
-        fiber: 7,
-        vitamin: "B Vitamins and Iron",
-        benefit: "Provides whole-grain carbohydrates and fiber.",
-        storage: "Keep sealed; freeze extra slices if needed.",
-        sustainability: "Use stale bread in croutons or breadcrumbs."
-    },
-    {
-        name: "Whole Wheat Pasta",
-        emoji: "🍝",
-        category: "grains",
-        calories: 149,
-        protein: 6,
-        carbs: 30,
-        fat: 1.5,
-        fiber: 3.9,
-        vitamin: "B Vitamins and Magnesium",
-        benefit: "Provides carbohydrates and dietary fiber.",
-        storage: "Store dry pasta in a sealed container.",
-        sustainability: "Measure portions before cooking."
-    },
-
-    // DAIRY
-
-    {
-        name: "Milk",
-        emoji: "🥛",
-        category: "dairy",
-        calories: 61,
-        protein: 3.2,
-        carbs: 4.8,
-        fat: 3.3,
-        fiber: 0,
-        vitamin: "Calcium and Vitamin B12",
-        benefit: "Provides calcium and complete protein.",
-        storage: "Keep refrigerated and follow the expiry date.",
-        sustainability: "Avoid purchasing more than you can use."
-    },
-    {
-        name: "Greek Yogurt",
-        emoji: "🥣",
-        category: "dairy",
-        calories: 97,
-        protein: 9,
-        carbs: 3.9,
-        fat: 5,
-        fiber: 0,
-        vitamin: "Calcium and Vitamin B12",
-        benefit: "Provides protein and calcium.",
-        storage: "Keep refrigerated.",
-        sustainability: "Use in sauces, breakfast bowls and dressings."
-    },
-    {
-        name: "Cheese",
-        emoji: "🧀",
-        category: "dairy",
-        calories: 402,
-        protein: 25,
-        carbs: 1.3,
-        fat: 33,
-        fiber: 0,
-        vitamin: "Calcium and Vitamin B12",
-        benefit: "Provides protein and calcium.",
-        storage: "Keep refrigerated in suitable packaging.",
-        sustainability: "Store properly to extend freshness."
-    },
-
-    // HEALTHY FATS
-
-    {
-        name: "Almonds",
-        emoji: "🌰",
-        category: "healthy-fats",
-        calories: 579,
-        protein: 21,
-        carbs: 21.6,
-        fat: 49.9,
-        fiber: 12.5,
-        vitamin: "Vitamin E and Magnesium",
-        benefit: "Provides unsaturated fats and vitamin E.",
-        storage: "Keep sealed in a cool and dry place.",
-        sustainability: "Use measured portions in snacks and recipes."
-    },
-    {
-        name: "Walnuts",
-        emoji: "🥜",
-        category: "healthy-fats",
-        calories: 654,
-        protein: 15.2,
-        carbs: 13.7,
-        fat: 65.2,
-        fiber: 6.7,
-        vitamin: "Copper and Manganese",
-        benefit: "Contains plant-based omega-3 ALA.",
-        storage: "Store airtight, preferably refrigerated for longer freshness.",
-        sustainability: "Add to salads and breakfast bowls."
-    },
-    {
-        name: "Olive Oil",
-        emoji: "🫒",
-        category: "healthy-fats",
-        calories: 884,
-        protein: 0,
-        carbs: 0,
-        fat: 100,
-        fiber: 0,
-        vitamin: "Vitamin E",
-        benefit: "Rich in monounsaturated fats.",
-        storage: "Keep away from light and heat.",
-        sustainability: "Use appropriate quantities when cooking."
-    },
-    {
-        name: "Chia Seeds",
-        emoji: "🌱",
-        category: "healthy-fats",
-        calories: 486,
-        protein: 16.5,
-        carbs: 42.1,
-        fat: 30.7,
-        fiber: 34.4,
-        vitamin: "Calcium and Magnesium",
-        benefit: "Provides fiber, ALA omega-3 and plant protein.",
-        storage: "Keep in a sealed and dry container.",
-        sustainability: "Use in puddings and breakfast recipes."
-    },
-    {
-        name: "Peanut Butter",
-        emoji: "🥜",
-        category: "healthy-fats",
-        calories: 588,
-        protein: 25,
-        carbs: 20,
-        fat: 50,
-        fiber: 6,
-        vitamin: "Vitamin E and Magnesium",
-        benefit: "Provides protein and unsaturated fats.",
-        storage: "Follow product storage instructions.",
-        sustainability: "Check ingredient labels and use suitable portions."
-    },
-
-    // OTHER
-
-    {
-        name: "Honey",
-        emoji: "🍯",
-        category: "other",
-        calories: 304,
-        protein: 0.3,
-        carbs: 82.4,
-        fat: 0,
-        fiber: 0,
-        vitamin: "Small amounts of minerals",
-        benefit: "A natural sweetener that is still mainly sugar.",
-        storage: "Store sealed in a dry place.",
-        sustainability: "Use moderate amounts and avoid unnecessary waste."
-    },
-    {
-        name: "Dark Chocolate",
-        emoji: "🍫",
-        category: "other",
-        calories: 598,
-        protein: 7.8,
-        carbs: 45.9,
-        fat: 42.6,
-        fiber: 10.9,
-        vitamin: "Iron and Magnesium",
-        benefit: "Contains cocoa flavanols; nutritional composition varies.",
-        storage: "Store in a cool, dry place.",
-        sustainability: "Choose responsibly sourced cocoa when possible."
-    },
-    {
-        name: "Matcha",
-        emoji: "🍵",
-        category: "other",
-        calories: 5,
-        protein: 0.3,
-        carbs: 1,
-        fat: 0,
-        fiber: 0.3,
-        vitamin: "Contains catechins and small amounts of minerals",
-        benefit: "Powdered green tea containing natural caffeine and catechins.",
-        storage: "Keep airtight, away from light, heat and moisture.",
-        sustainability: "Use the amount needed to avoid wasting this ingredient."
-    },
-    {
-        name: "Basil",
-        emoji: "🌿",
-        category: "other",
-        calories: 23,
-        protein: 3.2,
-        carbs: 2.7,
-        fat: 0.6,
-        fiber: 1.6,
-        vitamin: "Vitamin K",
-        benefit: "An aromatic herb containing plant compounds.",
-        storage: "Keep fresh leaves cool and protected.",
-        sustainability: "Grow fresh herbs at home when possible."
-    },
-    {
-        name: "Flax Seeds",
-        emoji: "🌾",
-        category: "healthy-fats",
-        calories: 534,
-        protein: 18.3,
-        carbs: 28.9,
-        fat: 42.2,
-        fiber: 27.3,
-        vitamin: "Thiamin and Magnesium",
-        benefit: "Provides ALA omega-3 and dietary fiber.",
-        storage: "Store ground flaxseed in a sealed container in the refrigerator.",
-        sustainability: "Use in oatmeal, yogurt and baking."
-    },
-    {
-        name: "Mushrooms",
-        emoji: "🍄",
-        category: "vegetables",
-        calories: 22,
-        protein: 3.1,
-        carbs: 3.3,
-        fat: 0.3,
-        fiber: 1,
-        vitamin: "B Vitamins and Selenium",
-        benefit: "Provides B vitamins and several minerals.",
-        storage: "Refrigerate in breathable packaging.",
-        sustainability: "Use in soups, sauces and vegetable dishes."
-    },
-    {
-        name: "Sweet Potato",
-        emoji: "🍠",
-        category: "vegetables",
-        calories: 86,
-        protein: 1.6,
-        carbs: 20.1,
-        fat: 0.1,
-        fiber: 3,
-        vitamin: "Beta-carotene and Vitamin C",
-        benefit: "Provides fiber and beta-carotene.",
-        storage: "Keep in a cool, dry and dark place.",
-        sustainability: "Roast and use in balanced meals."
-    },
-    {
-        name: "Cauliflower",
-        emoji: "🥦",
-        category: "vegetables",
-        calories: 25,
-        protein: 1.9,
-        carbs: 5,
-        fat: 0.3,
-        fiber: 2,
-        vitamin: "Vitamin C and Folate",
-        benefit: "Provides fiber and vitamin C.",
-        storage: "Keep refrigerated.",
-        sustainability: "Use florets and stems in different recipes."
-    },
-    {
-        name: "Edamame",
-        emoji: "🫛",
-        category: "proteins",
-        calories: 121,
-        protein: 12,
-        carbs: 8.9,
-        fat: 5.2,
-        fiber: 5.2,
-        vitamin: "Folate and Vitamin K",
-        benefit: "Provides plant protein and fiber.",
-        storage: "Keep frozen or refrigerated according to packaging.",
-        sustainability: "Use in bowls, salads and stir-fries."
+function loadPlayer() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(GAME_KEY));
+        return saved ? { ...newPlayer(), ...saved } : newPlayer();
+    } catch (error) {
+        console.warn("Save data could not be loaded.", error);
+        return newPlayer();
     }
-];
-
-
-/* =========================================================
-   3. BADGE DATABASE
-========================================================= */
-
-const BADGES = [
-    {
-        id: "first-game",
-        name: "First Adventure",
-        emoji: "🎮",
-        description: "Complete your first game."
-    },
-    {
-        id: "food-explorer",
-        name: "Food Explorer",
-        emoji: "🥑",
-        description: "Discover your first ingredient."
-    },
-    {
-        id: "nutrition-master",
-        name: "Nutrition Master",
-        emoji: "🧠",
-        description: "Complete three quizzes."
-    },
-    {
-        id: "eco-warrior",
-        name: "Eco Warrior",
-        emoji: "🌱",
-        description: "Earn 100 Eco Points."
-    },
-    {
-        id: "chef-master",
-        name: "Chef Master",
-        emoji: "👩🏻‍🍳",
-        description: "Complete five games."
-    },
-    {
-        id: "level-five",
-        name: "Rising Star",
-        emoji: "⭐",
-        description: "Reach Level 5."
-    },
-    {
-        id: "academy-graduate",
-        name: "Academy Graduate",
-        emoji: "📚",
-        description: "Complete three lessons."
-    },
-    {
-        id: "speed-chef",
-        name: "Speed Chef",
-        emoji: "⚡",
-        description: "Complete the Speed Chef challenge."
-    }
-];
-
-
-/* =========================================================
-   4. EDUCATIONAL LESSONS
-========================================================= */
-
-const LESSONS = {
-
-    nutrition: {
-        title: "Nutrition Basics 🥦",
-        content: `
-            <h2>Understanding Nutrition</h2>
-            <p>Nutrition is the process through which the body obtains and uses nutrients from food.</p>
-
-            <h3>Macronutrients</h3>
-            <ul>
-                <li><b>Carbohydrates:</b> An important source of energy.</li>
-                <li><b>Proteins:</b> Help build and repair body tissues.</li>
-                <li><b>Fats:</b> Provide energy and support cell functions.</li>
-            </ul>
-
-            <h3>Micronutrients</h3>
-            <p>Vitamins and minerals are needed in smaller quantities and support many body functions.</p>
-
-            <h3>Did You Know?</h3>
-            <p>Dietary fiber supports normal digestive function and is found in plant foods.</p>
-        `
-    },
-
-    safety: {
-        title: "Food Safety 🧼",
-        content: `
-            <h2>Food Safety in the Kitchen</h2>
-            <p>Food safety helps prevent foodborne illness and contamination.</p>
-
-            <h3>Important Rules</h3>
-            <ul>
-                <li>Wash hands before handling food.</li>
-                <li>Keep raw meat separate from ready-to-eat foods.</li>
-                <li>Use clean utensils and cutting boards.</li>
-                <li>Refrigerate perishable foods promptly.</li>
-                <li>Cook foods to safe internal temperatures.</li>
-            </ul>
-
-            <h3>Cross-Contamination</h3>
-            <p>Cross-contamination occurs when harmful microorganisms or allergens transfer between foods, surfaces or equipment.</p>
-
-            <h3>Remember!</h3>
-            <p>Cleaning and sanitizing are important steps in a safe kitchen.</p>
-        `
-    },
-
-    sustainability: {
-        title: "Food Sustainability ♻️",
-        content: `
-            <h2>Protecting Our Planet</h2>
-            <p>Sustainable food choices consider environmental, social and economic impacts.</p>
-
-            <h3>How Can We Help?</h3>
-            <ul>
-                <li>Plan meals before shopping.</li>
-                <li>Use leftovers safely.</li>
-                <li>Choose seasonal ingredients when practical.</li>
-                <li>Reduce unnecessary packaging.</li>
-                <li>Store ingredients correctly.</li>
-            </ul>
-
-            <h3>Food Waste</h3>
-            <p>Food waste occurs when edible food is discarded or lost.</p>
-
-            <h3>Eco Tip</h3>
-            <p>Turn suitable vegetable scraps into homemade vegetable stock.</p>
-        `
-    },
-
-    "healthy-eating": {
-        title: "Healthy Eating 🍎",
-        content: `
-            <h2>Building Balanced Meals</h2>
-            <p>A balanced eating pattern includes a variety of foods and appropriate portions.</p>
-
-            <h3>Build Your Plate</h3>
-            <ul>
-                <li>Include plenty of vegetables and fruits.</li>
-                <li>Add whole grains.</li>
-                <li>Include a suitable protein source.</li>
-                <li>Choose unsaturated fats more often.</li>
-                <li>Drink enough water.</li>
-            </ul>
-
-            <h3>Food Variety</h3>
-            <p>Eating different foods helps provide a wider range of nutrients.</p>
-        `
-    },
-
-    ingredients: {
-        title: "Food Ingredients 🌾",
-        content: `
-            <h2>Understanding Ingredients</h2>
-            <p>Ingredients have different nutritional, functional and sensory properties.</p>
-
-            <h3>Examples</h3>
-            <ul>
-                <li>Oats: Provide beta-glucan fiber.</li>
-                <li>Eggs: Help bind and structure food.</li>
-                <li>Olive oil: Provides fat and flavor.</li>
-                <li>Yogurt: Adds moisture and acidity.</li>
-                <li>Herbs: Improve aroma and flavor.</li>
-            </ul>
-
-            <h3>Food Labels</h3>
-            <p>Always check ingredient lists, allergen declarations and nutrition information.</p>
-        `
-    },
-
-    "eco-kitchen": {
-        title: "Eco-Friendly Kitchen 🌍",
-        content: `
-            <h2>Creating a Sustainable Kitchen</h2>
-            <p>A sustainable kitchen aims to reduce resource use and food waste.</p>
-
-            <h3>Smart Kitchen Habits</h3>
-            <ul>
-                <li>Use reusable storage containers.</li>
-                <li>Measure ingredients carefully.</li>
-                <li>Use energy-efficient cooking methods.</li>
-                <li>Separate recyclable waste.</li>
-                <li>Buy only what you need.</li>
-            </ul>
-
-            <h3>Food Storage</h3>
-            <p>Proper storage helps maintain quality and can reduce spoilage.</p>
-        `
-    }
-};
-
-
-/* =========================================================
-   5. DOM HELPERS
-========================================================= */
-
-const $ = (selector) => document.querySelector(selector);
-
-const $$ = (selector) => [...document.querySelectorAll(selector)];
-
-function showElement(element) {
-    if (element) element.classList.remove("hidden");
 }
 
-function hideElement(element) {
-    if (element) element.classList.add("hidden");
-}
-
-function setText(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.textContent = value;
-}
-
-function shuffle(array) {
-    return [...array].sort(() => Math.random() - 0.5);
-}
-
-function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, character => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-    })[character]);
-}
-
-
-/* =========================================================
-   6. SAVE AND LOAD SYSTEM
-========================================================= */
-
-function saveGame() {
+function save() {
     try {
         localStorage.setItem(GAME_KEY, JSON.stringify(player));
     } catch (error) {
-        console.error("Unable to save game:", error);
-        showToast("Progress could not be saved on this device.");
+        console.warn("Game progress could not be saved.", error);
     }
 }
 
-function loadGame() {
-    try {
-        const saved = localStorage.getItem(GAME_KEY);
+/* =========================
+   7. LEVEL SYSTEM
+========================= */
 
-        if (!saved) return false;
-
-        const parsed = JSON.parse(saved);
-
-        if (!parsed || typeof parsed !== "object") return false;
-
-        player = {
-            ...DEFAULT_PLAYER,
-            ...parsed,
-            badges: Array.isArray(parsed.badges) ? parsed.badges : [],
-            completedLessons: Array.isArray(parsed.completedLessons)
-                ? parsed.completedLessons : [],
-            unlockedOutfits: Array.isArray(parsed.unlockedOutfits)
-                ? parsed.unlockedOutfits : [],
-            gameHistory: Array.isArray(parsed.gameHistory)
-                ? parsed.gameHistory : []
-        };
-
-        return Boolean(player.name);
-
-    } catch (error) {
-        console.error("Save data could not be loaded:", error);
-        player = { ...DEFAULT_PLAYER };
-        return false;
-    }
+function requiredXP(level = player.level) {
+    return 100 + (level - 1) * 50;
 }
 
+function addXP(amount) {
+    player.xp += amount;
 
-/* =========================================================
-   7. SOUND SYSTEM
-========================================================= */
+    while (
+        player.level < CONFIG.maxLevel &&
+        player.xp >= requiredXP()
+    ) {
+        player.xp -= requiredXP();
+        levelUp();
+    }
 
-function playSound(frequency = 500, duration = 0.12) {
-    if (!player.soundEnabled) return;
+    updateDashboard();
+    save();
+}
 
-    try {
-        audioContext ||= new (
-            window.AudioContext || window.webkitAudioContext
-        )();
+function levelUp() {
+    player.level++;
+    player.coins += 30;
 
-        if (audioContext.state === "suspended") {
-            audioContext.resume();
+    unlockRecipes();
+
+    const modal = $("levelModal");
+
+    if (modal) {
+        show("levelModal", "flex");
+    }
+
+    setText("levelValue", player.level);
+    setText("mikaMessage", `Amazing, ${player.name}! You reached Level ${player.level}! Keep cooking!`);
+
+    speak(`Congratulations! You reached level ${player.level}!`);
+    playSound("level");
+
+    checkBadges();
+    save();
+}
+
+function unlockRecipes() {
+    recipes.forEach(recipe => {
+        if (
+            player.level >= recipe.level &&
+            !player.unlockedRecipes.includes(recipe.id)
+        ) {
+            player.unlockedRecipes.push(recipe.id);
+            showToast(`New recipe unlocked: ${recipe.name}!`);
         }
+    });
 
-        const oscillator = audioContext.createOscillator();
-        const gain = audioContext.createGain();
+    renderUnlocks();
+}
 
-        oscillator.type = "sine";
-        oscillator.frequency.value = frequency;
+/* =========================
+   8. DASHBOARD
+========================= */
 
-        gain.gain.setValueAtTime(0.08, audioContext.currentTime);
-        gain.gain.exponentialRampToValueAtTime(
-            0.001,
-            audioContext.currentTime + duration
+function updateDashboard() {
+    setText("levelValue", player.level);
+    setText("xpValue", `${player.xp} / ${requiredXP()}`);
+    setText("coinValue", player.coins);
+    setText("ecoValue", player.eco);
+    setText("badgeCount", player.badges.length);
+    setText("orderCount", player.correctOrders);
+
+    const fill = $("xpFill");
+
+    if (fill) {
+        fill.style.width =
+            `${Math.min(100, player.xp / requiredXP() * 100)}%`;
+    }
+
+    renderBadges();
+    renderUnlocks();
+    renderDailyMissions();
+}
+
+/* =========================
+   9. START GAME
+========================= */
+
+function startGame() {
+    const nameInput = $("playerName");
+
+    if (nameInput && nameInput.value.trim()) {
+        player.name = nameInput.value.trim().slice(0, 18);
+    }
+
+    const avatarInput = document.querySelector(
+        '[data-avatar].selected, .avatar-option.selected'
+    );
+
+    if (avatarInput) {
+        player.avatar =
+            avatarInput.dataset.avatar ||
+            avatarInput.textContent.trim() ||
+            player.avatar;
+    }
+
+    save();
+
+    hide("welcomeScreen");
+    show("gameScreen");
+
+    updateDashboard();
+    generateOrder();
+
+    if (player.musicOn) startMusic();
+
+    speak(`Welcome back, Chef ${player.name}! Let's cook!`);
+}
+
+/* =========================
+   10. GENERATE ORDER
+========================= */
+
+function generateOrder() {
+    clearInterval(timerInterval);
+
+    const available = recipes.filter(recipe =>
+        player.level >= recipe.level
+    );
+
+    const pool = available.length ? available : recipes.slice(0, 2);
+
+    currentRecipe = pool[Math.floor(Math.random() * pool.length)];
+    currentCustomer =
+        customers[Math.floor(Math.random() * customers.length)];
+
+    selectedIngredients = [];
+    gameRunning = true;
+    timeLeft = CONFIG.startingTime;
+
+    setText("recipeName", currentRecipe.name);
+    setText("recipeEmoji", currentRecipe.emoji);
+    setText("customerName", currentCustomer.name);
+    setText("customerAvatar", currentCustomer.avatar);
+    setText("customerMessage", currentCustomer.message);
+    setText("timer", timeLeft);
+
+    setText(
+        "mikaMessage",
+        `Let's prepare ${currentRecipe.name}! Choose the correct ingredients.`
+    );
+
+    setText("feedback", "");
+    setText("mikaCharacter", "👩🏻‍🍳");
+
+    renderIngredients();
+    updateSelectedIngredients();
+
+    startTimer();
+}
+
+/* =========================
+   11. INGREDIENT DISPLAY
+========================= */
+
+function renderIngredients() {
+    const grid = $("ingredientGrid");
+    if (!grid) return;
+
+    grid.innerHTML = "";
+
+    const availableIngredients = ingredients.filter(item => {
+        const neededByUnlockedRecipe = recipes.some(recipe =>
+            player.level >= recipe.level &&
+            recipe.ingredients.includes(item.id)
         );
 
-        oscillator.connect(gain);
-        gain.connect(audioContext.destination);
+        return neededByUnlockedRecipe;
+    });
 
-        oscillator.start();
-        oscillator.stop(audioContext.currentTime + duration);
+    availableIngredients.forEach(item => {
+        const button = document.createElement("button");
 
-    } catch (error) {
-        console.warn("Audio is unavailable:", error);
+        button.type = "button";
+        button.className = "ingredient-card";
+        button.dataset.id = item.id;
+
+        button.innerHTML = `
+            <span class="ingredient-emoji">${item.emoji}</span>
+            <span class="ingredient-name">${item.name}</span>
+        `;
+
+        button.addEventListener("click", () => {
+            selectIngredient(item.id);
+        });
+
+        grid.appendChild(button);
+    });
+}
+
+function selectIngredient(id) {
+    if (!gameRunning) return;
+
+    if (selectedIngredients.includes(id)) {
+        selectedIngredients =
+            selectedIngredients.filter(item => item !== id);
+    } else {
+        selectedIngredients.push(id);
+    }
+
+    const button = document.querySelector(
+        `.ingredient-card[data-id="${id}"]`
+    );
+
+    if (button) {
+        button.classList.toggle(
+            "selected",
+            selectedIngredients.includes(id)
+        );
+    }
+
+    updateSelectedIngredients();
+    playSound("click");
+}
+
+function updateSelectedIngredients() {
+    const display = $("selectedIngredients");
+
+    if (!display) return;
+
+    display.innerHTML = "";
+
+    selectedIngredients.forEach(id => {
+        const item = ingredients.find(i => i.id === id);
+        if (!item) return;
+
+        const tag = document.createElement("span");
+        tag.className = "selected-ingredient";
+        tag.textContent = `${item.emoji} ${item.name}`;
+        display.appendChild(tag);
+    });
+}
+
+function clearIngredients() {
+    selectedIngredients = [];
+
+    document.querySelectorAll(".ingredient-card").forEach(button => {
+        button.classList.remove("selected");
+    });
+
+    updateSelectedIngredients();
+}
+
+/* =========================
+   12. HINT SYSTEM
+========================= */
+
+function giveHint() {
+    if (!currentRecipe) return;
+
+    const missing = currentRecipe.ingredients.filter(
+        id => !selectedIngredients.includes(id)
+    );
+
+    if (!missing.length) {
+        showToast("You have selected all the required ingredients!");
+        return;
+    }
+
+    const item = ingredients.find(i => i.id === missing[0]);
+
+    if (item) {
+        setText(
+            "feedback",
+            `Mika's hint: You might need ${item.emoji} ${item.name}!`
+        );
+
+        setText(
+            "mikaMessage",
+            `Here's a little hint: look for ${item.name}!`
+        );
+
+        speak(`Look for ${item.name}.`);
     }
 }
 
-function playSuccessSound() {
-    playSound(523);
-    setTimeout(() => playSound(659), 120);
-    setTimeout(() => playSound(784), 240);
+/* =========================
+   13. SERVE ORDER
+========================= */
+
+function serveOrder() {
+    if (!gameRunning || !currentRecipe) return;
+
+    const required = [...currentRecipe.ingredients].sort();
+    const selected = [...selectedIngredients].sort();
+
+    const correct =
+        required.length === selected.length &&
+        required.every((item, index) => item === selected[index]);
+
+    if (correct) {
+        completeOrder();
+    } else {
+        setText(
+            "feedback",
+            "Not quite right! Check the ingredients and try again."
+        );
+
+        setText(
+            "mikaMessage",
+            "Don't give up! Every great chef learns by trying."
+        );
+
+        playSound("wrong");
+    }
 }
 
-function toggleSound() {
-    player.soundEnabled = !player.soundEnabled;
-    updateSoundButton();
-    saveGame();
+function completeOrder() {
+    gameRunning = false;
+    clearInterval(timerInterval);
 
-    if (player.soundEnabled) playSuccessSound();
+    player.orders++;
+    player.correctOrders++;
+    player.streak++;
+    player.bestStreak = Math.max(player.bestStreak, player.streak);
+
+    const timeBonus = Math.max(0, Math.floor(timeLeft / 10));
+
+    const xpReward = CONFIG.xpPerCorrectOrder + timeBonus;
+    const coinReward = CONFIG.coinsPerCorrectOrder + 5;
+
+    const ecoReward = currentRecipe.ingredients.reduce((sum, id) => {
+        const item = ingredients.find(i => i.id === id);
+        return sum + (item ? item.eco : 0);
+    }, 0);
+
+    player.coins += coinReward;
+    player.eco += ecoReward;
+
+    addXP(xpReward);
+
+    setText(
+        "feedback",
+        `Perfect! +${xpReward} XP, +${coinReward} coins and +${ecoReward} Eco Points!`
+    );
+
+    setText(
+        "mikaMessage",
+        `Wonderful work, Chef ${player.name}! ${currentRecipe.fact}`
+    );
+
+    showResult(true, xpReward, coinReward, ecoReward);
+
+    checkBadges();
+    checkDailyMissions();
+    save();
+
+    playSound("success");
 }
 
-function updateSoundButton() {
-    const button = $("#soundToggle");
-    if (!button) return;
+/* =========================
+   14. FAILED ORDER
+========================= */
 
-    button.textContent = player.soundEnabled ? "🔊" : "🔇";
-    button.setAttribute("aria-label",
-        player.soundEnabled ? "Mute sound" : "Enable sound");
+function orderFailed() {
+    if (!gameRunning) return;
+
+    gameRunning = false;
+    clearInterval(timerInterval);
+
+    player.orders++;
+    player.failedOrders++;
+    player.streak = 0;
+
+    setText("feedback", "Time is up! Let's try another recipe.");
+    setText("mikaMessage", "It's okay! Practice makes progress.");
+
+    showResult(false, 0, 0, 0);
+    save();
+
+    playSound("wrong");
 }
 
+function showResult(success, xp, coins, eco) {
+    const title = $("resultTitle");
+    const message = $("resultMessage");
 
-/* Simple original background tone sequence.
-   No external music file is required. */
+    if (title) {
+        title.textContent = success ? "Order Completed! 🎉" : "Time's Up! ⏰";
+    }
+
+    if (message) {
+        message.textContent = success
+            ? `You earned ${xp} XP, ${coins} coins and ${eco} Eco Points!`
+            : "Keep practicing to become a Freshopia Master!";
+    }
+
+    show("resultModal", "flex");
+}
+
+/* =========================
+   15. TIMER
+========================= */
+
+function startTimer() {
+    clearInterval(timerInterval);
+
+    timerInterval = setInterval(() => {
+        if (!gameRunning) return;
+
+        timeLeft--;
+        setText("timer", timeLeft);
+
+        if (timeLeft <= 10) {
+            const timer = $("timer");
+            if (timer) timer.classList.add("timer-warning");
+        }
+
+        if (timeLeft <= 0) {
+            orderFailed();
+        }
+    }, 1000);
+}
+
+/* =========================
+   16. DAILY MISSIONS
+========================= */
+
+function resetDailyMissionsIfNeeded() {
+    const today = new Date().toDateString();
+
+    if (player.missionDate !== today) {
+        player.missionDate = today;
+        player.completedMissions = [];
+        save();
+    }
+}
+
+function getDailyMissions() {
+    return [
+        {
+            id: "first_order",
+            title: "Complete 1 cooking order",
+            progress: Math.min(player.correctOrders, 1),
+            target: 1
+        },
+        {
+            id: "three_orders",
+            title: "Complete 3 cooking orders",
+            progress: Math.min(player.correctOrders, 3),
+            target: 3
+        },
+        {
+            id: "eco_points",
+            title: "Earn 10 Eco Points",
+            progress: Math.min(player.eco, 10),
+            target: 10
+        }
+    ];
+}
+
+function checkDailyMissions() {
+    resetDailyMissionsIfNeeded();
+
+    const missions = getDailyMissions();
+    let newlyCompleted = false;
+
+    missions.forEach(mission => {
+        const completed =
+            mission.progress >= mission.target;
+
+        if (
+            completed &&
+            !player.completedMissions.includes(mission.id)
+        ) {
+            player.completedMissions.push(mission.id);
+            newlyCompleted = true;
+            showToast(`Mission completed: ${mission.title}!`);
+        }
+    });
+
+    // Daily reward: awarded only once when all three missions are complete.
+    const allCompleted = missions.every(mission =>
+        player.completedMissions.includes(mission.id)
+    );
+
+    if (
+        allCompleted &&
+        !player.completedMissions.includes("daily_bonus")
+    ) {
+        player.completedMissions.push("daily_bonus");
+
+        player.coins += CONFIG.dailyRewardCoins;
+        addXP(CONFIG.dailyRewardXP);
+
+        showToast(
+            `Daily missions complete! +${CONFIG.dailyRewardXP} XP and +${CONFIG.dailyRewardCoins} coins!`
+        );
+
+        speak("Amazing! You completed all daily missions!");
+    }
+
+    renderDailyMissions();
+    save();
+}
+
+function renderDailyMissions() {
+    resetDailyMissionsIfNeeded();
+
+    const list = $("dailyMissionList");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    getDailyMissions().forEach(mission => {
+        const completed =
+            player.completedMissions.includes(mission.id);
+
+        const item = document.createElement("div");
+        item.className = "mission-item";
+
+        item.innerHTML = `
+            <span>${completed ? "✅" : "🎯"} ${mission.title}</span>
+            <span>${mission.progress}/${mission.target}</span>
+        `;
+
+        list.appendChild(item);
+    });
+
+    const allDone = getDailyMissions().every(mission =>
+        player.completedMissions.includes(mission.id)
+    );
+
+    const bonus = document.createElement("div");
+    bonus.className = "mission-bonus";
+    bonus.textContent = allDone
+        ? "Daily bonus: 100 XP + 50 coins"
+        : "Complete all daily missions to earn 100 XP + 50 coins!";
+
+    list.appendChild(bonus);
+}
+
+/* =========================
+   17. BADGES
+========================= */
+
+const badgeData = [
+    { id: "first_bite", name: "First Bite", emoji: "🍓", condition: () => player.correctOrders >= 1 },
+    { id: "eco_hero", name: "Eco Hero", emoji: "🌱", condition: () => player.eco >= 20 },
+    { id: "food_saver", name: "Food Saver", emoji: "♻️", condition: () => player.correctOrders >= 5 },
+    { id: "quick_chef", name: "Quick Chef", emoji: "⚡", condition: () => player.bestStreak >= 3 },
+    { id: "badge_collector", name: "Badge Collector", emoji: "🏅", condition: () => player.badges.length >= 4 },
+    { id: "freshopia_master", name: "Freshopia Master", emoji: "👑", condition: () => player.level >= 10 }
+];
+
+function checkBadges() {
+    badgeData.forEach(badge => {
+        if (
+            badge.condition() &&
+            !player.badges.includes(badge.id)
+        ) {
+            player.badges.push(badge.id);
+
+            showToast(`New badge unlocked: ${badge.emoji} ${badge.name}!`);
+            playSound("badge");
+        }
+    });
+
+    renderBadges();
+    save();
+}
+
+function renderBadges() {
+    const list = $("badgeList");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    badgeData.forEach(badge => {
+        const unlocked = player.badges.includes(badge.id);
+
+        const item = document.createElement("div");
+        item.className = unlocked ? "badge-item unlocked" : "badge-item locked";
+
+        item.innerHTML = `
+            <span>${unlocked ? badge.emoji : "🔒"}</span>
+            <span>${badge.name}</span>
+        `;
+
+        list.appendChild(item);
+    });
+}
+
+/* =========================
+   18. UNLOCKS
+========================= */
+
+function renderUnlocks() {
+    const list = $("unlockList");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    recipes.forEach(recipe => {
+        const unlocked = player.level >= recipe.level;
+
+        const item = document.createElement("div");
+        item.className = unlocked ? "unlock-item unlocked" : "unlock-item locked";
+
+        item.textContent = unlocked
+            ? `${recipe.emoji} ${recipe.name}`
+            : `🔒 Level ${recipe.level} - ${recipe.name}`;
+
+        list.appendChild(item);
+    });
+}
+
+/* =========================
+   19. SHOP
+========================= */
+
+const shopItems = [
+    { id: "pink_apron", name: "Pink Chef Apron", emoji: "🎀", price: 80 },
+    { id: "magic_spoon", name: "Magic Spoon", emoji: "🥄", price: 120 },
+    { id: "golden_hat", name: "Golden Chef Hat", emoji: "👑", price: 200 }
+];
+
+function renderShop() {
+    const list = $("shopList");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    shopItems.forEach(item => {
+        const bought = player.purchasedItems.includes(item.id);
+
+        const card = document.createElement("div");
+        card.className = "shop-item";
+
+        const title = document.createElement("span");
+        title.textContent = `${item.emoji} ${item.name} - ${item.price} coins`;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = bought ? "Owned" : "Buy";
+        button.disabled = bought || player.coins < item.price;
+
+        button.addEventListener("click", () => purchaseItem(item.id));
+
+        card.append(title, button);
+        list.appendChild(card);
+    });
+}
+
+function purchaseItem(id) {
+    const item = shopItems.find(product => product.id === id);
+
+    if (!item || player.purchasedItems.includes(id)) return;
+
+    if (player.coins < item.price) {
+        showToast("Not enough coins!");
+        return;
+    }
+
+    player.coins -= item.price;
+    player.purchasedItems.push(id);
+
+    showToast(`${item.name} purchased!`);
+    updateDashboard();
+    renderShop();
+    save();
+
+    playSound("success");
+}
+
+/* =========================
+   20. MUSIC SYSTEM
+========================= */
+
+function getAudioContext() {
+    if (!audioContext) {
+        const AudioContextClass =
+            window.AudioContext || window.webkitAudioContext;
+
+        if (AudioContextClass) {
+            audioContext = new AudioContextClass();
+        }
+    }
+
+    if (audioContext && audioContext.state === "suspended") {
+        audioContext.resume();
+    }
+
+    return audioContext;
+}
+
+function playTone(frequency, duration = 0.15, volume = 0.04) {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    oscillator.type = "sine";
+    oscillator.frequency.value = frequency;
+
+    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        ctx.currentTime + duration
+    );
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + duration);
+}
+
+const melody = [
+    523.25, 659.25, 783.99, 659.25,
+    587.33, 698.46, 880.00, 698.46,
+    523.25, 659.25, 783.99, 1046.50,
+    880.00, 783.99, 659.25, 587.33
+];
 
 function startMusic() {
-    if (!player.musicEnabled || musicInterval) return;
+    if (musicInterval) return;
 
-    const notes = [392, 440, 523, 440, 349, 392, 440, 523];
-    let index = 0;
+    player.musicOn = true;
+    updateAudioButtons();
+
+    getAudioContext();
 
     musicInterval = setInterval(() => {
-        if (player.musicEnabled) {
-            playSound(notes[index % notes.length], 0.22);
-            index++;
-        }
-    }, 450);
+        if (!player.musicOn) return;
+
+        playTone(melody[musicStep % melody.length], 0.42, 0.012);
+        musicStep++;
+    }, 430);
+
+    save();
 }
 
 function stopMusic() {
     clearInterval(musicInterval);
     musicInterval = null;
+
+    player.musicOn = false;
+    updateAudioButtons();
+    save();
 }
 
 function toggleMusic() {
-    player.musicEnabled = !player.musicEnabled;
-
-    if (player.musicEnabled) {
-        startMusic();
-        showToast("Background music enabled 🎵");
-    } else {
+    if (player.musicOn) {
         stopMusic();
-        showToast("Background music disabled.");
+    } else {
+        startMusic();
     }
-
-    saveGame();
 }
 
+function updateAudioButtons() {
+    const music = $("musicToggle");
+    const sound = $("soundToggle");
+    const voice = $("voiceToggle");
 
-/* =========================================================
-   8. TOAST NOTIFICATIONS
-========================================================= */
+    if (music) music.textContent = player.musicOn ? "🎵 Music: ON" : "🎵 Music: OFF";
+    if (sound) sound.textContent = player.soundOn ? "🔊 Sound: ON" : "🔇 Sound: OFF";
+    if (voice) voice.textContent = player.voiceOn ? "🗣️ Voice: ON" : "🗣️ Voice: OFF";
+}
+
+/* =========================
+   21. SOUND EFFECTS
+========================= */
+
+function playSound(type) {
+    if (!player.soundOn) return;
+
+    const sounds = {
+        click: [440],
+        success: [523, 659, 784],
+        wrong: [220, 180],
+        level: [523, 659, 784, 1046],
+        badge: [784, 988, 1175]
+    };
+
+    const notes = sounds[type] || [440];
+
+    notes.forEach((note, index) => {
+        setTimeout(() => playTone(note, 0.16, 0.035), index * 110);
+    });
+}
+
+function toggleSound() {
+    player.soundOn = !player.soundOn;
+    updateAudioButtons();
+    save();
+
+    if (player.soundOn) playSound("click");
+}
+
+/* =========================
+   22. ANIME VOICE
+========================= */
+
+function speak(message) {
+    if (!player.voiceOn || !("speechSynthesis" in window)) return;
+
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.lang = "en-US";
+    utterance.rate = 1.02;
+    utterance.pitch = 1.25;
+    utterance.volume = 0.85;
+
+    window.speechSynthesis.speak(utterance);
+}
+
+function toggleVoice() {
+    player.voiceOn = !player.voiceOn;
+
+    if (!player.voiceOn && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+    }
+
+    updateAudioButtons();
+    save();
+}
+
+/* =========================
+   23. TOAST MESSAGE
+========================= */
 
 function showToast(message) {
-    const container = $("#toastContainer");
-    if (!container) return;
+    const toast = $("toast");
+    if (!toast) return;
 
-    const toast = document.createElement("div");
-    toast.className = "toast";
     toast.textContent = message;
+    toast.classList.add("show");
 
-    container.appendChild(toast);
+    clearTimeout(showToast.timeout);
 
-    setTimeout(() => toast.remove(), 3500);
+    showToast.timeout = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
 }
 
+/* =========================
+   24. MODAL CONTROLS
+========================= */
 
-/* =========================================================
-   9. SCREEN NAVIGATION
-========================================================= */
+function closeResult() {
+    hide("resultModal");
+    generateOrder();
+}
 
-function showInitialScreen() {
-    hideElement($("#loadingScreen"));
+function closeLevelModal() {
+    hide("levelModal");
+}
 
-    if (loadGame()) {
-        showElement($("#gameScreen"));
-        hideElement($("#welcomeScreen"));
-        hideElement($("#characterScreen"));
-        refreshGame();
-        showPage("dashboard");
+function continueGame() {
+    hide("resultModal");
+    generateOrder();
+}
+
+function playAgain() {
+    hide("resultModal");
+    generateOrder();
+}
+
+function repeatMika() {
+    if (currentRecipe) {
+        speak(`Let's make ${currentRecipe.name}! You can do it, Chef!`);
     } else {
-        showElement($("#welcomeScreen"));
-        hideElement($("#characterScreen"));
-        hideElement($("#gameScreen"));
+        speak(`Hello ${player.name}! Welcome to Freshopia!`);
     }
 }
 
-function showPage(pageName) {
-    const pageNames = [
-        "dashboard",
-        "games",
-        "ingredients",
-        "academy",
-        "achievements",
-        "profile",
-        "gameplay"
-    ];
-
-    if (!pageNames.includes(pageName)) return;
-
-    $$(".page").forEach(page => {
-        page.classList.add("hidden");
-        page.classList.remove("active-page");
-    });
-
-    const page = document.getElementById(pageName + "Page");
-
-    if (page) {
-        page.classList.remove("hidden");
-        page.classList.add("active-page");
-    }
-
-    $$(".nav-item").forEach(button => {
-        button.classList.toggle(
-            "active",
-            button.dataset.page === pageName
-        );
-    });
-
-    if (pageName === "ingredients") renderIngredients();
-    if (pageName === "achievements") renderBadges();
-    if (pageName === "profile") renderProfile();
-}
-
-function openMainGame() {
-    hideElement($("#welcomeScreen"));
-    hideElement($("#characterScreen"));
-    showElement($("#gameScreen"));
-
-    refreshGame();
-    showPage("dashboard");
-}
-
-
-/* =========================================================
-   10. CHARACTER CREATION
-========================================================= */
+/* =========================
+   25. AVATAR SELECTION
+========================= */
 
 function setupAvatarSelection() {
-    $$(".avatar-option").forEach(button => {
-        button.addEventListener("click", () => {
-            selectedAvatar = button.dataset.avatar;
+    document.querySelectorAll("[data-avatar], .avatar-option").forEach(option => {
+        option.addEventListener("click", () => {
+            document.querySelectorAll("[data-avatar], .avatar-option")
+                .forEach(item => item.classList.remove("selected"));
 
-            $$(".avatar-option").forEach(item =>
-                item.classList.remove("selected")
-            );
+            option.classList.add("selected");
 
-            button.classList.add("selected");
+            player.avatar =
+                option.dataset.avatar ||
+                option.textContent.trim();
 
-            setText("avatarPreview", selectedAvatar);
-            setText("profileAvatar", selectedAvatar);
-
-            updateProfilePreview();
-            playSound(620);
+            save();
         });
     });
 }
 
-function updateProfilePreview() {
-    const name = $("#playerName")?.value.trim() || "New Chef";
-    const style = $("#playerStyle")?.value || "Healthy Chef";
-
-    setText("profileNamePreview", name);
-    setText("profileStylePreview", style);
-    setText("profileAvatar", selectedAvatar);
-}
-
-function createCharacter() {
-    const name = $("#playerName")?.value.trim();
-    const style = $("#playerStyle")?.value;
-
-    if (!name) {
-        showToast("Please enter your chef name!");
-        $("#playerName")?.focus();
-        return;
-    }
-
-    if (name.length < 2) {
-        showToast("Your chef name must have at least 2 characters.");
-        return;
-    }
-
-    player = {
-        ...DEFAULT_PLAYER,
-        name: name.slice(0, 16),
-        avatar: selectedAvatar,
-        style: style || "Healthy Chef"
-    };
-
-    saveGame();
-    playSuccessSound();
-
-    showToast("Your character has been created! 💗");
-
-    openMainGame();
-}
-
-function editProfile() {
-    const newName = prompt("Enter your new chef name:", player.name);
-
-    if (newName === null) return;
-
-    const cleanedName = newName.trim();
-
-    if (cleanedName.length < 2 || cleanedName.length > 16) {
-        showToast("Please use a name between 2 and 16 characters.");
-        return;
-    }
-
-    player.name = cleanedName;
-
-    saveGame();
-    refreshGame();
-
-    showToast("Profile updated successfully!");
-}
-
-
-/* =========================================================
-   11. LEVEL & EXPERIENCE SYSTEM
-========================================================= */
-
-function getRequiredXP(level) {
-    return level * LEVEL_XP;
-}
-
-function addXP(amount) {
-    if (!Number.isFinite(amount) || amount <= 0) return;
-
-    const oldLevel = player.level;
-
-    player.xp += amount;
-    player.coins += Math.max(1, Math.floor(amount / 10));
-
-    while (player.xp >= getRequiredXP(player.level)) {
-        player.xp -= getRequiredXP(player.level);
-        player.level++;
-    }
-
-    saveGame();
-    refreshGame();
-
-    if (player.level > oldLevel) {
-        showLevelUp(oldLevel);
-    }
-}
-
-function showLevelUp(oldLevel) {
-    const modal = $("#levelUpModal");
-
-    if (!modal) return;
-
-    setText("newLevelNumber", player.level);
-    setText("levelUpCharacter", player.avatar);
-
-    const messages = [
-        "Amazing! Your cooking skills are improving!",
-        "You are becoming a talented food explorer!",
-        "Your nutrition knowledge is growing!",
-        "Your anime chef journey is getting exciting!",
-        "You have unlocked a new level of creativity!"
-    ];
-
-    setText(
-        "levelUpMessage",
-        messages[Math.floor(Math.random() * messages.length)]
-    );
-
-    showElement(modal);
-    playSuccessSound();
-
-    if (player.level === 5) {
-        unlockBadge("level-five");
-        player.unlockedOutfits.push("Master Chef Outfit");
-    }
-
-    saveGame();
-}
-
-
-/* =========================================================
-   12. GAME STATISTICS
-========================================================= */
-
-function getLevelTitle() {
-    return LEVEL_TITLES[
-        Math.min(player.level - 1, LEVEL_TITLES.length - 1)
-    ];
-}
-
-function refreshGame() {
-    const name = player.name || "Chef";
-    const avatar = player.avatar || "👩🏻‍🍳";
-
-    setText("headerPlayerName", name);
-    setText("headerPlayerLevel", "Level " + player.level);
-    setText("headerAvatar", avatar);
-
-    setText("sidebarPlayerName", name);
-    setText("sidebarPlayerLevel", getLevelTitle());
-    setText("sidebarAvatar", avatar);
-
-    setText("welcomePlayerName", name);
-    setText("dashboardMascot", avatar + " Let's cook!");
-
-    setText("headerXP", player.xp + " XP");
-    setText("headerCoins", player.coins);
-
-    setText("totalXP", player.xp + " XP");
-    setText("totalBadges", player.badges.length);
-    setText("completedGames", player.completedGames);
-    setText("ecoPoints", player.ecoPoints);
-
-    const required = getRequiredXP(player.level);
-    const percentage = Math.min(100, (player.xp / required) * 100);
-
-    const progress = $("#levelProgressBar");
-
-    if (progress) progress.style.width = percentage + "%";
-
-    setText("levelProgressText", Math.floor(percentage) + "%");
-
-    updateSoundButton();
-    updateMission();
-}
-
-function renderProfile() {
-    setText("profilePlayerName", player.name);
-    setText("profilePlayerStyle", player.style);
-    setText("profileLargeAvatar", player.avatar);
-    setText("profileLevel", "Level " + player.level);
-
-    setText("profileXP", player.xp);
-    setText("profileGames", player.gamesPlayed);
-    setText("profileBadges", player.badges.length);
-    setText("profileEcoPoints", player.ecoPoints);
-}
-
-
-/* =========================================================
-   13. ACHIEVEMENTS
-========================================================= */
-
-function unlockBadge(badgeId) {
-    const badge = BADGES.find(item => item.id === badgeId);
-
-    if (!badge || player.badges.includes(badgeId)) return;
-
-    player.badges.push(badgeId);
-
-    setText("rewardTitle", "New Achievement! " + badge.emoji);
-    setText("rewardDescription", badge.name + ": " + badge.description);
-
-    showElement($("#rewardModal"));
-
-    playSuccessSound();
-    saveGame();
-    refreshGame();
-}
-
-function renderBadges() {
-    const container = $("#badgeGrid");
-    if (!container) return;
-
-    container.innerHTML = BADGES.map(badge => {
-        const unlocked = player.badges.includes(badge.id);
-
-        return `
-            <article class="badge-card ${unlocked ? "" : "locked"}">
-                <div>${badge.emoji}</div>
-                <h3>${escapeHTML(badge.name)}</h3>
-                <p>${escapeHTML(badge.description)}</p>
-                <small>${unlocked ? "✓ Unlocked" : "🔒 Locked"}</small>
-            </article>
-        `;
-    }).join("");
-
-    setText("achievementCount", player.badges.length);
-    setText("achievementXP", player.xp);
-}
-
-
-/* =========================================================
-   14. DAILY MISSION
-========================================================= */
-
-function updateMission() {
-    const mission = $(".mission-card");
-
-    if (!mission) return;
-
-    const heading = mission.querySelector("h3");
-    const paragraph = mission.querySelector("p");
-    const reward = mission.querySelector(".reward-label");
-    const button = mission.querySelector("button");
-
-    if (player.completedMission) {
-        if (heading) heading.textContent = "Mission Completed! 🎉";
-        if (paragraph) paragraph.textContent =
-            "Amazing work! You completed today's learning mission.";
-        if (reward) reward.textContent = "Reward collected: +100 XP";
-        if (button) {
-            button.textContent = "Completed ✓";
-            button.disabled = true;
-        }
-    }
-}
-
-
-/* =========================================================
-   15. INGREDIENT LIBRARY
-========================================================= */
-
-function renderIngredients() {
-    const container = $("#ingredientGrid");
-    if (!container) return;
-
-    const search = ($("#ingredientSearch")?.value || "").toLowerCase();
-    const category = $("#ingredientCategory")?.value || "all";
-
-    const filtered = INGREDIENTS.filter(item => {
-        const matchesName = item.name.toLowerCase().includes(search);
-        const matchesCategory =
-            category === "all" || item.category === category;
-
-        return matchesName && matchesCategory;
+/* =========================
+   26. BUTTON EVENTS
+========================= */
+
+function bindEvents() {
+    $("startButton")?.addEventListener("click", startGame);
+    $("serveButton")?.addEventListener("click", serveOrder);
+    $("clearButton")?.addEventListener("click", clearIngredients);
+    $("hintButton")?.addEventListener("click", giveHint);
+
+    $("musicToggle")?.addEventListener("click", toggleMusic);
+    $("soundToggle")?.addEventListener("click", toggleSound);
+    $("voiceToggle")?.addEventListener("click", toggleVoice);
+
+    $("repeatMika")?.addEventListener("click", repeatMika);
+    $("closeResult")?.addEventListener("click", closeResult);
+    $("continueButton")?.addEventListener("click", continueGame);
+    $("playAgainButton")?.addEventListener("click", playAgain);
+    $("closeLevelModal")?.addEventListener("click", closeLevelModal);
+
+    $("reportButton")?.addEventListener("click", () => {
+        const report = [
+            "FRESHOPIA GAME REPORT",
+            `Player: ${player.name}`,
+            `Level: ${player.level}`,
+            `XP: ${player.xp}`,
+            `Coins: ${player.coins}`,
+            `Eco Points: ${player.eco}`,
+            `Completed Orders: ${player.correctOrders}`,
+            `Badges: ${player.badges.length}`
+        ].join("\n");
+
+        const blob = new Blob([report], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = "Freshopia-Game-Report.txt";
+        link.click();
+
+        URL.revokeObjectURL(url);
     });
 
-    container.innerHTML = filtered.length
-        ? filtered.map(item => `
-            <article class="ingredient-card"
-                data-ingredient="${escapeHTML(item.name)}"
-                tabindex="0"
-                role="button"
-                aria-label="View ${escapeHTML(item.name)} information">
-
-                <div class="ingredient-image">${item.emoji}</div>
-                <h3>${escapeHTML(item.name)}</h3>
-                <p>${escapeHTML(item.category.replace("-", " "))}</p>
-
-            </article>
-        `).join("")
-        : "<p>No ingredients found.</p>";
-
-    $$(".ingredient-card").forEach(card => {
-        const open = () => showIngredientDetail(card.dataset.ingredient);
-
-        card.addEventListener("click", open);
-        card.addEventListener("keydown", event => {
-            if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                open();
-            }
-        });
-    });
-}
-
-function showIngredientDetail(name) {
-    const item = INGREDIENTS.find(ingredient => ingredient.name === name);
-    if (!item) return;
-
-    const container = $("#ingredientDetailContent");
-
-    container.innerHTML = `
-        <div style="font-size:65px">${item.emoji}</div>
-        <h2>${escapeHTML(item.name)}</h2>
-        <p><b>Category:</b> ${escapeHTML(item.category)}</p>
-
-        <h3>Nutrition per 100 g</h3>
-        <ul>
-            <li>Energy: ${item.calories} kcal</li>
-            <li>Protein: ${item.protein} g</li>
-            <li>Carbohydrates: ${item.carbs} g</li>
-            <li>Fat: ${item.fat} g</li>
-            <li>Fiber: ${item.fiber} g</li>
-        </ul>
-
-        <h3>Vitamins and Minerals</h3>
-        <p>${escapeHTML(item.vitamin)}</p>
-
-        <h3>Nutrition Facts</h3>
-        <p>${escapeHTML(item.benefit)}</p>
-
-        <h3>Storage Tips</h3>
-        <p>${escapeHTML(item.storage)}</p>
-
-        <h3>Sustainability Tip</h3>
-        <p>${escapeHTML(item.sustainability)}</p>
-
-        <small>Approximate values per 100 g. Actual values vary by food variety and preparation.</small>
-    `;
-
-    showElement($("#ingredientDetail"));
-
-    if (!player.badges.includes("food-explorer")) {
-        unlockBadge("food-explorer");
-    }
-
-    playSound(600);
-}
-
-
-/* =========================================================
-   16. FOOD ACADEMY
-========================================================= */
-
-function openLesson(lessonId) {
-    const lesson = LESSONS[lessonId];
-
-    if (!lesson) return;
-
-    const detail = $("#lessonDetail");
-
-    detail.innerHTML = `
-        <span class="mini-label">FRESHOPIA LEARNING CENTER</span>
-        <h2>${lesson.title}</h2>
-        <div class="lesson-body">${lesson.content}</div>
-
-        <button id="completeLessonBtn" class="primary-btn">
-            Complete Lesson ✓
-        </button>
-    `;
-
-    showElement($("#lessonContent"));
-
-    $("#completeLessonBtn").addEventListener("click", () => {
-        if (!player.completedLessons.includes(lessonId)) {
-            player.completedLessons.push(lessonId);
-            addXP(50);
-
-            showToast("Lesson completed! +50 XP 📚");
-
-            if (player.completedLessons.length >= 3) {
-                unlockBadge("academy-graduate");
-            }
-        } else {
-            showToast("You have already completed this lesson.");
-        }
-
-        saveGame();
-    });
-
-    $("#lessonContent").scrollIntoView({
-        behavior: "smooth",
-        block: "nearest"
-    });
-}
-
-
-/* =========================================================
-   17. GAME START SYSTEM
-========================================================= */
-
-function startGame(gameType) {
-    if (!GAME_REWARDS[gameType]) return;
-
-    clearInterval(gameTimer);
-
-    currentGame = gameType;
-    currentQuestion = 0;
-    gameScore = 0;
-    gameFinished = false;
-    gameAnswers = [];
-    matchingSelection = [];
-    matchedCards = [];
-    sortingIndex = 0;
-    cookingSelected = [];
-    puzzleOrder = [];
-    puzzleStep = 0;
-
-    setText("gameplayTitle", getGameTitle(gameType));
-    setText("gameplayXP", GAME_REWARDS[gameType] + " XP");
-
-    showPage("gameplay");
-
-    const container = $("#gameContainer");
-
-    if (!container) return;
-
-    switch (gameType) {
-        case "matching":
-            renderMatchingGame();
-            break;
-
-        case "puzzle":
-            renderPuzzleGame();
-            break;
-
-        case "cooking":
-            renderCookingGame();
-            break;
-
-        case "quiz":
-            renderQuizGame();
-            break;
-
-        case "sorting":
-            renderSortingGame();
-            break;
-
-        case "challenge":
-            renderSpeedChefGame();
-            break;
-    }
-
-    playSound(500);
-}
-
-function getGameTitle(type) {
-    const titles = {
-        matching: "Food Matching Challenge",
-        puzzle: "Healthy Food Puzzle",
-        cooking: "Master Chef Challenge",
-        quiz: "Nutrition Knowledge Quiz",
-        sorting: "Food Sorting Challenge",
-        challenge: "Speed Chef Challenge"
-    };
-
-    return titles[type] || "Freshopia Challenge";
-}
-
-function renderGameHeader(title, subtitle) {
-    return `
-        <div class="game-question">
-            <span class="mini-label">FRESHOPIA CHALLENGE</span>
-            <h2>${title}</h2>
-            <p>${subtitle}</p>
-        </div>
-    `;
-}
-
-
-/* =========================================================
-   18. MATCHING GAME
-========================================================= */
-
-const MATCHING_PAIRS = [
-    { emoji: "🥦", name: "Broccoli", group: "Vegetable" },
-    { emoji: "🍓", name: "Strawberry", group: "Fruit" },
-    { emoji: "🥚", name: "Egg", group: "Protein" },
-    { emoji: "🌾", name: "Oats", group: "Grain" }
-];
-
-function renderMatchingGame() {
-    const container = $("#gameContainer");
-
-    const cards = shuffle(
-        MATCHING_PAIRS.flatMap((item, index) => [
-            { ...item, id: index, side: "food" },
-            { ...item, id: index, side: "group" }
-        ])
-    );
-
-    container.innerHTML = `
-        ${renderGameHeader(
-            "Food Matching 🧩",
-            "Match each ingredient with its correct food group."
-        )}
-
-        <div class="game-progress">
-            <div id="matchingProgress" class="game-progress-fill" style="width:0%"></div>
-        </div>
-
-        <div id="matchingBoard"
-             class="game-options"
-             style="grid-template-columns:repeat(4,minmax(0,1fr))">
-
-            ${cards.map((card, index) => `
-                <button class="game-option matching-card"
-                    data-index="${index}"
-                    data-pair="${card.id}"
-                    data-side="${card.side}">
-
-                    <span style="font-size:32px">❔</span>
-                    <br>Tap to reveal
-                </button>
-            `).join("")}
-
-        </div>
-
-        <div id="matchingFeedback" class="game-feedback">
-            Find all four pairs!
-        </div>
-    `;
-
-    const board = $("#matchingBoard");
-
-    board.querySelectorAll(".matching-card").forEach(button => {
-        button.addEventListener("click", () => {
-            revealMatchingCard(button, cards);
-        });
-    });
-}
-
-function revealMatchingCard(button, cards) {
-    if (
-        button.classList.contains("matched") ||
-        button.classList.contains("revealed") ||
-        matchingSelection.length >= 2
-    ) return;
-
-    const index = Number(button.dataset.index);
-    const card = cards[index];
-
-    button.classList.add("revealed");
-    button.innerHTML = `
-        <span style="font-size:30px">${card.emoji}</span>
-        <br>${card.side === "food" ? escapeHTML(card.name) : escapeHTML(card.group)}
-    `;
-
-    matchingSelection.push({ button, card });
-
-    playSound(450);
-
-    if (matchingSelection.length === 2) {
-        const [first, second] = matchingSelection;
-
-        if (
-            first.card.id === second.card.id &&
-            first.card.side !== second.card.side
-        ) {
-            first.button.classList.add("matched");
-            second.button.classList.add("matched");
-
-            matchedCards.push(first, second);
-            gameScore += 25;
-
-            $("#matchingFeedback").textContent =
-                "Correct match! Great job! ✨";
-
-            $("#matchingProgress").style.width =
-                (matchedCards.length / 8 * 100) + "%";
-
-            matchingSelection = [];
-
-            playSuccessSound();
-
-            if (matchedCards.length === 8) {
-                finishGame(true);
-            }
-
-        } else {
-            $("#matchingFeedback").textContent =
-                "Not a match. Try again!";
-
-            const pair = [...matchingSelection];
-
-            setTimeout(() => {
-                pair.forEach(item => {
-                    item.button.classList.remove("revealed");
-                    item.button.innerHTML =
-                        '<span style="font-size:32px">❔</span><br>Tap to reveal';
-                });
-
-                matchingSelection = [];
-            }, 800);
-        }
-    }
-}
-
-
-/* =========================================================
-   19. PUZZLE GAME
-========================================================= */
-
-const PUZZLE_STEPS = [
-    {
-        text: "Wash and prepare your vegetables.",
-        emoji: "🥦"
-    },
-    {
-        text: "Cut the vegetables safely.",
-        emoji: "🔪"
-    },
-    {
-        text: "Cook the vegetables appropriately.",
-        emoji: "🍳"
-    },
-    {
-        text: "Serve your balanced meal.",
-        emoji: "🥗"
-    }
-];
-
-function renderPuzzleGame() {
-    const container = $("#gameContainer");
-
-    const shuffled = shuffle(PUZZLE_STEPS);
-
-    puzzleOrder = shuffled.map(step => PUZZLE_STEPS.indexOf(step));
-
-    container.innerHTML = `
-        ${renderGameHeader(
-            "Healthy Meal Puzzle 🧩",
-            "Arrange the cooking steps in the correct order."
-        )}
-
-        <p style="text-align:center;margin-bottom:20px">
-            Select the steps from first to last.
-        </p>
-
-        <div id="puzzleChoices" class="game-options">
-            ${shuffled.map((step, index) => `
-                <button class="game-option puzzle-option"
-                    data-original="${PUZZLE_STEPS.indexOf(step)}">
-
-                    <span style="font-size:28px">${step.emoji}</span>
-                    <br>${escapeHTML(step.text)}
-
-                </button>
-            `).join("")}
-        </div>
-
-        <div id="puzzleFeedback" class="game-feedback">
-            Correct order: preparation → cutting → cooking → serving.
-        </div>
-
-        <button id="checkPuzzleBtn" class="primary-btn"
-                style="margin-top:20px">
-            Check My Puzzle
-        </button>
-    `;
-
-    $("#puzzleChoices").querySelectorAll("button").forEach(button => {
-        button.addEventListener("click", () => {
-            if (button.disabled) return;
-
-            button.disabled = true;
-            button.classList.add("correct");
-
-            puzzleOrder.push(Number(button.dataset.original));
-            button.dataset.selected = "true";
-
-            button.style.opacity = ".55";
-            button.style.borderColor = "#65a77b";
-            button.style.transform = "scale(.96)";
-
-            puzzleStep++;
-        });
-    });
-
-    // Remove the temporary shuffled array from the answer state.
-    puzzleOrder = [];
-
-    $("#checkPuzzleBtn").addEventListener("click", () => {
-        const selected = puzzleOrder;
-
-        if (selected.length !== 4) {
-            showToast("Please select all four steps first.");
-            return;
-        }
-
-        const correct = selected.every(
-            (value, index) => value === index
+    $("resetButton")?.addEventListener("click", () => {
+        const confirmed = confirm(
+            "Are you sure you want to reset all game progress?"
         );
 
-        if (correct) {
-            $("#puzzleFeedback").textContent =
-                "Perfect! You completed the recipe puzzle! 🎉";
-            gameScore = 100;
-            finishGame(true);
-        } else {
-            $("#puzzleFeedback").textContent =
-                "Not quite right! Reset and try again.";
-            puzzleOrder = [];
-            puzzleStep = 0;
+        if (!confirmed) return;
 
-            $$(".puzzle-option").forEach(button => {
-                button.disabled = false;
-                button.classList.remove("correct");
-                button.style.opacity = "1";
-                button.style.borderColor = "";
-                button.style.transform = "";
-            });
-        }
-    });
-
-    // Record selections in their actual chosen order.
-    $$("#puzzleChoices .puzzle-option").forEach(button => {
-        button.addEventListener("click", () => {
-            // The main click handler above handles disabling.
-            if (button.dataset.recorded) return;
-            button.dataset.recorded = "true";
-        });
-    });
-
-    // Override selection tracking with a single delegated handler.
-    puzzleOrder = [];
-    puzzleStep = 0;
-
-    $("#puzzleChoices").querySelectorAll("button").forEach(button => {
-        button.replaceWith(button.cloneNode(true));
-    });
-
-    $("#puzzleChoices").querySelectorAll("button").forEach(button => {
-        button.addEventListener("click", () => {
-            if (button.disabled) return;
-
-            button.disabled = true;
-            button.classList.add("correct");
-            button.style.opacity = ".55";
-
-            puzzleOrder.push(Number(button.dataset.original));
-            puzzleStep++;
-        });
+        localStorage.removeItem(GAME_KEY);
+        location.reload();
     });
 }
 
+/* =========================
+   27. INITIALIZATION
+========================= */
 
-/* =========================================================
-   20. COOKING GAME
-========================================================= */
+function initializeFreshopia() {
+    resetDailyMissionsIfNeeded();
 
-const COOKING_CHALLENGES = [
-    {
-        title: "Prepare a Balanced Power Bowl",
-        description: "Select a grain, a protein, vegetables and a healthy fat.",
-        correct: [
-            "Quinoa",
-            "Chicken Breast",
-            "Broccoli",
-            "Olive Oil"
-        ],
-        choices: [
-            "Quinoa",
-            "Chicken Breast",
-            "Broccoli",
-            "Olive Oil",
-            "Dark Chocolate",
-            "Honey",
-            "Strawberry",
-            "Milk"
-        ]
-    },
-    {
-        title: "Create a Plant-Based Bowl",
-        description: "Select a plant protein, a grain, vegetables and healthy fat.",
-        correct: [
-            "Chickpeas",
-            "Brown Rice",
-            "Spinach",
-            "Avocado"
-        ],
-        choices: [
-            "Chickpeas",
-            "Brown Rice",
-            "Spinach",
-            "Avocado",
-            "Honey",
-            "Cheese",
-            "Dark Chocolate",
-            "Banana"
-        ]
+    if ($("playerName")) {
+        $("playerName").value =
+            player.name === "Chef" ? "" : player.name;
     }
-];
 
-let cookingChallenge = null;
+    setupAvatarSelection();
+    bindEvents();
 
-function renderCookingGame() {
-    const container = $("#gameContainer");
+    updateDashboard();
+    renderIngredients();
+    renderShop();
+    renderBadges();
+    renderUnlocks();
+    renderDailyMissions();
+    updateAudioButtons();
 
-    cookingChallenge = COOKING_CHALLENGES[
-        Math.floor(Math.random() * COOKING_CHALLENGES.length)
-    ];
+    const avatar = $("mikaCharacterVisual");
+    if (avatar) avatar.textContent = "👩🏻‍🍳";
 
-    container.innerHTML = `
-        ${renderGameHeader(
-            "Master Chef Challenge 👩🏻‍🍳",
-            cookingChallenge.description
-        )}
-
-        <div class="game-feedback">
-            <h3>${cookingChallenge.title}</h3>
-            Select four ingredients for your meal.
-        </div>
-
-        <div class="game-options" id="cookingChoices"
-             style="margin-top:20px">
-
-            ${cookingChallenge.choices.map(name => {
-                const item = INGREDIENTS.find(i => i.name === name);
-
-                return `
-                    <button class="game-option cooking-option"
-                        data-name="${escapeHTML(name)}">
-
-                        <span style="font-size:27px">${item?.emoji || "🍽️"}</span>
-                        <br>${escapeHTML(name)}
-                    </button>
-                `;
-            }).join("")}
-
-        </div>
-
-        <div id="cookingFeedback" class="game-feedback">
-            Selected: 0 / 4
-        </div>
-
-        <button id="submitCookingBtn" class="primary-btn"
-                style="margin-top:20px">
-            Serve My Meal 🍽️
-        </button>
-    `;
-
-    $$(".cooking-option").forEach(button => {
-        button.addEventListener("click", () => {
-            const name = button.dataset.name;
-
-            if (cookingSelected.includes(name)) {
-                cookingSelected = cookingSelected.filter(x => x !== name);
-                button.classList.remove("correct");
-            } else if (cookingSelected.length < 4) {
-                cookingSelected.push(name);
-                button.classList.add("correct");
-            }
-
-            setText(
-                "cookingFeedback",
-                "Selected: " + cookingSelected.length + " / 4"
-            );
-
-            playSound(420);
-        });
-    });
-
-    $("#submitCookingBtn").addEventListener("click", () => {
-        if (cookingSelected.length !== 4) {
-            showToast("Please select exactly four ingredients.");
-            return;
-        }
-
-        const correct = cookingChallenge.correct;
-        const matches = cookingSelected.filter(item =>
-            correct.includes(item)
-        ).length;
-
-        gameScore = matches * 25;
-
-        $("#cookingFeedback").textContent =
-            `You selected ${matches} out of 4 suitable ingredients!`;
-
-        if (matches === 4) {
-            finishGame(true);
-        } else {
-            finishGame(false, matches);
-        }
-    });
-}
-
-
-/* =========================================================
-   21. QUIZ DATABASE
-========================================================= */
-
-const QUIZ_QUESTIONS = [
-    {
-        question: "Which nutrient is important for building and repairing tissues?",
-        options: ["Protein", "Water", "Vitamin C", "Fiber"],
-        answer: "Protein",
-        explanation: "Protein provides amino acids used for tissue growth and repair."
-    },
-    {
-        question: "Which food is a good source of beta-carotene?",
-        options: ["Carrot", "Milk", "Chicken", "Olive Oil"],
-        answer: "Carrot",
-        explanation: "Carrots contain beta-carotene, which the body can convert into vitamin A."
-    },
-    {
-        question: "Which nutrient provides 9 kcal per gram?",
-        options: ["Fat", "Protein", "Carbohydrate", "Fiber"],
-        answer: "Fat",
-        explanation: "Fat provides approximately 9 kcal per gram."
-    },
-    {
-        question: "What is cross-contamination?",
-        options: [
-            "Transfer of harmful microorganisms or allergens",
-            "Cooking vegetables",
-            "Freezing food",
-            "Washing fruit"
-        ],
-        answer: "Transfer of harmful microorganisms or allergens",
-        explanation: "Cross-contamination can occur through hands, utensils, surfaces and food."
-    },
-    {
-        question: "Which food contains beta-glucan?",
-        options: ["Oats", "Orange", "Egg", "Tomato"],
-        answer: "Oats",
-        explanation: "Oats contain beta-glucan, a type of soluble dietary fiber."
-    },
-    {
-        question: "Which practice helps reduce food waste?",
-        options: [
-            "Planning meals",
-            "Buying unnecessary food",
-            "Ignoring expiry information",
-            "Throwing away leftovers immediately"
-        ],
-        answer: "Planning meals",
-        explanation: "Meal planning helps people buy appropriate quantities."
-    },
-    {
-        question: "Which vitamin is abundant in many citrus fruits?",
-        options: ["Vitamin C", "Vitamin D", "Vitamin B12", "Vitamin K"],
-        answer: "Vitamin C",
-        explanation: "Oranges and other citrus fruits provide vitamin C."
-    },
-    {
-        question: "Which is a plant-based protein source?",
-        options: ["Lentils", "Butter", "Honey", "Olive Oil"],
-        answer: "Lentils",
-        explanation: "Lentils provide plant protein and dietary fiber."
-    },
-    {
-        question: "Which storage practice is safest for perishable foods?",
-        options: [
-            "Refrigerate promptly",
-            "Leave out overnight",
-            "Store in direct sunlight",
-            "Keep near a hot oven"
-        ],
-        answer: "Refrigerate promptly",
-        explanation: "Perishable foods should be refrigerated promptly."
-    },
-    {
-        question: "Which fat is prominent in olive oil?",
-        options: [
-            "Monounsaturated fat",
-            "Trans fat",
-            "No fat",
-            "Only saturated fat"
-        ],
-        answer: "Monounsaturated fat",
-        explanation: "Olive oil is rich in monounsaturated fatty acids."
-    },
-    {
-        question: "What does dietary fiber support?",
-        options: [
-            "Normal digestive function",
-            "Food spoilage",
-            "Cross-contamination",
-            "Food coloring"
-        ],
-        answer: "Normal digestive function",
-        explanation: "Dietary fiber supports normal digestive function."
-    },
-    {
-        question: "Which kitchen habit helps prevent allergen cross-contact?",
-        options: [
-            "Using properly cleaned separate equipment",
-            "Sharing unclean utensils",
-            "Mixing all ingredients",
-            "Ignoring allergen labels"
-        ],
-        answer: "Using properly cleaned separate equipment",
-        explanation: "Proper cleaning and separation help prevent allergen cross-contact."
+    if ($("welcomeScreen")) {
+        show("welcomeScreen");
+        hide("gameScreen");
     }
-];
 
-let quizQuestions = [];
+    if (player.musicOn) {
+        // Music starts after the player interacts with the page.
+        player.musicOn = false;
+        save();
+        updateAudioButtons();
+    }
 
-function renderQuizGame() {
-    quizQuestions = shuffle(QUIZ_QUESTIONS).slice(0, 5);
-    currentQuestion = 0;
-    gameScore = 0;
-
-    renderQuizQuestion();
+    console.log("Freshopia Ultimate 6.1 initialized successfully!");
 }
 
-func
+document.addEventListener("DOMContentLoaded", initializeFreshopia);
