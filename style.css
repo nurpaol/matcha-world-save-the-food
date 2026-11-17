@@ -675,3 +675,55 @@ footer {
   0%,100% { transform: translateY(0) scale(1); }
   50% { transform: translateY(-16px) scale(1.05); }
 }
+/* GAME RULES PANEL */
+.game-rules {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  width: 250px;
+  background: rgba(255, 245, 250, 0.97);
+  border: 2px solid #f39bc5;
+  border-radius: 18px;
+  padding: 15px;
+  z-index: 999;
+  box-shadow: 0 5px 18px rgba(180, 100, 150, 0.2);
+  color: #62446d;
+  font-family: inherit;
+}
+
+.game-rules h3 {
+  margin: 0 0 10px;
+  color: #d65d9b;
+  font-size: 17px;
+}
+
+.game-rules ul {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.game-rules li {
+  font-size: 12px;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.game-rules p {
+  margin: 10px 0 0;
+  font-weight: bold;
+  text-align: center;
+  color: #d65d9b;
+}
+
+@media (max-width: 600px) {
+  .game-rules {
+    width: 190px;
+    top: 8px;
+    right: 8px;
+    padding: 10px;
+  }
+
+  .game-rules li {
+    font-size: 10px;
+  }
+}
