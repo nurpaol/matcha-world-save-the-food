@@ -732,10 +732,22 @@ function renderCharacters(){
   const grid=$("characterGrid");
   if(!grid) return;
 
-  const team=[
-    {name:"Mika",role:"Your cooking guide",image:""},
-    {name:"Emma",role:"A friendly customer",image:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400"},
-    {name:"Oliver",role:"A food lover",image:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400"}
+ const team = [
+  {
+    name: "Mika",
+    role: "Your cooking guide",
+    image: "mika.png"
+  },
+  {
+    name: "Emma",
+    role: "A friendly customer",
+    image: "emma.png"
+  },
+  {
+    name: "Oliver",
+    role: "A food lover",
+    image: "oliver.png"
+  }
   ];
 
   grid.innerHTML="";
