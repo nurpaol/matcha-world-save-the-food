@@ -1006,3 +1006,57 @@ footer {
 </div>
 </body>
 </html>
+/* FRESHOPIA GAME RULES - FIXED BOX */
+
+#freshopiaRules {
+  display: block !important;
+  position: fixed !important;
+  top: 15px !important;
+  right: 15px !important;
+  left: auto !important;
+
+  width: 250px !important;
+  padding: 18px !important;
+
+  background: #fff0f7 !important;
+  border: 3px solid #f39bc5 !important;
+  border-radius: 20px !important;
+
+  color: #62446d !important;
+  box-shadow: 0 8px 25px rgba(180, 100, 150, 0.25) !important;
+
+  z-index: 99999 !important;
+  box-sizing: border-box !important;
+  text-align: left !important;
+}
+
+#freshopiaRules h3 {
+  display: block !important;
+  color: #d65d9b !important;
+  font-size: 18px !important;
+  margin: 0 0 12px !important;
+}
+
+#freshopiaRules p {
+  display: block !important;
+  color: #62446d !important;
+  font-size: 12px !important;
+  margin: 10px 0 !important;
+  line-height: 1.5 !important;
+}
+
+#freshopiaRules strong {
+  display: block !important;
+  text-align: center !important;
+  color: #d65d9b !important;
+  margin-top: 12px !important;
+}
+
+@media (max-width: 600px) {
+  #freshopiaRules {
+    width: 190px !important;
+    top: 8px !important;
+    right: 8px !important;
+    padding: 12px !important;
+  }
+}
