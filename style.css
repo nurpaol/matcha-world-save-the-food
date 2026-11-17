@@ -29,7 +29,19 @@ body {
   min-height: 100vh;
   font-family: "Trebuchet MS", Arial, sans-serif;
   color: var(--text);
-  background: #fff7f8;
+
+  background:
+    linear-gradient(
+      rgba(255, 239, 244, 0.30),
+      rgba(222, 247, 232, 0.30)
+    ),
+    url("restaurant-bg.png");
+
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+
   overflow-x: hidden;
 }
 
