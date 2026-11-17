@@ -1175,3 +1175,36 @@ body {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
 }
+/* GAME RULES BOX */
+#freshopiaRules {
+  display: block !important;
+  position: fixed !important;
+  top: 15px !important;
+  right: 15px !important;
+  width: 230px !important;
+  padding: 15px !important;
+  background: #fff0f7 !important;
+  border: 3px solid #f39bc5 !important;
+  border-radius: 20px !important;
+  color: #62446d !important;
+  box-shadow: 0 8px 25px rgba(180,100,150,.25) !important;
+  z-index: 99999 !important;
+  box-sizing: border-box !important;
+}
+
+#freshopiaRules h3 {
+  color: #d65d9b !important;
+  margin: 0 0 12px !important;
+}
+
+#freshopiaRules p {
+  font-size: 12px !important;
+  margin: 9px 0 !important;
+}
+
+#freshopiaRules strong {
+  display: block;
+  text-align: center;
+  color: #d65d9b;
+  margin-top: 12px;
+}
