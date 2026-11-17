@@ -871,3 +871,75 @@ function showToast(message) {
     toast.classList.remove("show");
   }, 2600);
 }
+/* FRESHOPIA - MIKA GUIDE SYSTEM */
+
+window.mikaSpeak = function(message) {
+  const text = document.getElementById("mika-text");
+  const mika = document.getElementById("mika-art");
+
+  if (text && message) {
+    text.textContent = message;
+  }
+
+  if (mika) {
+    mika.classList.remove("mika-talking");
+    void mika.offsetWidth;
+    mika.classList.add("mika-talking");
+
+    setTimeout(() => {
+      mika.classList.remove("mika-talking");
+    }, 3000);
+  }
+};
+
+window.mikaWave = function() {
+  const mika = document.getElementById("mika-art");
+  if (!mika) return;
+
+  mika.classList.remove("mika-wave");
+  void mika.offsetWidth;
+  mika.classList.add("mika-wave");
+};
+
+window.mikaDance = function() {
+  const mika = document.getElementById("mika-art");
+  if (!mika) return;
+
+  mika.classList.remove("mika-dance");
+  void mika.offsetWidth;
+  mika.classList.add("mika-dance");
+
+  setTimeout(() => {
+    mika.classList.remove("mika-dance");
+  }, 4000);
+
+  window.mikaSpeak("Yaaa! Harika bir iş çıkardın! Yeni seviyeye ulaştın! 🎉");
+};
+
+window.mikaHappy = function() {
+  const mika = document.getElementById("mika-art");
+  if (!mika) return;
+
+  mika.classList.remove("mika-happy");
+  void mika.offsetWidth;
+  mika.classList.add("mika-happy");
+
+  window.mikaSpeak("Muhteşem! Müşterimiz çok mutlu! 💗");
+};
+
+/* Next butonuna basıldığında Mika tepki versin */
+document.addEventListener("click", function(event) {
+  const button = event.target.closest("button");
+  if (!button) return;
+
+  const buttonText = button.textContent.trim().toLowerCase();
+
+  if (buttonText.includes("next")) {
+    window.mikaWave();
+  }
+});
+
+/* Oyuncu oyuna girdiğinde Mika selam versin */
+window.addEventListener("load", function() {
+  window.mikaWave();
+});
