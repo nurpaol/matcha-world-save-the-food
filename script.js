@@ -834,20 +834,35 @@ function updateMissionProgress(id,amount){
 /* ACHIEVEMENTS */
 
 function renderAchievements(){
-  const list=$("achievementList");
+  const list = $("achievementList");
   if(!list) return;
 
-  list.innerHTML="";
+  list.innerHTML = "";
 
-  achievements.forEach(achievement=>{
-    const card=document.createElement("div");
+  achievements.forEach(achievement => {
+    const card = document.createElement("div");
 
-    card.className="achievement-card"+(achievement.unlocked?" unlocked":"");
+    card.className =
+      "achievement-card " +
+      achievement.tier.toLowerCase() +
+      (achievement.unlocked ? " unlocked" : " locked");
 
-    card.innerHTML=`
-      <h3>${achievement.unlocked?"🏆":"🔒"} ${achievement.title}</h3>
+    card.innerHTML = `
+      <div class="achievement-medal">
+        ${achievement.unlocked ? achievement.medal : "🔒"}
+      </div>
+
+      <h3>${achievement.title}</h3>
+
+      <span class="achievement-tier">
+        ${achievement.tier}
+      </span>
+
       <p>${achievement.description}</p>
-      <small>${achievement.unlocked?"Unlocked!":"Not unlocked yet"}</small>
+
+      <small>
+        ${achievement.unlocked ? "UNLOCKED!" : "LOCKED"}
+      </small>
     `;
 
     list.appendChild(card);
