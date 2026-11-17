@@ -727,3 +727,37 @@ footer {
     font-size: 10px;
   }
 }
+.rules-button {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 1001;
+  background: #f39bc5;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.game-rules {
+  display: none;
+  top: 65px;
+  right: 15px;
+  z-index: 1000;
+}
+
+.game-rules.show {
+  display: block;
+}
+
+.rules-close {
+  float: right;
+  border: none;
+  background: #f8c6dd;
+  color: #62446d;
+  border-radius: 8px;
+  padding: 5px 9px;
+  cursor: pointer;
+}
