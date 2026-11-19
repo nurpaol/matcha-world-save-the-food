@@ -160,12 +160,30 @@ const missions = [
 /* ================= ACHIEVEMENTS ================= */
 
 const achievements = [
-  {id:1,title:"First Customer",description:"Serve your first customer.",tier:"Bronze",medal:"🥉",unlocked:false},
-  {id:2,title:"Little Chef",description:"Complete 5 orders.",tier:"Silver",medal:"🥈",unlocked:false},
-  {id:3,title:"Rising Star",description:"Reach level 3.",tier:"Gold",medal:"🥇",unlocked:false},
-  {id:4,title:"Healthy Chef",description:"Earn 200 healthy points.",tier:"Silver",medal:"🥑",unlocked:false},
-  {id:5,title:"Food Saver",description:"Rescue 5 ingredients.",tier:"Gold",medal:"♻️",unlocked:false},
-  {id:6,title:"Zero Waste Hero",description:"Rescue 10 ingredients.",tier:"Platinum",medal:"🌍",unlocked:false}
+  {
+    id:1,
+    title:"First Customer",
+    description:"Serve your first customer.",
+    unlocked:false,
+    tier:"BRONZE",
+    medal:"🥉"
+  },
+  {
+    id:2,
+    title:"Little Chef",
+    description:"Complete 5 orders.",
+    unlocked:false,
+    tier:"SILVER",
+    medal:"🥈"
+  },
+  {
+    id:3,
+    title:"Rising Star",
+    description:"Reach level 3.",
+    unlocked:false,
+    tier:"GOLD",
+    medal:"🥇"
+  }
 ];
 
 /* ================= FOOD QUIZ ================= */
