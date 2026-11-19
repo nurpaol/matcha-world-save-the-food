@@ -1933,3 +1933,383 @@ function checkEcoChallenges() {
 }
 
 document.addEventListener("DOMContentLoaded", initializeEcoKitchen);
+/* ==========================================
+   FRESHOPIA - ANIME VEGETABLE GARDEN
+========================================== */
+
+const gardenCrops = [
+  { id: "carrot", name: "Carrot", emoji: "🥕", reward: 20 },
+  { id: "lettuce", name: "Lettuce", emoji: "🥬", reward: 25 },
+  { id: "tomato", name: "Tomato", emoji: "🍅", reward: 30 }
+];
+
+function initializeFreshopiaGarden() {
+  if (!ecoKitchen.gardenPlots) {
+    ecoKitchen.gardenPlots = [
+      { crop: null, stage: 0 },
+      { crop: null, stage: 0 },
+      { crop: null, stage: 0 }
+    ];
+  }
+
+  if (!ecoKitchen.gardenHarvests) {
+    ecoKitchen.gardenHarvests = 0;
+  }
+
+  createGardenPanel();
+  renderGarden();
+}
+
+function createGardenPanel() {
+  if ($("freshopiaGarden")) return;
+
+  const ecoPanel = $("zeroWastePanel");
+  if (!ecoPanel) return;
+
+  const garden = document.createElement("section");
+  garden.id = "freshopiaGarden";
+  garden.className = "freshopia-garden";
+
+  garden.innerHTML = `
+    <div class="garden-heading">
+      <div>
+        <span class="garden-label">FRESHOPIA GARDEN PROJECT</span>
+        <h2>🌷 Freshopia Garden</h2>
+        <p>Plant vegetables, water your crops and harvest fresh ingredients!</p>
+      </div>
+      <div class="garden-big-icon">🌻</div>
+    </div>
+
+    <div class="garden-summary">
+      <div>
+        <span>🌿</span>
+        <strong id="gardenLevel">1</strong>
+        <small>Garden Level</small>
+      </div>
+      <div>
+        <span>🧺</span>
+        <strong id="gardenHarvests">0</strong>
+        <small>Total Harvests</small>
+      </div>
+      <div>
+        <span>♻️</span>
+        <strong id="gardenCompost">0</strong>
+        <small>Available Compost</small>
+      </div>
+    </div>
+
+    <p class="garden-instruction">
+      Each new plant costs 1 compost. Water your plant twice before harvesting!
+    </p>
+
+    <div id="gardenPlots" class="garden-plots"></div>
+
+    <div class="garden-footer">
+      🌱 Every harvest earns coins and Eco Points!
+    </div>
+  `;
+
+  const style = document.createElement("style");
+  style.id = "freshopiaGardenStyles";
+
+  style.textContent = `
+    .freshopia-garden {
+      margin-top: 22px;
+      padding: 22px;
+      border-radius: 24px;
+      background: linear-gradient(145deg,#f4fbea,#fff8ed);
+      border: 1px solid #dcebd0;
+      color: #527653;
+    }
+
+    .garden-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .garden-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      font-weight: bold;
+      color: #83a879;
+    }
+
+    .garden-heading h2 {
+      margin: 8px 0;
+      color: #5c865e;
+    }
+
+    .garden-heading p,
+    .garden-instruction {
+      color: #758b72;
+      line-height: 1.5;
+    }
+
+    .garden-big-icon {
+      font-size: 45px;
+    }
+
+    .garden-summary {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .garden-summary div {
+      text-align: center;
+      background: white;
+      padding: 12px 5px;
+      border-radius: 15px;
+    }
+
+    .garden-summary span,
+    .garden-summary strong,
+    .garden-summary small {
+      display: block;
+    }
+
+    .garden-summary span {
+      font-size: 22px;
+    }
+
+    .garden-summary strong {
+      margin: 5px;
+      font-size: 20px;
+      color: #67976a;
+    }
+
+    .garden-summary small {
+      font-size: 10px;
+      color: #849584;
+    }
+
+    .garden-plots {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(190px,1fr));
+      gap: 14px;
+    }
+
+    .garden-plot {
+      background: #fff;
+      border: 1px solid #e1edda;
+      border-radius: 18px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .garden-plant {
+      min-height: 75px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 45px;
+    }
+
+    .garden-plot h3 {
+      color: #5c805d;
+      margin: 8px 0;
+    }
+
+    .garden-plot p {
+      color: #849384;
+      font-size: 12px;
+    }
+
+    .garden-plot button {
+      width: 100%;
+      margin-top: 7px;
+      padding: 10px;
+      border: 0;
+      border-radius: 11px;
+      background: linear-gradient(135deg,#94c88c,#b9dcae);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .garden-plot button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .garden-footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #6b946d;
+      font-weight: bold;
+    }
+
+    @media(max-width:480px) {
+      .freshopia-garden {
+        padding: 15px;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+  ecoPanel.appendChild(garden);
+}
+
+function renderGarden() {
+  const area = $("gardenPlots");
+  if (!area) return;
+
+  const plots = ecoKitchen.gardenPlots || [];
+
+  const gardenLevel = 1 + Math.floor(
+    (ecoKitchen.gardenHarvests || 0) / 3
+  );
+
+  setText("gardenLevel", gardenLevel);
+  setText("gardenHarvests", ecoKitchen.gardenHarvests || 0);
+  setText("gardenCompost", ecoKitchen.compost || 0);
+
+  area.innerHTML = "";
+
+  plots.forEach((plot, index) => {
+    const card = document.createElement("div");
+    card.className = "garden-plot";
+
+    if (!plot.crop) {
+      card.innerHTML = `
+        <div class="garden-plant">🪴</div>
+        <h3>Empty Garden Plot</h3>
+        <p>Choose a vegetable to plant.</p>
+        <select id="gardenCrop${index}">
+          <option value="">Choose a seed</option>
+          ${gardenCrops.map(crop =>
+            `<option value="${crop.id}">${crop.emoji} ${crop.name}</option>`
+          ).join("")}
+        </select>
+        <button type="button" data-action="plant">
+          Plant Seed · 1 Compost
+        </button>
+      `;
+
+      card.querySelector("button").addEventListener("click", () => {
+        const cropId = card.querySelector("select").value;
+        plantGardenCrop(index, cropId);
+      });
+
+    } else {
+      const crop = gardenCrops.find(item => item.id === plot.crop);
+
+      const plantIcon = plot.stage === 1
+        ? "🌱"
+        : plot.stage === 2
+          ? crop.emoji
+          : "🌿";
+
+      const status = plot.stage === 1
+        ? "Your seed is growing!"
+        : plot.stage === 2
+          ? "Ready to harvest!"
+          : "Water your plant!";
+
+      const buttonText = plot.stage === 2
+        ? "Harvest 🧺"
+        : "Water Plant 💧";
+
+      card.innerHTML = `
+        <div class="garden-plant">${plantIcon}</div>
+        <h3>${crop.name}</h3>
+        <p>${status}</p>
+        <p>Growth: ${plot.stage} / 2</p>
+        <button type="button">${buttonText}</button>
+      `;
+
+      card.querySelector("button").addEventListener("click", () => {
+        if (plot.stage === 2) {
+          harvestGardenCrop(index);
+        } else {
+          waterGardenCrop(index);
+        }
+      });
+    }
+
+    area.appendChild(card);
+  });
+}
+
+function plantGardenCrop(index, cropId) {
+  const crop = gardenCrops.find(item => item.id === cropId);
+
+  if (!crop) {
+    showToast("Choose a vegetable seed first!");
+    return;
+  }
+
+  if (ecoKitchen.compost < 1) {
+    showToast("You need 1 compost to plant a seed!");
+    return;
+  }
+
+  ecoKitchen.compost--;
+  ecoKitchen.gardenPlots[index] = {
+    crop: cropId,
+    stage: 0
+  };
+
+  showToast(crop.name + " seed planted! 🌱");
+
+  saveEcoKitchen();
+  renderGarden();
+  renderEcoKitchen();
+}
+
+function waterGardenCrop(index) {
+  const plot = ecoKitchen.gardenPlots[index];
+
+  if (!plot || !plot.crop || plot.stage >= 2) return;
+
+  plot.stage++;
+
+  if (plot.stage === 1) {
+    showToast("Your plant is growing! Water it again. 💧");
+  } else {
+    showToast("Your vegetable is ready to harvest! 🌻");
+  }
+
+  saveEcoKitchen();
+  renderGarden();
+}
+
+function harvestGardenCrop(index) {
+  const plot = ecoKitchen.gardenPlots[index];
+
+  if (!plot || !plot.crop || plot.stage < 2) return;
+
+  const crop = gardenCrops.find(item => item.id === plot.crop);
+
+  if (!crop) return;
+
+  ecoKitchen.gardenHarvests++;
+  ecoKitchen.ecoPoints += 15;
+
+  player.coins += crop.reward;
+  addXP(15);
+
+  showToast(
+    crop.name + " harvested! +" +
+    crop.reward + " coins and 15 Eco Points! 🧺"
+  );
+
+  ecoKitchen.gardenPlots[index] = {
+    crop: null,
+    stage: 0
+  };
+
+  saveEcoKitchen();
+  renderGarden();
+  renderEcoKitchen();
+}
+
+/* START GARDEN AFTER ECO KITCHEN */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  initializeFreshopiaGarden
+);
