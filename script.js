@@ -72,101 +72,58 @@ const recipes = [
   {
     id:"burger",
     name:"Classic Burger",
-    description:"A delicious burger with fresh vegetables.",
+    description:"A juicy burger with cheese and fresh vegetables.",
     image:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600",
     ingredients:["bread","beef","cheese","lettuce","tomato"],
-    reward:35,protein:28,fiber:5,sugar:4,health:65,category:"Main Course"
+    reward:35,
+    nutrition:{calories:520,protein:28,carbs:42,fiber:4}
   },
   {
     id:"pasta",
     name:"Creamy Basil Pasta",
-    description:"Whole wheat pasta with fresh basil and light cream.",
+    description:"Creamy pasta with fresh basil.",
     image:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600",
     ingredients:["pasta","basil","cream"],
-    reward:40,protein:12,fiber:7,sugar:3,health:75,category:"Main Course"
+    reward:40,
+    nutrition:{calories:480,protein:14,carbs:62,fiber:5}
   },
   {
     id:"chicken",
     name:"Chicken Rice Bowl",
-    description:"A balanced bowl with chicken, brown rice and carrots.",
+    description:"Chicken served with rice and carrots.",
     image:"https://images.unsplash.com/photo-1547592180-85f173990554?w=600",
     ingredients:["chicken","rice","carrot"],
-    reward:45,protein:32,fiber:6,sugar:3,health:90,category:"Main Course"
+    reward:45,
+    nutrition:{calories:430,protein:32,carbs:48,fiber:4}
   },
   {
-    id:"salmon",
-    name:"Salmon Power Bowl",
-    description:"Salmon, quinoa, avocado and a fresh lemon dressing.",
+    id:"veggie",
+    name:"Fresh Garden Salad",
+    description:"A colorful mix of fresh vegetables.",
     image:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600",
-    ingredients:["salmon","quinoa","avocado","lemon"],
-    reward:60,protein:35,fiber:9,sugar:3,health:98,category:"Healthy Choice"
+    ingredients:["lettuce","tomato","carrot"],
+    reward:35,
+    nutrition:{calories:180,protein:5,carbs:24,fiber:7}
   },
   {
-    id:"wrap",
-    name:"Rainbow Veggie Wrap",
-    description:"A colorful whole grain wrap with fresh vegetables.",
-    image:"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=600",
-    ingredients:["bread","lettuce","tomato","cucumber","yogurt"],
-    reward:45,protein:10,fiber:8,sugar:5,health:92,category:"Healthy Choice"
+    id:"potato",
+    name:"Golden Potato Bowl",
+    description:"A comforting bowl with potatoes and fresh vegetables.",
+    image:"https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600",
+    ingredients:["potato","carrot","cheese"],
+    reward:38,
+    nutrition:{calories:310,protein:10,carbs:45,fiber:6}
   },
   {
-    id:"soup",
-    name:"Garden Chicken Soup",
-    description:"A comforting soup with chicken and vegetables.",
-    image:"https://images.unsplash.com/photo-1547592180-85f173990554?w=600",
-    ingredients:["chicken","carrot","potato","spinach"],
-    reward:50,protein:25,fiber:7,sugar:4,health:94,category:"Healthy Choice"
-  },
-  {
-    id:"smoothie",
-    name:"Berry Smoothie Bowl",
-    description:"A refreshing mix of strawberries, banana and yogurt.",
-    image:"https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600",
-    ingredients:["strawberry","banana","yogurt","oats"],
-    reward:40,protein:12,fiber:8,sugar:12,health:88,category:"Breakfast"
-  },
-  {
-    id:"lentil",
-    name:"Lentil Energy Bites",
-    description:"Plant-based lentils and bulgur with fresh herbs.",
-    image:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600",
-    ingredients:["lentils","bulgur","tomato","oliveoil"],
-    reward:45,protein:18,fiber:13,sugar:4,health:97,category:"Plant Based"
-  },
-  {
-    id:"oatmeal",
-    name:"Apple Oat Dessert",
-    description:"A naturally sweet dessert with apple, oats and walnuts.",
-    image:"https://images.unsplash.com/photo-1517673132405-a56a62b18caf?w=600",
-    ingredients:["apple","oats","walnut","honey"],
-    reward:40,protein:8,fiber:9,sugar:10,health:89,category:"Dessert"
-  },
-  {
-    id:"salad",
-    name:"Green Garden Salad",
-    description:"A fresh salad with spinach, cucumber and avocado.",
-    image:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600",
-    ingredients:["spinach","cucumber","avocado","lemon","oliveoil"],
-    reward:40,protein:5,fiber:10,sugar:4,health:99,category:"Healthy Choice"
-  },
-  {
-    id:"sweetpotato",
-    name:"Sweet Potato Plate",
-    description:"Baked sweet potato with yogurt and fresh spinach.",
-    image:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600",
-    ingredients:["sweetpotato","yogurt","spinach","oliveoil"],
-    reward:45,protein:9,fiber:8,sugar:7,health:95,category:"Plant Based"
-  },
-  {
-    id:"egg",
-    name:"Garden Breakfast Toast",
-    description:"Whole grain toast with egg, spinach and tomato.",
-    image:"https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600",
-    ingredients:["bread","egg","spinach","tomato"],
-    reward:45,protein:17,fiber:6,sugar:3,health:93,category:"Breakfast"
+    id:"chicken-salad",
+    name:"Healthy Chicken Salad",
+    description:"Fresh greens with protein-rich chicken.",
+    image:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600",
+    ingredients:["chicken","lettuce","tomato","carrot"],
+    reward:50,
+    nutrition:{calories:290,protein:30,carbs:18,fiber:6}
   }
 ];
-
 /* ================= CUSTOMERS ================= */
 
 const customers = [
