@@ -1,11 +1,14 @@
 /* =====================================================
    FRESHOPIA - ANIME COOKING ADVENTURE
-   Healthy Kitchen & Zero Waste Edition
+   Complete Edition
+   Healthy Kitchen + Zero Waste + Garden
 ===================================================== */
 
 const $ = id => document.getElementById(id);
 
-/* ================= PLAYER DATA ================= */
+/* =====================================================
+   1. PLAYER DATA
+===================================================== */
 
 let player = {
   level: 1,
@@ -31,7 +34,9 @@ let mikaStep = 0;
 let currentPuzzleAnswer = null;
 let currentPuzzleCompleted = false;
 
-/* ================= INGREDIENTS ================= */
+/* =====================================================
+   2. INGREDIENTS
+===================================================== */
 
 const ingredients = [
   {id:"bread",name:"Whole Grain Bread",emoji:"🍞",stock:15,category:"Grains",shelfLife:4},
@@ -66,7 +71,9 @@ const ingredients = [
   {id:"sweetpotato",name:"Sweet Potato",emoji:"🍠",stock:12,category:"Vegetables",shelfLife:14}
 ];
 
-/* ================= RECIPES ================= */
+/* =====================================================
+   3. RECIPES
+===================================================== */
 
 const recipes = [
   {
@@ -76,6 +83,8 @@ const recipes = [
     image:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600",
     ingredients:["bread","beef","cheese","lettuce","tomato"],
     reward:35,
+    health:55,
+    category:"Meat",
     nutrition:{calories:520,protein:28,carbs:42,fiber:4}
   },
   {
@@ -85,6 +94,8 @@ const recipes = [
     image:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600",
     ingredients:["pasta","basil","cream"],
     reward:40,
+    health:65,
+    category:"Vegetarian",
     nutrition:{calories:480,protein:14,carbs:62,fiber:5}
   },
   {
@@ -94,6 +105,8 @@ const recipes = [
     image:"https://images.unsplash.com/photo-1547592180-85f173990554?w=600",
     ingredients:["chicken","rice","carrot"],
     reward:45,
+    health:85,
+    category:"Meat",
     nutrition:{calories:430,protein:32,carbs:48,fiber:4}
   },
   {
@@ -103,6 +116,8 @@ const recipes = [
     image:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600",
     ingredients:["lettuce","tomato","carrot"],
     reward:35,
+    health:95,
+    category:"Plant Based",
     nutrition:{calories:180,protein:5,carbs:24,fiber:7}
   },
   {
@@ -112,6 +127,8 @@ const recipes = [
     image:"https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600",
     ingredients:["potato","carrot","cheese"],
     reward:38,
+    health:75,
+    category:"Vegetarian",
     nutrition:{calories:310,protein:10,carbs:45,fiber:6}
   },
   {
@@ -121,10 +138,15 @@ const recipes = [
     image:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600",
     ingredients:["chicken","lettuce","tomato","carrot"],
     reward:50,
+    health:95,
+    category:"Meat",
     nutrition:{calories:290,protein:30,carbs:18,fiber:6}
   }
 ];
-/* ================= CUSTOMERS ================= */
+
+/* =====================================================
+   4. CUSTOMERS
+===================================================== */
 
 const customers = [
   {name:"Emma",avatar:"👩🏻",mood:"😊",message:"I'm hungry! Can you cook for me?"},
@@ -136,7 +158,9 @@ const customers = [
   {name:"Leo",avatar:"👦🏻",mood:"😋",message:"I love colorful and fresh food!"}
 ];
 
-/* ================= MIKA DIALOGUES ================= */
+/* =====================================================
+   5. MIKA DIALOGUES
+===================================================== */
 
 const mikaMessages = [
   {title:"Welcome, Chef! 🌸",message:"Hi! I'm Mika, your cooking guide. Welcome to Freshopia!"},
@@ -146,7 +170,9 @@ const mikaMessages = [
   {title:"Let's begin! 💗",message:"You're ready, Chef! Open your restaurant!"}
 ];
 
-/* ================= MISSIONS ================= */
+/* =====================================================
+   6. MISSIONS
+===================================================== */
 
 const missions = [
   {id:1,title:"Serve your first customer",target:1,progress:0,reward:30},
@@ -157,36 +183,19 @@ const missions = [
   {id:6,title:"Prepare a plant-based meal",target:1,progress:0,reward:50}
 ];
 
-/* ================= ACHIEVEMENTS ================= */
+/* =====================================================
+   7. ACHIEVEMENTS
+===================================================== */
 
 const achievements = [
-  {
-    id:1,
-    title:"First Customer",
-    description:"Serve your first customer.",
-    unlocked:false,
-    tier:"BRONZE",
-    medal:"🥉"
-  },
-  {
-    id:2,
-    title:"Little Chef",
-    description:"Complete 5 orders.",
-    unlocked:false,
-    tier:"SILVER",
-    medal:"🥈"
-  },
-  {
-    id:3,
-    title:"Rising Star",
-    description:"Reach level 3.",
-    unlocked:false,
-    tier:"GOLD",
-    medal:"🥇"
-  }
+  {id:1,title:"First Customer",description:"Serve your first customer.",unlocked:false,tier:"BRONZE",medal:"🥉"},
+  {id:2,title:"Little Chef",description:"Complete 5 orders.",unlocked:false,tier:"SILVER",medal:"🥈"},
+  {id:3,title:"Rising Star",description:"Reach level 3.",unlocked:false,tier:"GOLD",medal:"🥇"}
 ];
 
-/* ================= FOOD QUIZ ================= */
+/* =====================================================
+   8. FOOD QUIZ
+===================================================== */
 
 const questions = [
   {
@@ -245,7 +254,80 @@ const questions = [
   }
 ];
 
-/* ================= GAME STATE ================= */
+/* =====================================================
+   9. ZERO WASTE DATA
+===================================================== */
+
+const ecoKitchen = {
+  rescued:0,
+  compost:0,
+  ecoPoints:0,
+  savedIngredients:[],
+  rescuedIngredients:[],
+  completedChallenges:[],
+  storageKnowledge:0,
+  gardenPlots:[
+    {crop:null,stage:0},
+    {crop:null,stage:0},
+    {crop:null,stage:0}
+  ],
+  gardenHarvests:0
+};
+
+const ecoChallenges = [
+  {id:"rescue3",title:"Save 3 Ingredients",description:"Rescue 3 ingredients from being wasted.",target:3,reward:30},
+  {id:"compost2",title:"Green Compost",description:"Create 2 compost portions.",target:2,reward:25},
+  {id:"leftover1",title:"Creative Chef",description:"Prepare a leftover meal.",target:1,reward:40},
+  {id:"storage2",title:"Smart Storage",description:"Learn 2 food storage tips.",target:2,reward:20}
+];
+
+const ecoProgress = {
+  rescue3:0,
+  compost2:0,
+  leftover1:0,
+  storage2:0
+};
+
+const storageTips = [
+  {
+    question:"Where should fresh lettuce be stored?",
+    options:["In the refrigerator","In direct sunlight","Next to a heater"],
+    answer:"In the refrigerator",
+    explanation:"Leafy vegetables generally stay fresh longer when refrigerated."
+  },
+  {
+    question:"What is the best way to store dry pasta?",
+    options:["In a sealed, dry container","In an open bowl","In water"],
+    answer:"In a sealed, dry container",
+    explanation:"Keep dry pasta sealed in a cool, dry place."
+  },
+  {
+    question:"How should raw chicken be stored?",
+    options:["Covered on the bottom shelf of the fridge","Next to fresh fruit","At room temperature"],
+    answer:"Covered on the bottom shelf of the fridge",
+    explanation:"Keep raw chicken covered and separate from ready-to-eat foods."
+  },
+  {
+    question:"What should you do with leftovers?",
+    options:["Refrigerate promptly in covered containers","Leave them out overnight","Keep them in sunlight"],
+    answer:"Refrigerate promptly in covered containers",
+    explanation:"Refrigerate leftovers promptly and use them within safe storage times."
+  }
+];
+
+/* =====================================================
+   10. GARDEN CROPS
+===================================================== */
+
+const gardenCrops = [
+  {id:"carrot",name:"Carrot",emoji:"🥕",reward:20},
+  {id:"lettuce",name:"Lettuce",emoji:"🥬",reward:25},
+  {id:"tomato",name:"Tomato",emoji:"🍅",reward:30}
+];
+
+/* =====================================================
+   11. SAVE AND LOAD
+===================================================== */
 
 function loadPlayer(){
   try{
@@ -254,29 +336,48 @@ function loadPlayer(){
 
     const savedMissions=JSON.parse(localStorage.getItem("freshopiaMissions")||"null");
     if(savedMissions){
-      savedMissions.forEach(savedMission=>{
-        const mission=missions.find(m=>m.id===savedMission.id);
-        if(mission) mission.progress=savedMission.progress;
+      savedMissions.forEach(item=>{
+        const mission=missions.find(m=>m.id===item.id);
+        if(mission) mission.progress=item.progress;
       });
     }
 
     const savedAchievements=JSON.parse(localStorage.getItem("freshopiaAchievements")||"null");
     if(savedAchievements){
-      savedAchievements.forEach(savedAchievement=>{
-        const achievement=achievements.find(a=>a.id===savedAchievement.id);
-        if(achievement) achievement.unlocked=savedAchievement.unlocked;
+      savedAchievements.forEach(item=>{
+        const achievement=achievements.find(a=>a.id===item.id);
+        if(achievement) achievement.unlocked=item.unlocked;
       });
     }
 
     const savedStock=JSON.parse(localStorage.getItem("freshopiaStock")||"null");
     if(savedStock){
-      savedStock.forEach(savedItem=>{
-        const item=ingredients.find(i=>i.id===savedItem.id);
-        if(item) item.stock=savedItem.stock;
+      savedStock.forEach(item=>{
+        const ingredient=ingredients.find(i=>i.id===item.id);
+        if(ingredient) ingredient.stock=item.stock;
       });
     }
+
+    const savedEco=JSON.parse(localStorage.getItem("freshopiaEcoKitchen")||"null");
+
+    if(savedEco){
+      Object.assign(ecoKitchen,savedEco.ecoKitchen||{});
+      Object.assign(ecoProgress,savedEco.ecoProgress||{});
+    }
+
+    if(!Array.isArray(ecoKitchen.savedIngredients)) ecoKitchen.savedIngredients=[];
+    if(!Array.isArray(ecoKitchen.rescuedIngredients)) ecoKitchen.rescuedIngredients=[];
+    if(!Array.isArray(ecoKitchen.completedChallenges)) ecoKitchen.completedChallenges=[];
+    if(!Array.isArray(ecoKitchen.gardenPlots)){
+      ecoKitchen.gardenPlots=[
+        {crop:null,stage:0},
+        {crop:null,stage:0},
+        {crop:null,stage:0}
+      ];
+    }
+
   }catch(error){
-    console.log("Starting a new game.");
+    console.log("Starting a new Freshopia game.");
   }
 }
 
@@ -286,18 +387,36 @@ function savePlayer(){
     localStorage.setItem("freshopiaMissions",JSON.stringify(missions));
     localStorage.setItem("freshopiaAchievements",JSON.stringify(achievements));
     localStorage.setItem("freshopiaStock",JSON.stringify(ingredients));
+    saveEcoKitchen();
   }catch(error){
     console.log("Save unavailable.");
   }
 }
 
-/* ================= INITIALIZATION ================= */
+function saveEcoKitchen(){
+  try{
+    localStorage.setItem("freshopiaEcoKitchen",JSON.stringify({
+      ecoKitchen,
+      ecoProgress
+    }));
+  }catch(error){
+    console.log("Eco Kitchen save unavailable.");
+  }
+}
+
+/* =====================================================
+   12. INITIALIZATION
+===================================================== */
 
 document.addEventListener("DOMContentLoaded",initializeGame);
 
 function initializeGame(){
   loadPlayer();
+
   createFreshopiaPanels();
+  createEcoKitchenPanel();
+  createGardenPanel();
+
   updatePlayerDisplay();
   renderIngredients();
   renderRecipes();
@@ -307,12 +426,18 @@ function initializeGame(){
   renderPuzzle();
   renderInventory();
   renderSustainability();
+  renderEcoKitchen();
+  renderGarden();
   updateCustomerArea();
+
   startMikaIntroduction();
+
   showToast("Welcome to Freshopia! 🌸");
 }
 
-/* ================= GENERAL HELPERS ================= */
+/* =====================================================
+   13. HELPERS
+===================================================== */
 
 function setText(id,value){
   const element=$(id);
@@ -326,39 +451,62 @@ function createElement(tag,className,text){
   return element;
 }
 
+function showToast(message){
+  const toast=$("toast");
+
+  if(!toast){
+    console.log(message);
+    return;
+  }
+
+  toast.textContent=message;
+  toast.classList.add("show");
+
+  clearTimeout(showToast.timeout);
+  showToast.timeout=setTimeout(()=>{
+    toast.classList.remove("show");
+  },2600);
+}
+
+/* =====================================================
+   14. CREATE HEALTHY KITCHEN PANEL
+===================================================== */
+
 function createFreshopiaPanels(){
   const recipeGrid=$("recipeGrid");
+  if(!recipeGrid||!recipeGrid.parentElement) return;
 
-  if(recipeGrid && ! $("freshopiaEcoPanel")){
-    const panel=document.createElement("div");
+  if(!$("freshopiaEcoPanel")){
+    const panel=document.createElement("section");
     panel.id="freshopiaEcoPanel";
     panel.className="freshopia-extra-panel";
+
     panel.innerHTML=`
       <div class="eco-heading">
         <h2>🌱 Healthy & Sustainable Kitchen</h2>
         <p>Cook healthy meals and protect our planet!</p>
       </div>
+
       <div id="freshopiaStats" class="eco-stats"></div>
+
       <div class="eco-columns">
         <div class="eco-card">
           <h3>🥑 Healthy Chef</h3>
           <p>Prepare nutritious meals and earn healthy points.</p>
           <div id="healthyStats"></div>
         </div>
+
         <div class="eco-card">
           <h3>♻️ Food Rescue</h3>
-          <p>Use available ingredients to reduce food waste.</p>
+          <p>Save ingredients from being wasted.</p>
           <div id="foodRescueArea"></div>
         </div>
       </div>
+
       <div class="eco-card">
         <h3>📦 Kitchen Inventory</h3>
         <p>Check your ingredient stock and restock when needed.</p>
         <div id="inventoryGrid"></div>
-      </div>
-      <div class="eco-card">
-        <h3>🌍 Sustainability Challenges</h3>
-        <div id="ecoChallenges"></div>
       </div>
     `;
 
@@ -368,39 +516,123 @@ function createFreshopiaPanels(){
   if(!$("freshopiaEcoStyle")){
     const style=document.createElement("style");
     style.id="freshopiaEcoStyle";
+
     style.textContent=`
-      .freshopia-extra-panel{margin:25px 0;padding:20px;border-radius:22px;background:linear-gradient(135deg,#f1f9e9,#fff2f7);color:#405b43}
+      .freshopia-extra-panel{
+        margin:25px 0;
+        padding:20px;
+        border-radius:22px;
+        background:linear-gradient(135deg,#f1f9e9,#fff2f7);
+        color:#405b43;
+      }
+
       .eco-heading{text-align:center;margin-bottom:20px}
       .eco-heading h2{color:#47784c}
-      .eco-stats,.eco-columns{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:15px 0}
-      .eco-card{background:#fff;border:1px solid #e4eddf;border-radius:16px;padding:15px;margin:12px 0;min-width:0}
+
+      .eco-stats,.eco-columns{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+        gap:12px;
+        margin:15px 0;
+      }
+
+      .eco-card{
+        background:#fff;
+        border:1px solid #e4eddf;
+        border-radius:16px;
+        padding:15px;
+        margin:12px 0;
+        min-width:0;
+      }
+
       .eco-card h3{color:#54865a}
-      .eco-stat{background:#fff;padding:12px;border-radius:13px;text-align:center}
-      .eco-stat strong{display:block;font-size:22px;color:#54865a}
+
+      .eco-stat{
+        background:#fff;
+        padding:12px;
+        border-radius:13px;
+        text-align:center;
+      }
+
+      .eco-stat strong{
+        display:block;
+        font-size:22px;
+        color:#54865a;
+      }
+
       .eco-stat small{color:#777}
-      .eco-button{border:0;border-radius:12px;padding:10px 14px;background:#78a978;color:white;font-weight:bold;margin:5px;cursor:pointer}
+
+      .eco-button{
+        border:0;
+        border-radius:12px;
+        padding:10px 14px;
+        background:#78a978;
+        color:white;
+        font-weight:bold;
+        margin:5px;
+        cursor:pointer;
+      }
+
       .eco-button:disabled{opacity:.5;cursor:not-allowed}
       .eco-button.pink{background:#e99bbd}
-      .inventory-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:9px}
-      .inventory-item{background:#f7faf3;padding:10px;border-radius:12px;border:1px solid #e6eddf}
+
+      .inventory-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
+        gap:9px;
+      }
+
+      .inventory-item{
+        background:#f7faf3;
+        padding:10px;
+        border-radius:12px;
+        border:1px solid #e6eddf;
+      }
+
       .inventory-item strong,.inventory-item small{display:block}
       .inventory-item small{color:#777;margin:4px 0}
-      .inventory-item button{font-size:12px}
-      .nutrition-row{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}
-      .nutrition-tag{background:#eef6e9;border-radius:9px;padding:5px 8px;font-size:12px}
-      .healthy-label{display:inline-block;background:#e5f5df;color:#42734a;padding:5px 9px;border-radius:20px;font-size:12px}
-      .eco-progress{height:9px;background:#e9eee5;border-radius:20px;overflow:hidden;margin:8px 0}
-      .eco-progress span{display:block;height:100%;background:#80b77d}
-      .eco-challenge{padding:10px;background:#f7faf3;border-radius:12px;margin:8px 0}
-      .eco-recipe-info{font-size:13px;color:#66816a}
-      .recipe-card img{max-width:100%;height:auto}
-      @media(max-width:500px){.freshopia-extra-panel{padding:12px}.eco-card{padding:12px}}
+
+      .nutrition-row{
+        display:flex;
+        gap:7px;
+        flex-wrap:wrap;
+        margin:9px 0;
+      }
+
+      .nutrition-tag{
+        background:#eef6e9;
+        border-radius:9px;
+        padding:5px 8px;
+        font-size:12px;
+      }
+
+      .eco-progress{
+        height:8px;
+        background:#e7eee4;
+        border-radius:10px;
+        overflow:hidden;
+        margin-top:8px;
+      }
+
+      .eco-progress span{
+        display:block;
+        height:100%;
+        background:#91c48b;
+      }
+
+      @media(max-width:500px){
+        .freshopia-extra-panel{padding:12px}
+        .eco-card{padding:12px}
+      }
     `;
+
     document.head.appendChild(style);
   }
 }
 
-/* ================= PLAYER DISPLAY ================= */
+/* =====================================================
+   15. PLAYER DISPLAY AND REWARDS
+===================================================== */
 
 function updatePlayerDisplay(){
   setText("playerLevel",player.level);
@@ -414,16 +646,15 @@ function updatePlayerDisplay(){
   const needed=player.level*100;
 
   if($("xpProgress")){
-    $("xpProgress").style.width=Math.min(100,player.xp/needed*100)+"%";
+    $("xpProgress").style.width=
+      Math.min(100,player.xp/needed*100)+"%";
   }
 
   setText("xpText",`${player.xp} / ${needed} XP`);
-  savePlayer();
 
+  savePlayer();
   renderSustainability();
 }
-
-/* ================= XP AND COINS ================= */
 
 function addXP(amount){
   player.xp+=amount;
@@ -440,8 +671,8 @@ function addXP(amount){
 
 function addCoins(amount){
   player.coins+=amount;
-  updatePlayerDisplay();
   updateMissionProgress(3,amount);
+  updatePlayerDisplay();
 }
 
 function showLevelUp(){
@@ -458,7 +689,9 @@ function closeLevelModal(){
   stopMikaDance();
 }
 
-/* ================= MIKA SYSTEM ================= */
+/* =====================================================
+   16. MIKA SYSTEM
+===================================================== */
 
 function mikaElement(){
   return $("mika-art")||$("mikaAssistant");
@@ -468,12 +701,13 @@ function mikaSpeak(message){
   const text=$("mika-text")||$("mikaMessage");
   const mika=mikaElement();
 
-  if(text && message) text.textContent=message;
+  if(text&&message) text.textContent=message;
 
   if(mika){
     mika.classList.remove("mika-talking");
     void mika.offsetWidth;
     mika.classList.add("mika-talking");
+
     setTimeout(()=>mika.classList.remove("mika-talking"),3000);
   }
 
@@ -512,6 +746,7 @@ function mikaHappy(){
     mika.classList.remove("mika-happy");
     void mika.offsetWidth;
     mika.classList.add("mika-happy");
+
     setTimeout(()=>mika.classList.remove("mika-happy"),1800);
   }
 
@@ -521,6 +756,7 @@ function mikaHappy(){
 function startMikaIntroduction(){
   mikaStep=0;
   showMikaMessage();
+
   if($("mikaBubble")) $("mikaBubble").classList.add("show");
 }
 
@@ -550,6 +786,7 @@ function guideSay(message,title="Mika 💗"){
   setText("mikaMessage",message);
 
   if($("mikaBubble")) $("mikaBubble").classList.add("show");
+
   mikaSpeak(message);
 }
 
@@ -564,7 +801,7 @@ function toggleMika(){
 function toggleMikaVoice(){
   voiceEnabled=!voiceEnabled;
 
-  if(!voiceEnabled && "speechSynthesis" in window){
+  if(!voiceEnabled&&"speechSynthesis" in window){
     speechSynthesis.cancel();
   }
 
@@ -580,10 +817,13 @@ function speakMika(message){
   speech.lang="en-US";
   speech.rate=.95;
   speech.pitch=1.25;
+
   speechSynthesis.speak(speech);
 }
 
-/* ================= NAVIGATION ================= */
+/* =====================================================
+   17. NAVIGATION
+===================================================== */
 
 function showSection(sectionId){
   document.querySelectorAll(".game-section").forEach(section=>{
@@ -610,7 +850,9 @@ function showSection(sectionId){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-/* ================= RESTAURANT ================= */
+/* =====================================================
+   18. RESTAURANT
+===================================================== */
 
 function openRestaurant(){
   if(restaurantOpen){
@@ -621,6 +863,7 @@ function openRestaurant(){
   restaurantOpen=true;
 
   const button=$("openRestaurantBtn");
+
   if(button){
     button.textContent="Restaurant Open ✓";
     button.disabled=true;
@@ -649,6 +892,7 @@ function startNextOrder(){
     setText("orderName","Kitchen needs restocking!");
     setText("orderDescription","Visit your inventory and buy ingredients.");
     setText("customerMood","📦 Out of stock");
+
     showToast("Restock your ingredients to continue!");
     renderInventory();
     return;
@@ -669,6 +913,7 @@ function startNextOrder(){
   setText("orderFeedback","");
 
   const image=$("orderImage");
+
   if(image){
     image.src=recipe.image;
     image.alt=recipe.name;
@@ -681,6 +926,7 @@ function startNextOrder(){
 
   setText("cookingSteps","Choose the ingredients for this recipe.");
   setText("cookingContent","");
+
   updateCustomerArea();
   renderIngredients();
   renderSelectedIngredients();
@@ -693,6 +939,7 @@ function startNextOrder(){
 
     if(orderTime<=0){
       clearInterval(orderTimerInterval);
+
       setText("customerMood","😢 Customer left");
       setText("orderFeedback","The customer ran out of patience.");
 
@@ -725,7 +972,9 @@ function updateCustomerArea(){
   `;
 }
 
-/* ================= INGREDIENTS ================= */
+/* =====================================================
+   19. INGREDIENT SELECTION
+===================================================== */
 
 function renderIngredients(){
   const grid=$("ingredientGrid");
@@ -739,10 +988,7 @@ function renderIngredients(){
 
     card.className="ingredient-card"+(selected?" selected":"");
 
-    const image=document.createElement("div");
-    image.className="ingredient-emoji";
-    image.textContent=ingredient.emoji;
-
+    const image=createElement("div","ingredient-emoji",ingredient.emoji);
     const name=createElement("strong","",ingredient.name);
     const stock=createElement("small","",`Stock: ${ingredient.stock}`);
     const instruction=createElement("small","",selected?"Selected ✓":"Tap to select");
@@ -761,6 +1007,7 @@ function toggleIngredient(id){
   if(cookingReady||!currentOrder) return;
 
   const ingredient=ingredients.find(item=>item.id===id);
+
   if(!ingredient||ingredient.stock<=0){
     showToast("This ingredient is out of stock!");
     return;
@@ -796,11 +1043,14 @@ function renderSelectedIngredients(){
     const chip=document.createElement("span");
     chip.className="selected-chip";
     chip.textContent=ingredient.emoji+" "+ingredient.name;
+
     area.appendChild(chip);
   });
 }
 
-/* ================= COOKING ================= */
+/* =====================================================
+   20. COOKING
+===================================================== */
 
 function prepareMeal(){
   if(!currentOrder||cookingReady) return;
@@ -819,6 +1069,7 @@ function prepareMeal(){
     setText("cookingSteps","Not quite right! Check the recipe.");
     setText("cookingContent","You need the correct ingredients.");
     setText("orderFeedback","Some ingredients are missing or incorrect.");
+
     guideSay("Oops! Check the recipe again. Tap ingredients to select or remove them.");
     return;
   }
@@ -829,10 +1080,13 @@ function prepareMeal(){
 
   setText("cookingSteps","Step 1: Ingredients collected ✓");
   setText("cookingContent","Step 2: Mixing and cooking...");
+
   guideSay("Perfect! Your meal is cooking. Great job!");
 
+  const orderBeingCooked=currentOrder;
+
   setTimeout(()=>{
-    if(!currentOrder||currentOrder.completed) return;
+    if(currentOrder!==orderBeingCooked||currentOrder.completed) return;
 
     setText("cookingSteps","Step 3: Your dish is ready! ✓");
     setText("cookingContent","Beautifully prepared! Now serve your customer.");
@@ -841,7 +1095,9 @@ function prepareMeal(){
   },1800);
 }
 
-/* ================= SERVING ================= */
+/* =====================================================
+   21. SERVING
+===================================================== */
 
 function serveMeal(){
   if(!currentOrder||!cookingReady||currentOrder.completed) return;
@@ -866,8 +1122,8 @@ function serveMeal(){
   });
 
   const speedBonus=orderTime>=40?15:orderTime>=20?8:0;
-  const reward=recipe.reward+speedBonus;
   const healthyBonus=recipe.health>=90?15:recipe.health>=80?10:0;
+  const reward=recipe.reward+speedBonus;
 
   player.completedOrders++;
   player.happyCustomers++;
@@ -894,6 +1150,7 @@ function serveMeal(){
   addOrderHistory(recipe.name,reward);
 
   showToast(`Order completed! +${reward} coins and +${35+healthyBonus} XP`);
+
   mikaHappy();
   mikaDance();
 
@@ -905,13 +1162,12 @@ function serveMeal(){
   checkAchievements();
   updatePlayerDisplay();
   renderInventory();
+  renderIngredients();
 
   setTimeout(()=>{
     if(restaurantOpen) startNextOrder();
   },3500);
 }
-
-/* ================= ORDER HISTORY ================= */
 
 function addOrderHistory(name,reward){
   const history=$("orderHistory");
@@ -919,10 +1175,13 @@ function addOrderHistory(name,reward){
 
   const item=document.createElement("p");
   item.textContent=`✓ ${name} — ${reward} coins earned`;
+
   history.prepend(item);
 }
 
-/* ================= RECIPE BOOK ================= */
+/* =====================================================
+   22. RECIPE BOOK
+===================================================== */
 
 function renderRecipes(){
   const grid=$("recipeGrid");
@@ -936,9 +1195,7 @@ function renderRecipes(){
 
     card.innerHTML=`
       <img src="${recipe.image}" alt="${recipe.name}" loading="lazy">
-
       <h3>${recipe.name}</h3>
-
       <p>${recipe.description}</p>
 
       <div class="recipe-nutrition">
@@ -949,7 +1206,7 @@ function renderRecipes(){
       </div>
 
       <p>🪙 Reward: ${recipe.reward} coins</p>
-
+      <span class="healthy-label">🥑 Health Score: ${recipe.health}/100</span>
       <button type="button">View ingredients</button>
     `;
 
@@ -971,7 +1228,9 @@ function renderRecipes(){
   });
 }
 
-/* ================= INVENTORY ================= */
+/* =====================================================
+   23. INVENTORY
+===================================================== */
 
 function renderInventory(){
   const grid=$("inventoryGrid");
@@ -990,6 +1249,7 @@ function renderInventory(){
     const shelf=createElement("small","",`Shelf life: ${item.shelfLife} days`);
 
     const button=createElement("button","eco-button pink","Restock +5");
+
     button.type="button";
     button.addEventListener("click",()=>restockIngredient(item.id));
 
@@ -1013,15 +1273,19 @@ function restockIngredient(id){
   item.stock+=5;
 
   showToast(`${item.name} restocked! +5 📦`);
+
   updatePlayerDisplay();
   renderInventory();
   renderIngredients();
 }
 
-/* ================= FOOD RESCUE ================= */
+/* =====================================================
+   24. FOOD RESCUE
+===================================================== */
 
 function rescueIngredient(id){
   const item=ingredients.find(i=>i.id===id);
+
   if(!item||item.stock<=0){
     showToast("No available ingredient to rescue.");
     return;
@@ -1032,70 +1296,16 @@ function rescueIngredient(id){
   player.healthyPoints+=5;
 
   updateMissionProgress(5,1);
-
   addXP(10);
 
   showToast(`${item.name} rescued! +10 XP ♻️`);
+
   guideSay(`Great job! You saved ${item.name} from being wasted. Every ingredient matters!`);
 
   renderInventory();
-  renderSustainability();
+  renderIngredients();
   checkAchievements();
   updatePlayerDisplay();
-}
-
-function renderSustainability(){
-  const stats=$("freshopiaStats");
-  if(stats){
-    stats.innerHTML=`
-      <div class="eco-stat"><strong>${player.healthyPoints}</strong><small>🥑 Healthy Points</small></div>
-      <div class="eco-stat"><strong>${player.rescuedFood}</strong><small>♻️ Ingredients Rescued</small></div>
-      <div class="eco-stat"><strong>${player.foodWaste}</strong><small>🗑️ Food Waste</small></div>
-      <div class="eco-stat"><strong>${player.perfectMeals}</strong><small>🌱 Healthy Meals</small></div>
-    `;
-  }
-
-  const healthy=$("healthyStats");
-  if(healthy){
-    healthy.innerHTML=`
-      <p>Healthy meals prepared: <strong>${player.perfectMeals}</strong></p>
-      <p>Total healthy points: <strong>${player.healthyPoints}</strong></p>
-      <div class="eco-progress"><span style="width:${Math.min(100,player.healthyPoints/5)}%"></span></div>
-      <small>Reach 500 points to become a Healthy Kitchen Master!</small>
-    `;
-  }
-
-  const rescue=$("foodRescueArea");
-  if(rescue){
-    rescue.innerHTML=`
-      <p>Rescue suitable ingredients instead of wasting them.</p>
-      <button class="eco-button" onclick="rescueRandomIngredient()">Rescue an Ingredient ♻️</button>
-      <p>Ingredients rescued: <strong>${player.rescuedFood}</strong></p>
-    `;
-  }
-
-  const challenges=$("ecoChallenges");
-  if(challenges){
-    challenges.innerHTML=`
-      <div class="eco-challenge">
-        <strong>🥑 Healthy Chef Challenge</strong>
-        <p>Prepare 5 meals with a health score of 80 or higher.</p>
-        <small>Progress: ${Math.min(player.perfectMeals,5)} / 5</small>
-      </div>
-      <div class="eco-challenge">
-        <strong>♻️ Food Rescue Challenge</strong>
-        <p>Rescue 10 available ingredients.</p>
-        <small>Progress: ${Math.min(player.rescuedFood,10)} / 10</small>
-      </div>
-      <div class="eco-challenge">
-        <strong>🌍 Sustainable Kitchen</strong>
-        <p>Complete 10 orders and keep your food waste low.</p>
-        <small>Progress: ${Math.min(player.completedOrders,10)} / 10</small>
-      </div>
-    `;
-  }
-
-  renderInventory();
 }
 
 function rescueRandomIngredient(){
@@ -1110,7 +1320,53 @@ function rescueRandomIngredient(){
   rescueIngredient(item.id);
 }
 
-/* ================= MISSIONS ================= */
+/* =====================================================
+   25. SUSTAINABILITY DISPLAY
+===================================================== */
+
+function renderSustainability(){
+  const stats=$("freshopiaStats");
+
+  if(stats){
+    stats.innerHTML=`
+      <div class="eco-stat"><strong>${player.healthyPoints}</strong><small>🥑 Healthy Points</small></div>
+      <div class="eco-stat"><strong>${player.rescuedFood}</strong><small>♻️ Ingredients Rescued</small></div>
+      <div class="eco-stat"><strong>${player.foodWaste}</strong><small>🗑️ Food Waste</small></div>
+      <div class="eco-stat"><strong>${player.perfectMeals}</strong><small>🌱 Healthy Meals</small></div>
+    `;
+  }
+
+  const healthy=$("healthyStats");
+
+  if(healthy){
+    healthy.innerHTML=`
+      <p>Healthy meals prepared: <strong>${player.perfectMeals}</strong></p>
+      <p>Total healthy points: <strong>${player.healthyPoints}</strong></p>
+      <div class="eco-progress">
+        <span style="width:${Math.min(100,player.healthyPoints/5)}%"></span>
+      </div>
+      <small>Reach 500 points to become a Healthy Kitchen Master!</small>
+    `;
+  }
+
+  const rescue=$("foodRescueArea");
+
+  if(rescue){
+    rescue.innerHTML=`
+      <p>Rescue available ingredients instead of wasting them.</p>
+      <button class="eco-button" onclick="rescueRandomIngredient()">
+        Rescue an Ingredient ♻️
+      </button>
+      <p>Ingredients rescued: <strong>${player.rescuedFood}</strong></p>
+    `;
+  }
+
+  renderInventory();
+}
+
+/* =====================================================
+   26. MISSIONS
+===================================================== */
 
 function renderMissions(){
   const list=$("missionList");
@@ -1140,10 +1396,15 @@ function updateMissionProgress(id,amount){
   if(!mission) return;
 
   const wasCompleted=mission.progress>=mission.target;
-  mission.progress=Math.min(mission.target,mission.progress+amount);
+
+  mission.progress=Math.min(
+    mission.target,
+    mission.progress+amount
+  );
 
   if(!wasCompleted&&mission.progress>=mission.target){
     player.coins+=mission.reward;
+
     showToast(`Mission completed! +${mission.reward} coins 🎯`);
     updatePlayerDisplay();
   }
@@ -1152,7 +1413,9 @@ function updateMissionProgress(id,amount){
   savePlayer();
 }
 
-/* ================= ACHIEVEMENTS ================= */
+/* =====================================================
+   27. ACHIEVEMENTS
+===================================================== */
 
 function renderAchievements(){
   const list=$("achievementList");
@@ -1184,37 +1447,30 @@ function checkAchievements(){
   const checks=[
     player.completedOrders>=1,
     player.completedOrders>=5,
-    player.level>=3,
-    player.healthyPoints>=200,
-    player.rescuedFood>=5,
-    player.rescuedFood>=10
+    player.level>=3
   ];
 
   achievements.forEach((achievement,index)=>{
     if(checks[index]&&!achievement.unlocked){
       achievement.unlocked=true;
       showToast(`Achievement unlocked: ${achievement.title} 🏆`);
-      player.xp+=10;
     }
   });
 
-  while(player.xp>=player.level*100){
-    player.xp-=player.level*100;
-    player.level++;
-    showLevelUp();
-  }
-
   renderAchievements();
-  updatePlayerDisplay();
+  savePlayer();
 }
 
-/* ================= FOOD QUIZ ================= */
+/* =====================================================
+   28. FOOD QUIZ
+===================================================== */
 
 function renderPuzzle(){
   const area=$("puzzleGame");
   if(!area) return;
 
   const question=questions[Math.floor(Math.random()*questions.length)];
+
   currentPuzzleAnswer=question.answer;
   currentPuzzleCompleted=false;
 
@@ -1230,9 +1486,12 @@ function renderPuzzle(){
 
   question.options.forEach(option=>{
     const button=document.createElement("button");
+
     button.textContent=option;
     button.type="button";
+
     button.addEventListener("click",()=>answerPuzzle(option));
+
     $("puzzleOptions").appendChild(button);
   });
 
@@ -1241,18 +1500,24 @@ function renderPuzzle(){
 
 function answerPuzzle(answer){
   const feedback=$("puzzleFeedback");
+
   if(!feedback||currentPuzzleCompleted) return;
 
   if(answer===currentPuzzleAnswer){
     currentPuzzleCompleted=true;
-    feedback.textContent="Correct! "+$("puzzleGame").dataset.explanation+" +10 XP 🎉";
+
+    feedback.textContent=
+      "Correct! "+$("puzzleGame").dataset.explanation+" +10 XP 🎉";
+
     addXP(10);
   }else{
     feedback.textContent="Not quite! Try again. 💗";
   }
 }
 
-/* ================= CHARACTERS ================= */
+/* =====================================================
+   29. CHARACTERS
+===================================================== */
 
 function renderCharacters(){
   const grid=$("characterGrid");
@@ -1274,14 +1539,15 @@ function renderCharacters(){
 
     if(character.image){
       const image=document.createElement("img");
+
       image.src=character.image;
       image.alt=character.name;
       image.loading="lazy";
       image.onerror=function(){this.style.display="none";};
+
       card.appendChild(image);
     }else{
-      const avatar=createElement("div","character-emoji","👩🏻‍🍳");
-      card.appendChild(avatar);
+      card.appendChild(createElement("div","character-emoji","👩🏻‍🍳"));
     }
 
     card.append(
@@ -1293,161 +1559,22 @@ function renderCharacters(){
   });
 }
 
-/* ================= TOAST MESSAGE ================= */
+/* =====================================================
+   30. ZERO WASTE KITCHEN PANEL
+===================================================== */
 
-function showToast(message){
-  const toast=$("toast");
-  if(!toast){
-    console.log(message);
-    return;
-  }
+function createEcoKitchenPanel(){
+  if($("zeroWastePanel")) return;
 
-  toast.textContent=message;
-  toast.classList.add("show");
+  const recipeGrid=$("recipeGrid");
+  if(!recipeGrid||!recipeGrid.parentElement) return;
 
-  clearTimeout(showToast.timeout);
-  showToast.timeout=setTimeout(()=>toast.classList.remove("show"),2600);
-}
+  const panel=document.createElement("section");
 
-/* ================= BUTTON ANIMATIONS ================= */
+  panel.id="zeroWastePanel";
+  panel.className="zero-waste-panel";
 
-document.addEventListener("click",event=>{
-  const button=event.target.closest("button");
-  if(!button) return;
-
-  if(button.textContent.trim().toLowerCase().includes("next")){
-    mikaWave();
-  }
-});
-
-window.addEventListener("load",()=>{
-  mikaWave();
-});
-/* ==========================================
-   FRESHOPIA - ZERO WASTE KITCHEN
-========================================== */
-
-const ecoKitchen = {
-  rescued: 0,
-  compost: 0,
-  ecoPoints: 0,
-  savedIngredients: [],
-  completedChallenges: [],
-  storageKnowledge: 0
-};
-
-const ecoChallenges = [
-  {
-    id: "rescue3",
-    title: "Save 3 Ingredients",
-    description: "Rescue 3 ingredients from being wasted.",
-    target: 3,
-    reward: 30
-  },
-  {
-    id: "compost2",
-    title: "Green Compost",
-    description: "Create 2 compost portions.",
-    target: 2,
-    reward: 25
-  },
-  {
-    id: "leftover1",
-    title: "Creative Chef",
-    description: "Prepare a leftover meal.",
-    target: 1,
-    reward: 40
-  },
-  {
-    id: "storage2",
-    title: "Smart Storage",
-    description: "Learn 2 food storage tips.",
-    target: 2,
-    reward: 20
-  }
-];
-
-const ecoProgress = {
-  rescue3: 0,
-  compost2: 0,
-  leftover1: 0,
-  storage2: 0
-};
-
-const storageTips = [
-  {
-    question: "Where should fresh lettuce be stored?",
-    options: ["In the refrigerator", "In direct sunlight", "Next to a heater"],
-    answer: "In the refrigerator",
-    explanation: "Leafy vegetables generally stay fresh longer when refrigerated."
-  },
-  {
-    question: "What is the best way to store dry pasta?",
-    options: ["In a sealed, dry container", "In an open bowl", "In water"],
-    answer: "In a sealed, dry container",
-    explanation: "Keep dry pasta sealed in a cool, dry place."
-  },
-  {
-    question: "How should raw chicken be stored?",
-    options: ["Covered on the bottom shelf of the fridge", "Next to fresh fruit", "At room temperature"],
-    answer: "Covered on the bottom shelf of the fridge",
-    explanation: "Keep raw chicken covered and separate from ready-to-eat foods."
-  },
-  {
-    question: "What should you do with leftovers?",
-    options: ["Refrigerate promptly in covered containers", "Leave them out overnight", "Keep them in sunlight"],
-    answer: "Refrigerate promptly in covered containers",
-    explanation: "Refrigerate leftovers promptly and use them within safe storage times."
-  }
-];
-
-function loadEcoKitchen() {
-  try {
-    const saved = localStorage.getItem("freshopiaEcoKitchen");
-
-    if (saved) {
-      const data = JSON.parse(saved);
-
-      Object.assign(ecoKitchen, data.ecoKitchen || {});
-      Object.assign(ecoProgress, data.ecoProgress || {});
-    }
-  } catch (error) {
-    console.log("Starting a new Eco Kitchen.");
-  }
-}
-
-function saveEcoKitchen() {
-  try {
-    localStorage.setItem("freshopiaEcoKitchen", JSON.stringify({
-      ecoKitchen,
-      ecoProgress
-    }));
-  } catch (error) {
-    console.log("Eco Kitchen save unavailable.");
-  }
-}
-
-function initializeEcoKitchen() {
-  loadEcoKitchen();
-  createEcoKitchenPanel();
-  renderEcoKitchen();
-}
-
-function createEcoKitchenPanel() {
-  if ($("zeroWastePanel")) return;
-
-  const recipeGrid = $("recipeGrid");
-
-  if (!recipeGrid || !recipeGrid.parentElement) {
-    console.log("Recipe section not found.");
-    return;
-  }
-
-  const panel = document.createElement("section");
-  panel.id = "zeroWastePanel";
-  panel.className = "zero-waste-panel";
-
-  panel.innerHTML = `
+  panel.innerHTML=`
     <div class="eco-header">
       <div>
         <span class="eco-label">FRESHOPIA GREEN PROJECT</span>
@@ -1478,7 +1605,7 @@ function createEcoKitchenPanel() {
     <div class="eco-content">
       <div class="eco-box">
         <h3>🥕 Food Rescue Station</h3>
-        <p>Rescue ingredients and use them creatively instead of wasting them.</p>
+        <p>Rescue ingredients and use them creatively.</p>
         <div id="ecoIngredientList"></div>
       </div>
 
@@ -1505,6 +1632,9 @@ function createEcoKitchenPanel() {
         <p>Learn how to store food safely and keep ingredients fresh.</p>
         <div id="ecoStorageQuestion"></div>
         <div id="ecoStorageFeedback"></div>
+        <button id="ecoStorageNext" class="eco-button">
+          Next Storage Question
+        </button>
       </div>
     </div>
 
@@ -1514,264 +1644,208 @@ function createEcoKitchenPanel() {
     </div>
   `;
 
-  const style = document.createElement("style");
-  style.id = "zeroWasteStyles";
+  const style=document.createElement("style");
+  style.id="zeroWasteStyles";
 
-  style.textContent = `
-    .zero-waste-panel {
-      margin: 28px 0;
-      padding: 24px;
-      border-radius: 24px;
-      background: linear-gradient(145deg,#f0faed,#fff7fa);
-      border: 1px solid #d8ebd3;
-      color: #45634a;
+  style.textContent=`
+    .zero-waste-panel{
+      margin:28px 0;
+      padding:24px;
+      border-radius:24px;
+      background:linear-gradient(145deg,#f0faed,#fff7fa);
+      border:1px solid #d8ebd3;
+      color:#45634a;
     }
 
-    .eco-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
+    .eco-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
     }
 
-    .eco-label {
-      font-size: 11px;
-      letter-spacing: 2px;
-      font-weight: bold;
-      color: #82a77a;
+    .eco-label{
+      font-size:11px;
+      letter-spacing:2px;
+      font-weight:bold;
+      color:#82a77a;
     }
 
-    .eco-header h2 {
-      margin: 8px 0;
-      color: #547b59;
+    .eco-header h2{margin:8px 0;color:#547b59}
+    .eco-header p,.eco-box p{color:#718475;line-height:1.5}
+    .eco-leaf{font-size:48px}
+
+    .eco-content{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:15px;
     }
 
-    .eco-header p, .eco-box p {
-      color: #718475;
-      line-height: 1.5;
+    .eco-box{
+      background:rgba(255,255,255,.92);
+      border:1px solid #e0eedc;
+      padding:17px;
+      border-radius:18px;
+      margin-bottom:15px;
+      min-width:0;
     }
 
-    .eco-leaf {
-      font-size: 48px;
+    .eco-box h3{color:#587c5d;margin-top:0}
+
+    .eco-ingredient{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      padding:9px 0;
+      border-bottom:1px solid #edf3eb;
     }
 
-    .eco-stats {
-      display: grid;
-      grid-template-columns: repeat(3,minmax(0,1fr));
-      gap: 12px;
-      margin: 22px 0;
+    .eco-ingredient button,.eco-option{
+      border:1px solid #dcebd8;
+      background:#e4f2df;
+      color:#507b55;
+      border-radius:10px;
+      padding:8px 10px;
+      cursor:pointer;
     }
 
-    .eco-stat {
-      text-align: center;
-      background: white;
-      padding: 15px 8px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px #547b5912;
+    .eco-button{
+      width:100%;
+      border:0;
+      border-radius:12px;
+      padding:12px;
+      background:linear-gradient(135deg,#8ebd86,#b8dcb1);
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+      margin-top:10px;
     }
 
-    .eco-stat span {
-      display: block;
-      font-size: 23px;
+    .eco-button:disabled{opacity:.5;cursor:not-allowed}
+    .eco-compost-art{font-size:30px;text-align:center;padding:12px}
+
+    .eco-option{
+      display:block;
+      width:100%;
+      text-align:left;
+      background:#f8fcf6;
+      margin:7px 0;
     }
 
-    .eco-stat strong {
-      display: block;
-      font-size: 22px;
-      margin: 5px;
-      color: #5d9365;
+    .eco-challenge{
+      padding:12px 0;
+      border-bottom:1px solid #e6eee3;
     }
 
-    .eco-stat small {
-      color: #849285;
+    .eco-challenge strong{color:#527b58}
+
+    .eco-progress{
+      height:8px;
+      background:#e7eee4;
+      border-radius:10px;
+      overflow:hidden;
+      margin-top:8px;
     }
 
-    .eco-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-      gap: 15px;
+    .eco-progress span{
+      display:block;
+      height:100%;
+      background:#91c48b;
+      border-radius:10px;
     }
 
-    .eco-box {
-      background: rgba(255,255,255,.92);
-      border: 1px solid #e0eedc;
-      padding: 17px;
-      border-radius: 18px;
-      margin-bottom: 15px;
-    }
-
-    .eco-box h3 {
-      color: #587c5d;
-      margin-top: 0;
-    }
-
-    .eco-ingredient {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 0;
-      border-bottom: 1px solid #edf3eb;
-    }
-
-    .eco-ingredient button {
-      border: 0;
-      background: #e4f2df;
-      color: #507b55;
-      border-radius: 10px;
-      padding: 8px 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .eco-button {
-      width: 100%;
-      border: 0;
-      border-radius: 12px;
-      padding: 12px;
-      background: linear-gradient(135deg,#8ebd86,#b8dcb1);
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    .eco-button:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-    }
-
-    .eco-compost-art {
-      font-size: 30px;
-      text-align: center;
-      padding: 12px;
-    }
-
-    .eco-option {
-      display: block;
-      width: 100%;
-      text-align: left;
-      border: 1px solid #dcebd8;
-      border-radius: 10px;
-      background: #f8fcf6;
-      color: #527457;
-      padding: 9px;
-      margin: 7px 0;
-      cursor: pointer;
-    }
-
-    .eco-challenge {
-      padding: 12px 0;
-      border-bottom: 1px solid #e6eee3;
-    }
-
-    .eco-challenge strong {
-      color: #527b58;
-    }
-
-    .eco-progress {
-      height: 8px;
-      background: #e7eee4;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-top: 8px;
-    }
-
-    .eco-progress span {
-      display: block;
-      height: 100%;
-      background: #91c48b;
-      border-radius: 10px;
-    }
-
-    @media(max-width:480px) {
-      .zero-waste-panel {
-        padding: 15px;
-      }
-      .eco-stats {
-        gap: 7px;
-      }
+    @media(max-width:480px){
+      .zero-waste-panel{padding:15px}
     }
   `;
 
   document.head.appendChild(style);
-  recipeGrid.parentElement.insertBefore(panel, recipeGrid);
-  
-  $("ecoCompostButton").addEventListener("click", createCompost);
-  $("ecoLeftoverButton").addEventListener("click", createLeftoverMeal);
+  recipeGrid.parentElement.insertBefore(panel,recipeGrid);
+
+  $("ecoCompostButton").addEventListener("click",createCompost);
+  $("ecoLeftoverButton").addEventListener("click",createLeftoverMeal);
+  $("ecoStorageNext").addEventListener("click",renderStorageQuestion);
 }
 
-function renderEcoKitchen() {
-  if (!$("zeroWastePanel")) return;
+/* =====================================================
+   31. ZERO WASTE RENDERING
+===================================================== */
 
-  setText("ecoRescued", ecoKitchen.rescued);
-  setText("ecoCompost", ecoKitchen.compost);
-  setText("ecoPoints", ecoKitchen.ecoPoints);
+function renderEcoKitchen(){
+  if(!$("zeroWastePanel")) return;
+
+  setText("ecoRescued",ecoKitchen.rescued);
+  setText("ecoCompost",ecoKitchen.compost);
+  setText("ecoPoints",ecoKitchen.ecoPoints);
 
   renderEcoIngredients();
   renderEcoLeftover();
   renderEcoChallenges();
 
-  if (!$("ecoStorageQuestion").innerHTML.trim()) {
+  if(!$("ecoStorageQuestion").innerHTML.trim()){
     renderStorageQuestion();
   }
 
-  const leftoverButton = $("ecoLeftoverButton");
+  const button=$("ecoLeftoverButton");
 
-  if (leftoverButton) {
-    leftoverButton.disabled = ecoKitchen.savedIngredients.length < 2;
+  if(button){
+    button.disabled=ecoKitchen.savedIngredients.length<2;
   }
 
   saveEcoKitchen();
 }
 
-function renderEcoIngredients() {
-  const area = $("ecoIngredientList");
-  if (!area) return;
+function renderEcoIngredients(){
+  const area=$("ecoIngredientList");
+  if(!area) return;
 
-  area.innerHTML = "";
+  area.innerHTML="";
 
-  ingredients.forEach((ingredient, index) => {
-    const alreadySaved = ecoKitchen.savedIngredients.includes(ingredient.id);
-    const alreadyRescued = ecoKitchen.rescuedIngredients?.includes(ingredient.id);
+  ingredients.forEach(ingredient=>{
+    const alreadySaved=ecoKitchen.savedIngredients.includes(ingredient.id);
+    const alreadyRescued=ecoKitchen.rescuedIngredients.includes(ingredient.id);
 
-    const row = document.createElement("div");
-    row.className = "eco-ingredient";
+    const row=document.createElement("div");
+    row.className="eco-ingredient";
 
-    const name = document.createElement("span");
-    name.textContent = `${["🥬","🥕","🍅","🥔","🌿"][index % 5]} ${ingredient.name}`;
+    const name=document.createElement("span");
+    name.textContent=ingredient.emoji+" "+ingredient.name;
 
-    const button = document.createElement("button");
+    const button=document.createElement("button");
 
-    if (alreadySaved) {
-      button.textContent = "Saved ✓";
-      button.disabled = true;
-    } else if (alreadyRescued) {
-      button.textContent = "Used ✓";
-      button.disabled = true;
-    } else {
-      button.textContent = "Rescue +";
-      button.addEventListener("click", () => rescueEcoIngredient(ingredient.id));
+    if(alreadySaved){
+      button.textContent="Saved ✓";
+      button.disabled=true;
+    }else if(alreadyRescued){
+      button.textContent="Used ✓";
+      button.disabled=true;
+    }else{
+      button.textContent="Rescue +";
+      button.addEventListener("click",()=>rescueEcoIngredient(ingredient.id));
     }
 
-    row.appendChild(name);
-    row.appendChild(button);
+    row.append(name,button);
     area.appendChild(row);
   });
 }
 
-function rescueEcoIngredient(id) {
-  if (!ecoKitchen.rescuedIngredients) {
-    ecoKitchen.rescuedIngredients = [];
+function rescueEcoIngredient(id){
+  const ingredient=ingredients.find(item=>item.id===id);
+  if(!ingredient) return;
+
+  if(ingredient.stock<=0){
+    showToast("No available stock to rescue!");
+    return;
   }
 
-  if (ecoKitchen.rescuedIngredients.includes(id)) return;
+  if(ecoKitchen.rescuedIngredients.includes(id)) return;
 
   ecoKitchen.rescuedIngredients.push(id);
   ecoKitchen.savedIngredients.push(id);
   ecoKitchen.rescued++;
-  ecoKitchen.ecoPoints += 10;
+  ecoKitchen.ecoPoints+=10;
 
   ecoProgress.rescue3++;
 
@@ -1781,196 +1855,186 @@ function rescueEcoIngredient(id) {
   renderEcoKitchen();
 }
 
-function renderEcoLeftover() {
-  const area = $("ecoLeftoverInfo");
-  if (!area) return;
+function renderEcoLeftover(){
+  const area=$("ecoLeftoverInfo");
+  if(!area) return;
 
-  const savedNames = ecoKitchen.savedIngredients
-    .map(id => ingredients.find(item => item.id === id)?.name)
+  const names=ecoKitchen.savedIngredients
+    .map(id=>ingredients.find(item=>item.id===id)?.name)
     .filter(Boolean);
 
-  area.textContent = savedNames.length
-    ? "Available ingredients: " + savedNames.join(", ")
-    : "Rescue at least 2 ingredients to create a meal.";
+  area.textContent=names.length
+    ?"Available ingredients: "+names.join(", ")
+    :"Rescue at least 2 ingredients to create a meal.";
 }
 
-function createLeftoverMeal() {
-  if (ecoKitchen.savedIngredients.length < 2) {
+function createLeftoverMeal(){
+  if(ecoKitchen.savedIngredients.length<2){
     showToast("Rescue at least 2 ingredients first!");
     return;
   }
 
-  const used = ecoKitchen.savedIngredients.splice(0, 2);
+  const used=ecoKitchen.savedIngredients.splice(0,2);
 
-  const names = used.map(id =>
-    ingredients.find(item => item.id === id)?.name
+  const names=used.map(id=>
+    ingredients.find(item=>item.id===id)?.name
   ).filter(Boolean);
 
-  ecoKitchen.ecoPoints += 25;
+  ecoKitchen.ecoPoints+=25;
   ecoProgress.leftover1++;
 
-  player.coins += 15;
-  player.xp += 10;
+  player.coins+=15;
+  player.xp+=10;
 
   updatePlayerDisplay();
 
-  showToast("Creative leftover meal: " + names.join(" + ") + " 🍲");
+  showToast("Creative leftover meal: "+names.join(" + ")+" 🍲");
 
   checkEcoChallenges();
   renderEcoKitchen();
 }
 
-function createCompost() {
+function createCompost(){
   ecoKitchen.compost++;
-  ecoKitchen.ecoPoints += 10;
+  ecoKitchen.ecoPoints+=10;
   ecoProgress.compost2++;
 
   showToast("Vegetable scraps turned into compost! +10 Eco Points 🌿");
 
   checkEcoChallenges();
   renderEcoKitchen();
+  renderGarden();
 }
 
-function renderStorageQuestion() {
-  const area = $("ecoStorageQuestion");
-  if (!area) return;
+/* =====================================================
+   32. STORAGE SCHOOL
+===================================================== */
 
-  const question = storageTips[
-    Math.floor(Math.random() * storageTips.length)
+function renderStorageQuestion(){
+  const area=$("ecoStorageQuestion");
+  if(!area) return;
+
+  const question=storageTips[
+    Math.floor(Math.random()*storageTips.length)
   ];
 
-  area.innerHTML = `
+  $("ecoStorageFeedback").textContent="";
+
+  area.innerHTML=`
     <p><strong>${question.question}</strong></p>
     <div id="ecoStorageOptions"></div>
   `;
 
-  question.options.forEach(option => {
-    const button = document.createElement("button");
-    button.className = "eco-option";
-    button.textContent = option;
+  question.options.forEach(option=>{
+    const button=document.createElement("button");
 
-    button.addEventListener("click", () => {
-      const feedback = $("ecoStorageFeedback");
+    button.className="eco-option";
+    button.textContent=option;
 
-      if (option === question.answer) {
-        feedback.textContent = "Correct! " + question.explanation;
+    button.addEventListener("click",()=>{
+      const feedback=$("ecoStorageFeedback");
+
+      if(option===question.answer){
+        feedback.textContent="Correct! "+question.explanation;
+
         ecoKitchen.storageKnowledge++;
-        ecoKitchen.ecoPoints += 10;
+        ecoKitchen.ecoPoints+=10;
         ecoProgress.storage2++;
+
         showToast("Smart Storage learned! +10 Eco Points 🧊");
+
         checkEcoChallenges();
-      } else {
-        feedback.textContent = "Not quite! " + question.explanation;
+      }else{
+        feedback.textContent="Not quite! "+question.explanation;
       }
 
-      document.querySelectorAll("#ecoStorageOptions button").forEach(btn => {
-        btn.disabled = true;
+      document.querySelectorAll("#ecoStorageOptions button").forEach(btn=>{
+        btn.disabled=true;
       });
 
       saveEcoKitchen();
-      renderEcoKitchen();
     });
 
     $("ecoStorageOptions").appendChild(button);
   });
 }
 
-function renderEcoChallenges() {
-  const area = $("ecoChallengeList");
-  if (!area) return;
+/* =====================================================
+   33. ECO CHALLENGES
+===================================================== */
 
-  area.innerHTML = "";
+function renderEcoChallenges(){
+  const area=$("ecoChallengeList");
+  if(!area) return;
 
-  ecoChallenges.forEach(challenge => {
-    const progress = Math.min(
-      ecoProgress[challenge.id] || 0,
+  area.innerHTML="";
+
+  ecoChallenges.forEach(challenge=>{
+    const progress=Math.min(
+      ecoProgress[challenge.id]||0,
       challenge.target
     );
 
-    const completed = ecoKitchen.completedChallenges.includes(challenge.id);
+    const completed=ecoKitchen.completedChallenges.includes(challenge.id);
 
-    const card = document.createElement("div");
-    card.className = "eco-challenge";
+    const card=document.createElement("div");
+    card.className="eco-challenge";
 
-    card.innerHTML = `
-      <strong>${completed ? "✅" : "🎯"} ${challenge.title}</strong>
+    card.innerHTML=`
+      <strong>${completed?"✅":"🎯"} ${challenge.title}</strong>
       <p>${challenge.description}</p>
       <small>${progress} / ${challenge.target} · Reward: ${challenge.reward} coins</small>
       <div class="eco-progress">
-        <span style="width:${progress / challenge.target * 100}%"></span>
+        <span style="width:${progress/challenge.target*100}%"></span>
       </div>
-      ${completed ? "<small>Challenge completed!</small>" : ""}
+      ${completed?"<small>Challenge completed!</small>":""}
     `;
 
     area.appendChild(card);
   });
 }
 
-function checkEcoChallenges() {
-  ecoChallenges.forEach(challenge => {
-    const progress = ecoProgress[challenge.id] || 0;
+function checkEcoChallenges(){
+  ecoChallenges.forEach(challenge=>{
+    const progress=ecoProgress[challenge.id]||0;
 
-    if (
-      progress >= challenge.target &&
+    if(
+      progress>=challenge.target&&
       !ecoKitchen.completedChallenges.includes(challenge.id)
-    ) {
+    ){
       ecoKitchen.completedChallenges.push(challenge.id);
-      player.coins += challenge.reward;
-      ecoKitchen.ecoPoints += 15;
+
+      player.coins+=challenge.reward;
+      ecoKitchen.ecoPoints+=15;
 
       showToast(
-        "Eco Challenge completed! +" +
-        challenge.reward +
+        "Eco Challenge completed! +"+
+        challenge.reward+
         " coins 🏆"
       );
-
-      updatePlayerDisplay();
     }
   });
 
-  saveEcoKitchen();
+  savePlayer();
   renderEcoChallenges();
 }
 
-document.addEventListener("DOMContentLoaded", initializeEcoKitchen);
-/* ==========================================
-   FRESHOPIA - ANIME VEGETABLE GARDEN
-========================================== */
+/* =====================================================
+   34. FRESHOPIA GARDEN
+===================================================== */
 
-const gardenCrops = [
-  { id: "carrot", name: "Carrot", emoji: "🥕", reward: 20 },
-  { id: "lettuce", name: "Lettuce", emoji: "🥬", reward: 25 },
-  { id: "tomato", name: "Tomato", emoji: "🍅", reward: 30 }
-];
+function createGardenPanel(){
+  if($("freshopiaGarden")) return;
 
-function initializeFreshopiaGarden() {
-  if (!ecoKitchen.gardenPlots) {
-    ecoKitchen.gardenPlots = [
-      { crop: null, stage: 0 },
-      { crop: null, stage: 0 },
-      { crop: null, stage: 0 }
-    ];
-  }
+  const ecoPanel=$("zeroWastePanel");
+  if(!ecoPanel) return;
 
-  if (!ecoKitchen.gardenHarvests) {
-    ecoKitchen.gardenHarvests = 0;
-  }
+  const garden=document.createElement("section");
 
-  createGardenPanel();
-  renderGarden();
-}
+  garden.id="freshopiaGarden";
+  garden.className="freshopia-garden";
 
-function createGardenPanel() {
-  if ($("freshopiaGarden")) return;
-
-  const ecoPanel = $("zeroWastePanel");
-  if (!ecoPanel) return;
-
-  const garden = document.createElement("section");
-  garden.id = "freshopiaGarden";
-  garden.className = "freshopia-garden";
-
-  garden.innerHTML = `
+  garden.innerHTML=`
     <div class="garden-heading">
       <div>
         <span class="garden-label">FRESHOPIA GARDEN PROJECT</span>
@@ -2009,143 +2073,115 @@ function createGardenPanel() {
     </div>
   `;
 
-  const style = document.createElement("style");
-  style.id = "freshopiaGardenStyles";
+  const style=document.createElement("style");
 
-  style.textContent = `
-    .freshopia-garden {
-      margin-top: 22px;
-      padding: 22px;
-      border-radius: 24px;
-      background: linear-gradient(145deg,#f4fbea,#fff8ed);
-      border: 1px solid #dcebd0;
-      color: #527653;
+  style.id="freshopiaGardenStyles";
+
+  style.textContent=`
+    .freshopia-garden{
+      margin-top:22px;
+      padding:22px;
+      border-radius:24px;
+      background:linear-gradient(145deg,#f4fbea,#fff8ed);
+      border:1px solid #dcebd0;
+      color:#527653;
     }
 
-    .garden-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+    .garden-heading{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
     }
 
-    .garden-label {
-      font-size: 10px;
-      letter-spacing: 2px;
-      font-weight: bold;
-      color: #83a879;
+    .garden-label{
+      font-size:10px;
+      letter-spacing:2px;
+      font-weight:bold;
+      color:#83a879;
     }
 
-    .garden-heading h2 {
-      margin: 8px 0;
-      color: #5c865e;
+    .garden-heading h2{margin:8px 0;color:#5c865e}
+    .garden-heading p,.garden-instruction{color:#758b72;line-height:1.5}
+    .garden-big-icon{font-size:45px}
+
+    .garden-summary{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin:20px 0;
     }
 
-    .garden-heading p,
-    .garden-instruction {
-      color: #758b72;
-      line-height: 1.5;
+    .garden-summary div{
+      text-align:center;
+      background:white;
+      padding:12px 5px;
+      border-radius:15px;
     }
 
-    .garden-big-icon {
-      font-size: 45px;
+    .garden-summary span,.garden-summary strong,.garden-summary small{
+      display:block;
     }
 
-    .garden-summary {
-      display: grid;
-      grid-template-columns: repeat(3,minmax(0,1fr));
-      gap: 10px;
-      margin: 20px 0;
+    .garden-summary span{font-size:22px}
+    .garden-summary strong{margin:5px;font-size:20px;color:#67976a}
+    .garden-summary small{font-size:10px;color:#849584}
+
+    .garden-plots{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+      gap:14px;
     }
 
-    .garden-summary div {
-      text-align: center;
-      background: white;
-      padding: 12px 5px;
-      border-radius: 15px;
+    .garden-plot{
+      background:#fff;
+      border:1px solid #e1edda;
+      border-radius:18px;
+      padding:15px;
+      text-align:center;
     }
 
-    .garden-summary span,
-    .garden-summary strong,
-    .garden-summary small {
-      display: block;
+    .garden-plant{
+      min-height:75px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-size:45px;
     }
 
-    .garden-summary span {
-      font-size: 22px;
+    .garden-plot h3{color:#5c805d;margin:8px 0}
+    .garden-plot p{color:#849384;font-size:12px}
+
+    .garden-plot button{
+      width:100%;
+      margin-top:7px;
+      padding:10px;
+      border:0;
+      border-radius:11px;
+      background:linear-gradient(135deg,#94c88c,#b9dcae);
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
     }
 
-    .garden-summary strong {
-      margin: 5px;
-      font-size: 20px;
-      color: #67976a;
+    .garden-plot select{
+      width:100%;
+      padding:10px;
+      border-radius:10px;
+      border:1px solid #dcebd8;
+      background:white;
+      color:#527653;
     }
 
-    .garden-summary small {
-      font-size: 10px;
-      color: #849584;
+    .garden-footer{
+      text-align:center;
+      margin-top:20px;
+      color:#6b946d;
+      font-weight:bold;
     }
 
-    .garden-plots {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(190px,1fr));
-      gap: 14px;
-    }
-
-    .garden-plot {
-      background: #fff;
-      border: 1px solid #e1edda;
-      border-radius: 18px;
-      padding: 15px;
-      text-align: center;
-    }
-
-    .garden-plant {
-      min-height: 75px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 45px;
-    }
-
-    .garden-plot h3 {
-      color: #5c805d;
-      margin: 8px 0;
-    }
-
-    .garden-plot p {
-      color: #849384;
-      font-size: 12px;
-    }
-
-    .garden-plot button {
-      width: 100%;
-      margin-top: 7px;
-      padding: 10px;
-      border: 0;
-      border-radius: 11px;
-      background: linear-gradient(135deg,#94c88c,#b9dcae);
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .garden-plot button:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-    }
-
-    .garden-footer {
-      text-align: center;
-      margin-top: 20px;
-      color: #6b946d;
-      font-weight: bold;
-    }
-
-    @media(max-width:480px) {
-      .freshopia-garden {
-        padding: 15px;
-      }
+    @media(max-width:480px){
+      .freshopia-garden{padding:15px}
     }
   `;
 
@@ -2153,78 +2189,76 @@ function createGardenPanel() {
   ecoPanel.appendChild(garden);
 }
 
-function renderGarden() {
-  const area = $("gardenPlots");
-  if (!area) return;
+/* =====================================================
+   35. GARDEN RENDER
+===================================================== */
 
-  const plots = ecoKitchen.gardenPlots || [];
+function renderGarden(){
+  const area=$("gardenPlots");
+  if(!area) return;
 
-  const gardenLevel = 1 + Math.floor(
-    (ecoKitchen.gardenHarvests || 0) / 3
+  const plots=ecoKitchen.gardenPlots||[];
+
+  const level=1+Math.floor(
+    (ecoKitchen.gardenHarvests||0)/3
   );
 
-  setText("gardenLevel", gardenLevel);
-  setText("gardenHarvests", ecoKitchen.gardenHarvests || 0);
-  setText("gardenCompost", ecoKitchen.compost || 0);
+  setText("gardenLevel",level);
+  setText("gardenHarvests",ecoKitchen.gardenHarvests||0);
+  setText("gardenCompost",ecoKitchen.compost||0);
 
-  area.innerHTML = "";
+  area.innerHTML="";
 
-  plots.forEach((plot, index) => {
-    const card = document.createElement("div");
-    card.className = "garden-plot";
+  plots.forEach((plot,index)=>{
+    const card=document.createElement("div");
+    card.className="garden-plot";
 
-    if (!plot.crop) {
-      card.innerHTML = `
+    if(!plot.crop){
+      card.innerHTML=`
         <div class="garden-plant">🪴</div>
         <h3>Empty Garden Plot</h3>
         <p>Choose a vegetable to plant.</p>
+
         <select id="gardenCrop${index}">
           <option value="">Choose a seed</option>
-          ${gardenCrops.map(crop =>
+          ${gardenCrops.map(crop=>
             `<option value="${crop.id}">${crop.emoji} ${crop.name}</option>`
           ).join("")}
         </select>
-        <button type="button" data-action="plant">
-          Plant Seed · 1 Compost
-        </button>
+
+        <button type="button">Plant Seed · 1 Compost</button>
       `;
 
-      card.querySelector("button").addEventListener("click", () => {
-        const cropId = card.querySelector("select").value;
-        plantGardenCrop(index, cropId);
+      card.querySelector("button").addEventListener("click",()=>{
+        const cropId=card.querySelector("select").value;
+        plantGardenCrop(index,cropId);
       });
 
-    } else {
-      const crop = gardenCrops.find(item => item.id === plot.crop);
+    }else{
+      const crop=gardenCrops.find(item=>item.id===plot.crop);
+      if(!crop) return;
 
-      const plantIcon = plot.stage === 1
-        ? "🌱"
-        : plot.stage === 2
-          ? crop.emoji
-          : "🌿";
+      const icon=plot.stage===0?"🌱":plot.stage===1?"🌿":crop.emoji;
 
-      const status = plot.stage === 1
-        ? "Your seed is growing!"
-        : plot.stage === 2
-          ? "Ready to harvest!"
-          : "Water your plant!";
+      const status=plot.stage<2
+        ?"Growth: "+plot.stage+"/2"
+        :"Ready to harvest!";
 
-      const buttonText = plot.stage === 2
-        ? "Harvest 🧺"
-        : "Water Plant 💧";
+      const buttonText=plot.stage<2
+        ?"Water Plant 💧"
+        :"Harvest 🧺";
 
-      card.innerHTML = `
-        <div class="garden-plant">${plantIcon}</div>
+      card.innerHTML=`
+        <div class="garden-plant">${icon}</div>
         <h3>${crop.name}</h3>
         <p>${status}</p>
-        <p>Growth: ${plot.stage} / 2</p>
         <button type="button">${buttonText}</button>
       `;
 
-      card.querySelector("button").addEventListener("click", () => {
-        if (plot.stage === 2) {
+      card.querySelector("button").addEventListener("click",()=>{
+        if(plot.stage===2){
           harvestGardenCrop(index);
-        } else {
+        }else{
           waterGardenCrop(index);
         }
       });
@@ -2234,42 +2268,51 @@ function renderGarden() {
   });
 }
 
-function plantGardenCrop(index, cropId) {
-  const crop = gardenCrops.find(item => item.id === cropId);
+/* =====================================================
+   36. PLANTING
+===================================================== */
 
-  if (!crop) {
+function plantGardenCrop(index,cropId){
+  const crop=gardenCrops.find(item=>item.id===cropId);
+
+  if(!crop){
     showToast("Choose a vegetable seed first!");
     return;
   }
 
-  if (ecoKitchen.compost < 1) {
+  if(ecoKitchen.compost<1){
     showToast("You need 1 compost to plant a seed!");
     return;
   }
 
   ecoKitchen.compost--;
-  ecoKitchen.gardenPlots[index] = {
-    crop: cropId,
-    stage: 0
+
+  ecoKitchen.gardenPlots[index]={
+    crop:cropId,
+    stage:0
   };
 
-  showToast(crop.name + " seed planted! 🌱");
+  showToast(crop.name+" seed planted! 🌱");
 
   saveEcoKitchen();
   renderGarden();
   renderEcoKitchen();
 }
 
-function waterGardenCrop(index) {
-  const plot = ecoKitchen.gardenPlots[index];
+/* =====================================================
+   37. WATERING
+===================================================== */
 
-  if (!plot || !plot.crop || plot.stage >= 2) return;
+function waterGardenCrop(index){
+  const plot=ecoKitchen.gardenPlots[index];
+
+  if(!plot||!plot.crop||plot.stage>=2) return;
 
   plot.stage++;
 
-  if (plot.stage === 1) {
+  if(plot.stage===1){
     showToast("Your plant is growing! Water it again. 💧");
-  } else {
+  }else{
     showToast("Your vegetable is ready to harvest! 🌻");
   }
 
@@ -2277,39 +2320,63 @@ function waterGardenCrop(index) {
   renderGarden();
 }
 
-function harvestGardenCrop(index) {
-  const plot = ecoKitchen.gardenPlots[index];
+/* =====================================================
+   38. HARVESTING
+===================================================== */
 
-  if (!plot || !plot.crop || plot.stage < 2) return;
+function harvestGardenCrop(index){
+  const plot=ecoKitchen.gardenPlots[index];
 
-  const crop = gardenCrops.find(item => item.id === plot.crop);
+  if(!plot||!plot.crop||plot.stage<2) return;
 
-  if (!crop) return;
+  const crop=gardenCrops.find(item=>item.id===plot.crop);
+  if(!crop) return;
 
   ecoKitchen.gardenHarvests++;
-  ecoKitchen.ecoPoints += 15;
+  ecoKitchen.ecoPoints+=15;
 
-  player.coins += crop.reward;
-  addXP(15);
+  player.coins+=crop.reward;
+  player.xp+=15;
 
-  showToast(
-    crop.name + " harvested! +" +
-    crop.reward + " coins and 15 Eco Points! 🧺"
-  );
+  while(player.xp>=player.level*100){
+    player.xp-=player.level*100;
+    player.level++;
+    showLevelUp();
+  }
 
-  ecoKitchen.gardenPlots[index] = {
-    crop: null,
-    stage: 0
+  ecoKitchen.compost++;
+
+  ecoKitchen.gardenPlots[index]={
+    crop:null,
+    stage:0
   };
 
+  showToast(
+    crop.name+" harvested! +"+
+    crop.reward+" coins and 15 Eco Points! 🧺"
+  );
+
+  updatePlayerDisplay();
+  checkAchievements();
   saveEcoKitchen();
+
   renderGarden();
   renderEcoKitchen();
 }
 
-/* START GARDEN AFTER ECO KITCHEN */
+/* =====================================================
+   39. BUTTON ANIMATIONS
+===================================================== */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  initializeFreshopiaGarden
-);
+document.addEventListener("click",event=>{
+  const button=event.target.closest("button");
+  if(!button) return;
+
+  if(button.textContent.trim().toLowerCase().includes("next")){
+    mikaWave();
+  }
+});
+
+window.addEventListener("load",()=>{
+  mikaWave();
+});
