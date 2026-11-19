@@ -916,38 +916,39 @@ function renderRecipes(){
     const card=document.createElement("div");
     card.className="recipe-card";
 
-    const image=document.createElement("img");
-    image.src=recipe.image;
-    image.alt=recipe.name;
-    image.loading="lazy";
-    image.onerror=function(){this.style.visibility="hidden";};
+    card.innerHTML=`
+      <img src="${recipe.image}" alt="${recipe.name}" loading="lazy">
 
-    const title=createElement("h3","",recipe.name);
-    const description=createElement("p","",recipe.description);
-    const category=createElement("span","healthy-label",recipe.category);
-    const nutrition=createElement("div","nutrition-row");
+      <h3>${recipe.name}</h3>
 
-    nutrition.innerHTML=`
-      <span class="nutrition-tag">💪 Protein: ${recipe.protein}g</span>
-      <span class="nutrition-tag">🌾 Fiber: ${recipe.fiber}g</span>
-      <span class="nutrition-tag">🍬 Sugar: ${recipe.sugar}g</span>
-      <span class="nutrition-tag">🥑 Health: ${recipe.health}/100</span>
+      <p>${recipe.description}</p>
+
+      <div class="recipe-nutrition">
+        <span>🔥 ${recipe.nutrition.calories} kcal</span>
+        <span>💪 ${recipe.nutrition.protein}g Protein</span>
+        <span>🍞 ${recipe.nutrition.carbs}g Carbs</span>
+        <span>🌿 ${recipe.nutrition.fiber}g Fiber</span>
+      </div>
+
+      <p>🪙 Reward: ${recipe.reward} coins</p>
+
+      <button type="button">View ingredients</button>
     `;
 
-    const reward=createElement("p","","🪙 Reward: "+recipe.reward+" coins");
-    const button=createElement("button","","View ingredients");
-    button.type="button";
+    const image=card.querySelector("img");
 
-    button.addEventListener("click",()=>{
-      const names=recipe.ingredients.map(id=>{
-        const item=ingredients.find(i=>i.id===id);
-        return item?item.emoji+" "+item.name:"";
-      }).filter(Boolean);
+    image.onerror=function(){
+      this.style.display="none";
+    };
+
+    card.querySelector("button").addEventListener("click",()=>{
+      const names=recipe.ingredients
+        .map(id=>ingredients.find(item=>item.id===id)?.name)
+        .filter(Boolean);
 
       showToast(names.join(" • "));
     });
 
-    card.append(image,title,description,category,nutrition,reward,button);
     grid.appendChild(card);
   });
 }
