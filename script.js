@@ -1323,3 +1323,613 @@ document.addEventListener("click",event=>{
 window.addEventListener("load",()=>{
   mikaWave();
 });
+/* ==========================================
+   FRESHOPIA - ZERO WASTE KITCHEN
+========================================== */
+
+const ecoKitchen = {
+  rescued: 0,
+  compost: 0,
+  ecoPoints: 0,
+  savedIngredients: [],
+  completedChallenges: [],
+  storageKnowledge: 0
+};
+
+const ecoChallenges = [
+  {
+    id: "rescue3",
+    title: "Save 3 Ingredients",
+    description: "Rescue 3 ingredients from being wasted.",
+    target: 3,
+    reward: 30
+  },
+  {
+    id: "compost2",
+    title: "Green Compost",
+    description: "Create 2 compost portions.",
+    target: 2,
+    reward: 25
+  },
+  {
+    id: "leftover1",
+    title: "Creative Chef",
+    description: "Prepare a leftover meal.",
+    target: 1,
+    reward: 40
+  },
+  {
+    id: "storage2",
+    title: "Smart Storage",
+    description: "Learn 2 food storage tips.",
+    target: 2,
+    reward: 20
+  }
+];
+
+const ecoProgress = {
+  rescue3: 0,
+  compost2: 0,
+  leftover1: 0,
+  storage2: 0
+};
+
+const storageTips = [
+  {
+    question: "Where should fresh lettuce be stored?",
+    options: ["In the refrigerator", "In direct sunlight", "Next to a heater"],
+    answer: "In the refrigerator",
+    explanation: "Leafy vegetables generally stay fresh longer when refrigerated."
+  },
+  {
+    question: "What is the best way to store dry pasta?",
+    options: ["In a sealed, dry container", "In an open bowl", "In water"],
+    answer: "In a sealed, dry container",
+    explanation: "Keep dry pasta sealed in a cool, dry place."
+  },
+  {
+    question: "How should raw chicken be stored?",
+    options: ["Covered on the bottom shelf of the fridge", "Next to fresh fruit", "At room temperature"],
+    answer: "Covered on the bottom shelf of the fridge",
+    explanation: "Keep raw chicken covered and separate from ready-to-eat foods."
+  },
+  {
+    question: "What should you do with leftovers?",
+    options: ["Refrigerate promptly in covered containers", "Leave them out overnight", "Keep them in sunlight"],
+    answer: "Refrigerate promptly in covered containers",
+    explanation: "Refrigerate leftovers promptly and use them within safe storage times."
+  }
+];
+
+function loadEcoKitchen() {
+  try {
+    const saved = localStorage.getItem("freshopiaEcoKitchen");
+
+    if (saved) {
+      const data = JSON.parse(saved);
+
+      Object.assign(ecoKitchen, data.ecoKitchen || {});
+      Object.assign(ecoProgress, data.ecoProgress || {});
+    }
+  } catch (error) {
+    console.log("Starting a new Eco Kitchen.");
+  }
+}
+
+function saveEcoKitchen() {
+  try {
+    localStorage.setItem("freshopiaEcoKitchen", JSON.stringify({
+      ecoKitchen,
+      ecoProgress
+    }));
+  } catch (error) {
+    console.log("Eco Kitchen save unavailable.");
+  }
+}
+
+function initializeEcoKitchen() {
+  loadEcoKitchen();
+  createEcoKitchenPanel();
+  renderEcoKitchen();
+}
+
+function createEcoKitchenPanel() {
+  if ($("zeroWastePanel")) return;
+
+  const recipeGrid = $("recipeGrid");
+
+  if (!recipeGrid || !recipeGrid.parentElement) {
+    console.log("Recipe section not found.");
+    return;
+  }
+
+  const panel = document.createElement("section");
+  panel.id = "zeroWastePanel";
+  panel.className = "zero-waste-panel";
+
+  panel.innerHTML = `
+    <div class="eco-header">
+      <div>
+        <span class="eco-label">FRESHOPIA GREEN PROJECT</span>
+        <h2>🌱 Zero Waste Kitchen</h2>
+        <p>Save ingredients, reduce food waste and become an Eco Chef!</p>
+      </div>
+      <div class="eco-leaf">♻️</div>
+    </div>
+
+    <div class="eco-stats">
+      <div class="eco-stat">
+        <span>🥕</span>
+        <strong id="ecoRescued">0</strong>
+        <small>Rescued</small>
+      </div>
+      <div class="eco-stat">
+        <span>🌿</span>
+        <strong id="ecoCompost">0</strong>
+        <small>Compost</small>
+      </div>
+      <div class="eco-stat">
+        <span>⭐</span>
+        <strong id="ecoPoints">0</strong>
+        <small>Eco Points</small>
+      </div>
+    </div>
+
+    <div class="eco-content">
+      <div class="eco-box">
+        <h3>🥕 Food Rescue Station</h3>
+        <p>Rescue ingredients and use them creatively instead of wasting them.</p>
+        <div id="ecoIngredientList"></div>
+      </div>
+
+      <div class="eco-box">
+        <h3>🍲 Leftover Kitchen</h3>
+        <p>Combine two rescued ingredients to create a surprise meal.</p>
+        <div id="ecoLeftoverInfo"></div>
+        <button id="ecoLeftoverButton" class="eco-button">
+          Create Leftover Meal
+        </button>
+      </div>
+
+      <div class="eco-box">
+        <h3>♻️ Compost Bin</h3>
+        <p>Turn suitable vegetable scraps into compost for the garden.</p>
+        <div class="eco-compost-art">🌱 🥬 🍂</div>
+        <button id="ecoCompostButton" class="eco-button">
+          Add Vegetable Scraps
+        </button>
+      </div>
+
+      <div class="eco-box">
+        <h3>🧊 Smart Storage School</h3>
+        <p>Learn how to store food safely and keep ingredients fresh.</p>
+        <div id="ecoStorageQuestion"></div>
+        <div id="ecoStorageFeedback"></div>
+      </div>
+    </div>
+
+    <div class="eco-box eco-challenges">
+      <h3>🏆 Eco Chef Challenges</h3>
+      <div id="ecoChallengeList"></div>
+    </div>
+  `;
+
+  const style = document.createElement("style");
+  style.id = "zeroWasteStyles";
+
+  style.textContent = `
+    .zero-waste-panel {
+      margin: 28px 0;
+      padding: 24px;
+      border-radius: 24px;
+      background: linear-gradient(145deg,#f0faed,#fff7fa);
+      border: 1px solid #d8ebd3;
+      color: #45634a;
+    }
+
+    .eco-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .eco-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      font-weight: bold;
+      color: #82a77a;
+    }
+
+    .eco-header h2 {
+      margin: 8px 0;
+      color: #547b59;
+    }
+
+    .eco-header p, .eco-box p {
+      color: #718475;
+      line-height: 1.5;
+    }
+
+    .eco-leaf {
+      font-size: 48px;
+    }
+
+    .eco-stats {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 12px;
+      margin: 22px 0;
+    }
+
+    .eco-stat {
+      text-align: center;
+      background: white;
+      padding: 15px 8px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px #547b5912;
+    }
+
+    .eco-stat span {
+      display: block;
+      font-size: 23px;
+    }
+
+    .eco-stat strong {
+      display: block;
+      font-size: 22px;
+      margin: 5px;
+      color: #5d9365;
+    }
+
+    .eco-stat small {
+      color: #849285;
+    }
+
+    .eco-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 15px;
+    }
+
+    .eco-box {
+      background: rgba(255,255,255,.92);
+      border: 1px solid #e0eedc;
+      padding: 17px;
+      border-radius: 18px;
+      margin-bottom: 15px;
+    }
+
+    .eco-box h3 {
+      color: #587c5d;
+      margin-top: 0;
+    }
+
+    .eco-ingredient {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 0;
+      border-bottom: 1px solid #edf3eb;
+    }
+
+    .eco-ingredient button {
+      border: 0;
+      background: #e4f2df;
+      color: #507b55;
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .eco-button {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px;
+      background: linear-gradient(135deg,#8ebd86,#b8dcb1);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .eco-button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .eco-compost-art {
+      font-size: 30px;
+      text-align: center;
+      padding: 12px;
+    }
+
+    .eco-option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 1px solid #dcebd8;
+      border-radius: 10px;
+      background: #f8fcf6;
+      color: #527457;
+      padding: 9px;
+      margin: 7px 0;
+      cursor: pointer;
+    }
+
+    .eco-challenge {
+      padding: 12px 0;
+      border-bottom: 1px solid #e6eee3;
+    }
+
+    .eco-challenge strong {
+      color: #527b58;
+    }
+
+    .eco-progress {
+      height: 8px;
+      background: #e7eee4;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .eco-progress span {
+      display: block;
+      height: 100%;
+      background: #91c48b;
+      border-radius: 10px;
+    }
+
+    @media(max-width:480px) {
+      .zero-waste-panel {
+        padding: 15px;
+      }
+      .eco-stats {
+        gap: 7px;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+  recipeGrid.parentElement.insertBefore(panel, recipeGrid);
+  
+  $("ecoCompostButton").addEventListener("click", createCompost);
+  $("ecoLeftoverButton").addEventListener("click", createLeftoverMeal);
+}
+
+function renderEcoKitchen() {
+  if (!$("zeroWastePanel")) return;
+
+  setText("ecoRescued", ecoKitchen.rescued);
+  setText("ecoCompost", ecoKitchen.compost);
+  setText("ecoPoints", ecoKitchen.ecoPoints);
+
+  renderEcoIngredients();
+  renderEcoLeftover();
+  renderEcoChallenges();
+
+  if (!$("ecoStorageQuestion").innerHTML.trim()) {
+    renderStorageQuestion();
+  }
+
+  const leftoverButton = $("ecoLeftoverButton");
+
+  if (leftoverButton) {
+    leftoverButton.disabled = ecoKitchen.savedIngredients.length < 2;
+  }
+
+  saveEcoKitchen();
+}
+
+function renderEcoIngredients() {
+  const area = $("ecoIngredientList");
+  if (!area) return;
+
+  area.innerHTML = "";
+
+  ingredients.forEach((ingredient, index) => {
+    const alreadySaved = ecoKitchen.savedIngredients.includes(ingredient.id);
+    const alreadyRescued = ecoKitchen.rescuedIngredients?.includes(ingredient.id);
+
+    const row = document.createElement("div");
+    row.className = "eco-ingredient";
+
+    const name = document.createElement("span");
+    name.textContent = `${["🥬","🥕","🍅","🥔","🌿"][index % 5]} ${ingredient.name}`;
+
+    const button = document.createElement("button");
+
+    if (alreadySaved) {
+      button.textContent = "Saved ✓";
+      button.disabled = true;
+    } else if (alreadyRescued) {
+      button.textContent = "Used ✓";
+      button.disabled = true;
+    } else {
+      button.textContent = "Rescue +";
+      button.addEventListener("click", () => rescueEcoIngredient(ingredient.id));
+    }
+
+    row.appendChild(name);
+    row.appendChild(button);
+    area.appendChild(row);
+  });
+}
+
+function rescueEcoIngredient(id) {
+  if (!ecoKitchen.rescuedIngredients) {
+    ecoKitchen.rescuedIngredients = [];
+  }
+
+  if (ecoKitchen.rescuedIngredients.includes(id)) return;
+
+  ecoKitchen.rescuedIngredients.push(id);
+  ecoKitchen.savedIngredients.push(id);
+  ecoKitchen.rescued++;
+  ecoKitchen.ecoPoints += 10;
+
+  ecoProgress.rescue3++;
+
+  showToast("Ingredient rescued! +10 Eco Points 🌱");
+
+  checkEcoChallenges();
+  renderEcoKitchen();
+}
+
+function renderEcoLeftover() {
+  const area = $("ecoLeftoverInfo");
+  if (!area) return;
+
+  const savedNames = ecoKitchen.savedIngredients
+    .map(id => ingredients.find(item => item.id === id)?.name)
+    .filter(Boolean);
+
+  area.textContent = savedNames.length
+    ? "Available ingredients: " + savedNames.join(", ")
+    : "Rescue at least 2 ingredients to create a meal.";
+}
+
+function createLeftoverMeal() {
+  if (ecoKitchen.savedIngredients.length < 2) {
+    showToast("Rescue at least 2 ingredients first!");
+    return;
+  }
+
+  const used = ecoKitchen.savedIngredients.splice(0, 2);
+
+  const names = used.map(id =>
+    ingredients.find(item => item.id === id)?.name
+  ).filter(Boolean);
+
+  ecoKitchen.ecoPoints += 25;
+  ecoProgress.leftover1++;
+
+  player.coins += 15;
+  player.xp += 10;
+
+  updatePlayerDisplay();
+
+  showToast("Creative leftover meal: " + names.join(" + ") + " 🍲");
+
+  checkEcoChallenges();
+  renderEcoKitchen();
+}
+
+function createCompost() {
+  ecoKitchen.compost++;
+  ecoKitchen.ecoPoints += 10;
+  ecoProgress.compost2++;
+
+  showToast("Vegetable scraps turned into compost! +10 Eco Points 🌿");
+
+  checkEcoChallenges();
+  renderEcoKitchen();
+}
+
+function renderStorageQuestion() {
+  const area = $("ecoStorageQuestion");
+  if (!area) return;
+
+  const question = storageTips[
+    Math.floor(Math.random() * storageTips.length)
+  ];
+
+  area.innerHTML = `
+    <p><strong>${question.question}</strong></p>
+    <div id="ecoStorageOptions"></div>
+  `;
+
+  question.options.forEach(option => {
+    const button = document.createElement("button");
+    button.className = "eco-option";
+    button.textContent = option;
+
+    button.addEventListener("click", () => {
+      const feedback = $("ecoStorageFeedback");
+
+      if (option === question.answer) {
+        feedback.textContent = "Correct! " + question.explanation;
+        ecoKitchen.storageKnowledge++;
+        ecoKitchen.ecoPoints += 10;
+        ecoProgress.storage2++;
+        showToast("Smart Storage learned! +10 Eco Points 🧊");
+        checkEcoChallenges();
+      } else {
+        feedback.textContent = "Not quite! " + question.explanation;
+      }
+
+      document.querySelectorAll("#ecoStorageOptions button").forEach(btn => {
+        btn.disabled = true;
+      });
+
+      saveEcoKitchen();
+      renderEcoKitchen();
+    });
+
+    $("ecoStorageOptions").appendChild(button);
+  });
+}
+
+function renderEcoChallenges() {
+  const area = $("ecoChallengeList");
+  if (!area) return;
+
+  area.innerHTML = "";
+
+  ecoChallenges.forEach(challenge => {
+    const progress = Math.min(
+      ecoProgress[challenge.id] || 0,
+      challenge.target
+    );
+
+    const completed = ecoKitchen.completedChallenges.includes(challenge.id);
+
+    const card = document.createElement("div");
+    card.className = "eco-challenge";
+
+    card.innerHTML = `
+      <strong>${completed ? "✅" : "🎯"} ${challenge.title}</strong>
+      <p>${challenge.description}</p>
+      <small>${progress} / ${challenge.target} · Reward: ${challenge.reward} coins</small>
+      <div class="eco-progress">
+        <span style="width:${progress / challenge.target * 100}%"></span>
+      </div>
+      ${completed ? "<small>Challenge completed!</small>" : ""}
+    `;
+
+    area.appendChild(card);
+  });
+}
+
+function checkEcoChallenges() {
+  ecoChallenges.forEach(challenge => {
+    const progress = ecoProgress[challenge.id] || 0;
+
+    if (
+      progress >= challenge.target &&
+      !ecoKitchen.completedChallenges.includes(challenge.id)
+    ) {
+      ecoKitchen.completedChallenges.push(challenge.id);
+      player.coins += challenge.reward;
+      ecoKitchen.ecoPoints += 15;
+
+      showToast(
+        "Eco Challenge completed! +" +
+        challenge.reward +
+        " coins 🏆"
+      );
+
+      updatePlayerDisplay();
+    }
+  });
+
+  saveEcoKitchen();
+  renderEcoChallenges();
+}
+
+document.addEventListener("DOMContentLoaded", initializeEcoKitchen);
