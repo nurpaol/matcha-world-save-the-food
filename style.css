@@ -915,3 +915,53 @@ footer {
     width: 105px;
   }
 }
+/* FRESHOPIA LEFT SIDEBAR */
+
+@media (min-width: 801px) {
+  .navigation {
+    position: fixed;
+    left: 15px;
+    top: 125px;
+    bottom: 20px;
+    width: 205px;
+    height: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 10px;
+    padding: 15px;
+    z-index: 50;
+    background: rgba(255,255,255,.96);
+    border: 2px solid #f2d3e0;
+  }
+
+  .navigation .nav-btn {
+    width: 100%;
+    min-height: 45px;
+    text-align: left;
+    padding: 12px;
+  }
+
+  .top-bar {
+    width: calc(100% - 245px);
+    margin-left: 235px;
+  }
+
+  main {
+    width: calc(100% - 265px);
+    margin-left: 235px;
+    margin-right: 30px;
+  }
+}
+
+@media (max-width: 800px) {
+  .navigation {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+}
